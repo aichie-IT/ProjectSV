@@ -345,6 +345,53 @@ with tab1:
             st.success("""
             **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
             """)
+
+        # Histogram
+        with col3:
+            st.subheader("Perception of Wasting Time on Social Media")
+
+            fig = px.histogram(
+                df,
+                x="Social_Media_Waste_Time",
+                color_discrete_sequence=COLOR_SEQ,
+                category_orders={"Social_Media_Waste_Time": [
+                "Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"
+                ]}
+            )
+
+            fig.update_layout(
+                xaxis_title="Response Level",
+                yaxis_title="Number of Students",
+                template="plotly_white"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
+
+        # Pie Donut
+        with col4:
+            resource_counts = df[
+                'Do you think universities should provide more online mental health resources?'
+            ].value_counts().reset_index()
+
+            resource_counts.columns = ["Response", "Count"]
+
+            fig = px.pie(
+                resource_counts,
+                names="Response",
+                values="Count",
+                hole=0.45,
+                color_discrete_sequence=COLOR_SEQ,
+                title="Need for Online Mental Health Resources"
+            )
+            fig.update_traces(textposition="inside", textinfo="percent+label")
+            st.plotly_chart(fig, use_container_width=True)
+
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
        
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
@@ -353,6 +400,7 @@ with tab1:
     which correlates with lower accident severity. Riders with valid licenses also
     exhibit safer driving trends, suggesting that training and enforcement play key roles.
     """)
+    
     # ============ TAB 1.2: ACADEMIC IMPACT ============
     with tab2:
         st.subheader("Academic Impact of Social Media Analysis")
@@ -378,24 +426,91 @@ with tab1:
         """)
         st.markdown("---")
 
-
         col1, col2, col3 = st.columns(3)
 
-        # Pie: Accident Severity
+        # Bar Chart
         with col1:
-            severity_counts = filtered_df["Accident_Severity"].value_counts().reset_index()
-            severity_counts.columns = ["Accident_Severity", "Count"]
-            fig1 = px.pie(
-                severity_counts, 
-                values="Count", 
-                names="Accident_Severity",
-                title="Accident Severity Distribution",
-            color_discrete_sequence=color_theme
-        )
-        st.plotly_chart(fig1, use_container_width=True)
-        st.warning("""
-        Excessive social media use may interfere with academic focus, particularly among younger students.
-        """)
+            st.subheader("Academic Stress vs Social Media Usage")
+
+            usage_group_mean = (
+                df_numeric.groupby("Social_Media_Use_Frequency")
+                ["Academic_Stress_Index"]
+                .mean()
+                .reset_index()
+            )
+
+            fig = px.bar(
+                usage_group_mean,
+                x="Social_Media_Use_Frequency",
+                y="Academic_Stress_Index",
+                color="Academic_Stress_Index",
+                color_continuous_scale=CONTINUOUS_SCALE
+            )
+
+            fig.update_layout(
+                xaxis_title="Social Media Usage",
+                yaxis_title="Academic Stress Index",
+                template="plotly_white"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
+        
+        # Box Plot
+        with col2:
+            fig = px.box(
+                df,
+                x="Social_Media_Use_Frequency",
+                y="General_Academic_Performance",
+                title="Social Media Frequency vs Academic Performance",
+                color="Social_Media_Use_Frequency",
+                color_discrete_sequence=px.colors.qualitative.Set3
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
+
+            # Box Plot
+            fig = px.box(
+                df_numeric,
+                x="Social_Media_Use_Frequency",
+                y="Sleep_Affected_By_Social_Media",
+                color="Social_Media_Use_Frequency",
+                color_discrete_sequence=COLOR_SEQ
+            )
+
+            fig.update_layout(
+                title="Sleep Disturbance by Social Media Usage",
+                xaxis_title="Usage Frequency",
+                yaxis_title="Sleep Affected Score",
+                template="plotly_white"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
+
+        # Scatter Plot
+        with col3:
+            fig = px.scatter(
+                df,
+                x="Age",
+                y="Studies_Affected_By_Social_Media",
+                title="Age vs Impact of Social Media on Studies",
+                color="Gender",
+                opacity=0.7,
+                color_discrete_sequence=px.colors.qualitative.Dark2
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
+       
 
     # ============ TAB 1.3: WELLBEING ANALYSIS ============
     with tab3:
@@ -423,24 +538,37 @@ with tab1:
 
         col1, col2, col3 = st.columns(3)
 
-        # Pie: Accident Severity
+        # Box Plot
         with col1:
-            severity_counts = filtered_df["Accident_Severity"].value_counts().reset_index()
-            severity_counts.columns = ["Accident_Severity", "Count"]
-            fig1 = px.pie(
-                severity_counts, 
-                values="Count", 
-                names="Accident_Severity",
-                title="Accident Severity Distribution",
-            color_discrete_sequence=color_theme
-        )
-        st.plotly_chart(fig1, use_container_width=True)
-        st.success("""
-        Positive coping mechanisms and social support reduce negative mental health effects.
-        """)
-        
-        # Pie: Helmet Usage
+            fig = px.box(
+                df,
+                x="Social_Media_Use_Frequency",
+                y="General_Academic_Performance",
+                title="Social Media Frequency vs Academic Performance",
+                color="Social_Media_Use_Frequency",
+                color_discrete_sequence=px.colors.qualitative.Set3
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
+
+        # Scatter Plot
         with col2:
+            fig = px.scatter(
+                df,
+                x="Age",
+                y="Studies_Affected_By_Social_Media",
+                title="Age vs Impact of Social Media on Studies",
+                color="Gender",
+                opacity=0.7,
+                color_discrete_sequence=px.colors.qualitative.Dark2
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
        
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
@@ -449,6 +577,35 @@ with tab1:
     which correlates with lower accident severity. Riders with valid licenses also
     exhibit safer driving trends, suggesting that training and enforcement play key roles.
     """)
+    
+TAB 2: Academic Impact of Social Media
+
+Goal: Examine whether internet usage affects academic outcomes.
+
+✅ Visualizations in this tab
+Visualization	Why
+Social Media Frequency vs Academic Performance (Box)	Direct academic impact
+Age vs Studies Affected (Scatter)	Behavioural patterns
+Study Hours vs Social Media Hours (Scatter – optional)
+
+TAB 3: Psychological & Emotional Wellbeing
+
+Goal: Understand stress, sleep, and emotional responses linked to online behaviour.
+
+✅ Visualizations
+Visualization	Why
+Likert Distributions (Bar / Radar)	Psychological patterns
+Sleep Affected by Social Media (Bar)	Physical wellbeing
+Emotional Connection vs Waste Time (Scatter)	Behaviour contradiction
+TAB 4: Correlation & Deep Analysis (Advanced)
+
+Goal: Reveal hidden relationships across variables (lecturer favourite).
+
+✅ Visualizations
+Visualization	Why
+Correlation Heatmap	Overall relationship
+Radar Chart (Likert Profile)	Psychological intensity
+Polar Chart (Usage Profile)	Behaviour clustering
 
     # ============ TAB 1.4: CORRELATION & INSIGHTS ============
     with tab4:
