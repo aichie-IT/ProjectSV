@@ -266,6 +266,13 @@ with st.sidebar:
             (filtered_df["Age"] <= max_age)
         ]
         filtered_numeric = filtered_numeric.loc[filtered_df.index]
+        # 🔍 DEBUG CHECK (temporary)
+        st.write(filtered_df[[
+            "General_Academic_Performance",
+            "General_Academic_Performance_Numeric"
+        ]].head())
+
+    
 
     # --- Reset and Download Buttons ---
     col1, col2 = st.columns(2)
