@@ -11,26 +11,24 @@ px.defaults.template = "plotly_white"
 px.defaults.color_continuous_scale = px.colors.sequential.Teal
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Internet Use and Mental Health Dashboard", page_icon="🧠", layout="wide")
-
+st.set_page_config(
+    page_title="Internet Use and Mental Health Dashboard",
+    page_icon="🧠",
+    layout="wide"
+)
 
 # --- LOAD DATA ---
 @st.cache_data
 def load_data():
     url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv"
-    df = pd.read_csv(url)
-    return df
+    return pd.read_csv(url)
 
 df = load_data()
 
 # Fix encoding issues
 df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
 
-# Standardize ranges
-for col in ["Social_Media_Use_Frequency", "Hours_Study_per_Week"]:
-    df[col] = df[col].astype(str).str.replace("-", " to ", regex=False).str.strip()
-    
-# Categorical ordering
+# ----- CATEGORICAL ORDER -----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
     categories=[
@@ -43,7 +41,7 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
     ordered=True
 )
 
-# Numeric transformations
+# ----- LIKERT MAPPING -----
 likert_map = {
     "Strongly Disagree": 1,
     "Disagree": 2,
@@ -53,15 +51,14 @@ likert_map = {
 }
 
 mental_cols = [
-    'Assignments_Stress',
-    'Academic_Workload_Anxiety',
-    'Difficulty_Sleeping_University_Pressure',
-    'Sleep_Affected_By_Social_Media',
-    'Studies_Affected_By_Social_Media'
+    "Assignments_Stress",
+    "Academic_Workload_Anxiety",
+    "Difficulty_Sleeping_University_Pressure",
+    "Sleep_Affected_By_Social_Media",
+    "Studies_Affected_By_Social_Media"
 ]
 
 df_numeric = df.copy()
-
 for col in mental_cols:
     df_numeric[col] = (
         df_numeric[col]
@@ -70,7 +67,32 @@ for col in mental_cols:
         .map(likert_map)
     )
 
-df_numeric["Academic_Stress_Index"] = df_numeric[mental_cols[:3]].mean(axis=1)
+# ----- DERIVED NUMERIC COLUMNS (FIXED) -----
+study_hours_map = {
+    "Less than 5 hours": 2.5,
+    "5 to 10 hours": 7.5,
+    "11 to 15 hours": 13,
+    "16 to 20 hours": 18,
+    "More than 20 hours": 22.5
+}
+df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map(study_hours_map)
+
+social_media_hours_map = {
+    "Less than 1 hour per day": 0.5,
+    "1 to 2 hours per day": 1.5,
+    "3 to 4 hours per day": 3.5,
+    "5 to 6 hours per day": 5.5,
+    "More than 6 hours per day": 7
+}
+df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map(social_media_hours_map)
+
+df_numeric["Academic_Stress_Index"] = df_numeric[
+    [
+        "Assignments_Stress",
+        "Academic_Workload_Anxiety",
+        "Difficulty_Sleeping_University_Pressure"
+    ]
+].mean(axis=1)
 
 # ====== SIDEBAR ======
 with st.sidebar:
@@ -222,7 +244,7 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
-    col3.metric("Avg Stress Index", f"{df_numeric['Academic_Stress_Index'].mean():.2f}", border=True)
+    col3.metric("Avg Stress Index", f"{df_numeric['Assignments_Stress'].mean():.2f}", border=True)
     col4.metric("High Usage (%)", f"{(df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day','More than 6 hours per day']).mean()*100):.1f}%", border=True)
 
     # Scientific Summary
@@ -406,7 +428,7 @@ with tab1:
 
             usage_group_mean = (
                 filtered_numeric.groupby("Social_Media_Use_Frequency")
-                ["Academic_Stress_Index"]
+                ["Assignments_Stress"]
                 .mean()
                 .reset_index()
             )
@@ -414,14 +436,14 @@ with tab1:
             fig = px.bar(
                 usage_group_mean,
                 x="Social_Media_Use_Frequency",
-                y="Academic_Stress_Index",
-                color="Academic_Stress_Index",
+                y="Assignments_Stress",
+                color="Assignments_Stress",
                 color_continuous_scale=CONTINUOUS_SCALE
             )
 
             fig.update_layout(
                 xaxis_title="Social Media Usage",
-                yaxis_title="Academic Stress Index",
+                yaxis_title="Academic Stress",
                 template="plotly_white"
             )
 
@@ -482,7 +504,6 @@ with tab1:
             st.success("""
             **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
             """)
-       
 
     # ============ TAB 1.3: WELLBEING ANALYSIS ============
     with wellbeing_tab:
