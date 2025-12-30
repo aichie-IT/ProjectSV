@@ -11,7 +11,7 @@ px.defaults.color_continuous_scale = px.colors.sequential.Teal
 
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Internet Use Dashboard", page_icon="🏍️", layout="wide")
+st.set_page_config(page_title="Internet Use and Mental Health Monitoring Insights Dashboard", page_icon="🏍️", layout="wide")
 
 
 # --- LOAD DATA ---
