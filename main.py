@@ -75,7 +75,7 @@ study_hours_map = {
     "16 to 20 hours": 18,
     "More than 20 hours": 22.5
 }
-df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map(study_hours_map)
+df_numeric["Social_Media_Use_Frequency"] = df_numeric["Social_Media_Use_Frequency"].map(study_hours_map)
 
 social_media_hours_map = {
     "Less than 1 hour per day": 0.5,
@@ -84,7 +84,7 @@ social_media_hours_map = {
     "5 to 6 hours per day": 5.5,
     "More than 6 hours per day": 7
 }
-df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map(social_media_hours_map)
+df_numeric["Hours_Study_per_Week"] = df_numeric["Hours_Study_per_Week"].map(social_media_hours_map)
 
 df_numeric["Academic_Stress_Index"] = df_numeric[
     [
@@ -428,7 +428,7 @@ with tab1:
 
             usage_group_mean = (
                 filtered_numeric.groupby("Social_Media_Use_Frequency")
-                ["Assignments_Stress"]
+                ["Academic_Stress_Index"]
                 .mean()
                 .reset_index()
             )
@@ -436,14 +436,14 @@ with tab1:
             fig = px.bar(
                 usage_group_mean,
                 x="Social_Media_Use_Frequency",
-                y="Assignments_Stress",
-                color="Assignments_Stress",
+                y="Academic_Stress_Index",
+                color="Academic_Stress_Index",
                 color_continuous_scale=CONTINUOUS_SCALE
             )
 
             fig.update_layout(
                 xaxis_title="Social Media Usage",
-                yaxis_title="Academic Stress",
+                yaxis_title="Academic Stress Index",
                 template="plotly_white"
             )
 
