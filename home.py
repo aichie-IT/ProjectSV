@@ -500,7 +500,7 @@ with tab1:
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Study Impact Reported (%)", f"{(filtered_df['Studies_Affected_By_Social_Media'].map(likert_map).mean()/5*100):.1f}%", border=True)
-        col2.metric("Avg. Academic Performance", f"{filtered_df['General_Academic_Performance'].mean():.2f}", border=True)
+        col2.metric("Avg. Academic Performance", f"{filtered_df['General_Academic_Performance_Numeric'].mean():.2f}", border=True)
         high_users = filtered_df['Social_Media_Use_Frequency'].isin(['5–6 hrs', '> 6 hrs']).mean() * 100
         col3.metric("High Social Media Users (%)", f"{high_users:.1f}%", border=True)
         col4.metric("Avg. Weekly Study Hours", f"{filtered_df['Study_Hours_Numeric'].mean():.1f}", border=True)
