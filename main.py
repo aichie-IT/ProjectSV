@@ -11,7 +11,7 @@ px.defaults.template = "plotly_white"
 px.defaults.color_continuous_scale = px.colors.sequential.Teal
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Internet Use and Mental Health Monitoring Insights Dashboard", page_icon="📈", layout="wide")
+st.set_page_config(page_title="Internet Use and Mental Health Dashboard", page_icon="🧠", layout="wide")
 
 
 # --- LOAD DATA ---
@@ -23,21 +23,13 @@ def load_data():
 
 df = load_data(https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv)\
 
-# Cleaning & preprocessing
-df = df.replace({
-    "â\x80\x93": "-",
-    "–": "-",
-    "—": "-"
-}, regex=True)
+# Fix encoding issues
+df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
 
+# Standardize ranges
 for col in ["Social_Media_Use_Frequency", "Hours_Study_per_Week"]:
-    df[col] = (
-        df[col]
-        .astype(str)
-        .str.replace("-", " to ", regex=False)
-        .str.strip()
-    )
-
+    df[col] = df[col].astype(str).str.replace("-", " to ", regex=False).str.strip()
+    
 # Categorical ordering
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
@@ -60,14 +52,17 @@ likert_map = {
     "Strongly Agree": 5
 }
 
-stress_cols = [
+mental_cols = [
     'Assignments_Stress',
     'Academic_Workload_Anxiety',
-    'Difficulty_Sleeping_University_Pressure'
+    'Difficulty_Sleeping_University_Pressure',
+    'Sleep_Affected_By_Social_Media',
+    'Studies_Affected_By_Social_Media'
 ]
 
 df_numeric = df.copy()
-for col in stress_cols:
+
+for col in mental_cols:
     df_numeric[col] = (
         df_numeric[col]
         .astype(str)
@@ -75,7 +70,7 @@ for col in stress_cols:
         .map(likert_map)
     )
 
-df_numeric["Academic_Stress_Index"] = df_numeric[stress_cols].mean(axis=1)
+df_numeric["Academic_Stress_Index"] = df_numeric[mental_cols[:3]].mean(axis=1)
 
 # ====== SIDEBAR ======
 with st.sidebar:
@@ -243,15 +238,15 @@ tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "📈 N
 
 # ============ TAB 1: INTERNET USE VS. MENTAL HEALTH ============
 with tab1:
-    st.subheader("Internet & Social Media Usage Patterns")
-    st.markdown("Understand how much and how often students use the internet/social media.")
+    st.subheader("🧠 Internet Use & Mental Health Insights")
+    st.markdown("Analyzing interrelationships between social media usage, academic stress, and student wellbeing.")
 
     # Summary box
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Total Records", f"{len(filtered_df):,}", border=True)
-    col2.metric("Avg. Age", f"{filtered_df['Biker_Age'].mean():.1f}", border=True)
-    col3.metric("Avg. Speed", f"{filtered_df['Bike_Speed'].mean():.1f} km/h", border=True)
-    col4.metric("Helmet Usage (%)", f"{(filtered_df['Wearing_Helmet'].value_counts(normalize=True).get('Yes',0)*100):.1f}%", border=True)
+    col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
+    col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
+    col3.metric("Avg Stress Index", f"{df_numeric['Academic_Stress_Index'].mean():.2f}", border=True)
+    col4.metric("High Usage (%)", f"{(df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day','More than 6 hours per day']).mean()*100):.1f}%", border=True)
 
     # Scientific Summary
     st.markdown("### Summary")
