@@ -101,6 +101,59 @@ likert_map = {
     "Strongly Agree": 5
 }
 
+# --- Numeric encoding ---
+df_numeric = df.copy()
+
+# Likert (1–5)
+for col in LIKERT_COLS:
+    df_numeric[col + "_Numeric"] = (
+        df_numeric[col]
+        .astype(str)
+        .str.strip()
+        .map(likert_map)
+    )
+
+# Frequency (1–4)
+for col in FREQ_COLS:
+    df_numeric[col + "_Numeric"] = (
+        df_numeric[col]
+        .astype(str)
+        .str.strip()
+        .map(FREQ_MAP)
+    )
+
+
+LIKERT_COLS = [
+    'Assignments_Stress',
+    'Academic_Workload_Anxiety',
+    'Difficulty_Sleeping_University_Pressure',
+    'Friends_Family_Support',
+    'Manage_Emotion_Stressful_Periods',
+    'Social_Media_Relaxation',
+    'Emotional_Connection_Social_Media',
+    'Social_Media_Daily_Routine',
+    'Social_Media_Waste_Time',
+    'Sleep_Affected_By_Social_Media',
+    'Studies_Affected_By_Social_Media',
+    'Seek_Help_Online_When_Stress',
+    'Social_Media_Positive_Impact_on_Wellbeing',
+    'Social_Media_Negative_Impact_on_Wellbeing'
+]
+
+FREQ_MAP = {
+    "Never": 1,
+    "Rarely": 2,
+    "Sometimes": 3,
+    "Often": 4
+}
+
+FREQ_COLS = [
+    'Mental_Health_Info_Through_Internet',
+    'Use_Online_Communities_for_Support',
+    'Across_Upsetting_Content_Online'
+]
+
+
 mental_cols = [
     "Assignments_Stress",
     "Academic_Workload_Anxiety",
@@ -158,11 +211,11 @@ df["General_Academic_Performance_Numeric"] = (
     .map(academic_map)
 )
 
-df_numeric["Academic_Stress_Index"] = df_numeric[
+filtered_numeric["Academic_Stress_Index"] = filtered_numeric[
     [
-        "Assignments_Stress",
-        "Academic_Workload_Anxiety",
-        "Difficulty_Sleeping_University_Pressure"
+        "Assignments_Stress_Numeric",
+        "Academic_Workload_Anxiety_Numeric",
+        "Difficulty_Sleeping_University_Pressure_Numeric"
     ]
 ].mean(axis=1)
 
@@ -294,8 +347,8 @@ col1, col2, col3, col4 = st.columns(4)
 if not filtered_df.empty:
     col1.metric("Total Records", f"{len(filtered_df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
-    col3.metric("Avg. Positive Impact", f"{filtered_df['Social_Media_Positive_Impact_on_Wellbeing'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
-    col4.metric("Avg. Negative Impact", f"{filtered_df['Social_Media_Negative_Impact_on_Wellbeing'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
+    col3.metric("Avg. Positive Impact", f"{filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
+    col4.metric("Avg. Negative Impact", f"{filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
 else:
     col1.metric("Total Records", "0", help="No data available")
     col2.metric("Avg. Age", "N/A", help="No data available")
@@ -583,10 +636,10 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Avg. Stress Level", f"{filtered_df['Assignments_Stress'].map(likert_map).mean():.2f}", border=True)
-        col2.metric("Sleep Affected (%)", f"{(filtered_df['Sleep_Affected_By_Social_Media'].map(likert_map).mean()/5*100):.1f}%", border=True)
-        col3.metric("Emotional Attachment", f"{filtered_df['Emotional_Connection_Social_Media'].map(likert_map).mean():.2f}", border=True)
-        col4.metric("Online Help Seeking (%)", f"{(filtered_df['Seek_Help_Online_When_Stress'].map(likert_map).mean()/5*100):.1f}%", border=True)
+        col1.metric("Avg. Stress Level", f"{filtered_numeric['Assignments_Stress_Numeric'].mean():.2f}", border=True)
+        col2.metric("Sleep Affected (%)", f"{(filtered_numeric['Sleep_Affected_By_Social_Media_Numeric'].mean()/5*100):.1f}%", border=True)
+        col3.metric("Emotional Attachment", f"{filtered_numeric['Emotional_Connection_Social_Media_Numeric'].mean():.2f}", border=True)
+        col4.metric("Online Help Seeking (%)", f"{(filtered_numeric['Seek_Help_Online_When_Stress_Numeric'].mean()/5*100):.1f}%", border=True)
 
         # Scientific Summary
         st.markdown("### Summary")
@@ -680,7 +733,7 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("SM Hours ↔ Stress", f"{filtered_df[['Social_Media_Hours_Numeric','Assignments_Stress']].corr().iloc[0,1]:.2f}", border=True)
+        col1.metric("SM Hours ↔ Stress", f"{filtered_numeric[['Social_Media_Hours_Numeric', 'Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
         col2.metric("Study Hours ↔ Stress", f"{filtered_df[['Study_Hours_Numeric','Assignments_Stress']].corr().iloc[0,1]:.2f}", border=True)
         impact_gap = (
             filtered_df['Social_Media_Positive_Impact_on_Wellbeing'].map(likert_map).mean()
@@ -774,7 +827,7 @@ with tab1:
     which correlates with lower accident severity. Riders with valid licenses also
     exhibit safer driving trends, suggesting that training and enforcement play key roles.
     """)
-
+    
 # ============= MEMBER LAIN PUNYA ================
 
 # ============ TAB 2: ACCIDENT FACTORS ============
