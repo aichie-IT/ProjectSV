@@ -75,30 +75,48 @@ cols_to_drop = [
 
 df = df.drop(columns=cols_to_drop, errors="ignore")
 
+# ================= SCALE DEFINITIONS =================
 
-# Fix encoding issues
-df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
+# Likert-scale columns (1–5)
+LIKERT_COLS = [
+    'Assignments_Stress',
+    'Academic_Workload_Anxiety',
+    'Difficulty_Sleeping_University_Pressure',
+    'Friends_Family_Support',
+    'Manage_Emotion_Stressful_Periods',
+    'Social_Media_Relaxation',
+    'Emotional_Connection_Social_Media',
+    'Social_Media_Daily_Routine',
+    'Social_Media_Waste_Time',
+    'Sleep_Affected_By_Social_Media',
+    'Studies_Affected_By_Social_Media',
+    'Seek_Help_Online_When_Stress',
+    'Social_Media_Positive_Impact_on_Wellbeing',
+    'Social_Media_Negative_Impact_on_Wellbeing'
+]
 
-# ----- CATEGORICAL ORDER -----
-df["Social_Media_Use_Frequency"] = pd.Categorical(
-    df["Social_Media_Use_Frequency"],
-    categories=[
-        "Less than 1 hour per day",
-        "1 to 2 hours per day",
-        "3 to 4 hours per day",
-        "5 to 6 hours per day",
-        "More than 6 hours per day"
-    ],
-    ordered=True
-)
+# Frequency-scale columns (1–4)
+FREQ_COLS = [
+    'Mental_Health_Info_Through_Internet',
+    'Use_Online_Communities_for_Support',
+    'Across_Upsetting_Content_Online'
+]
 
-# ----- LIKERT MAPPING -----
+# Likert mapping
 likert_map = {
     "Strongly Disagree": 1,
     "Disagree": 2,
     "Neutral": 3,
     "Agree": 4,
     "Strongly Agree": 5
+}
+
+# Frequency mapping
+freq_map = {
+    "Never": 1,
+    "Rarely": 2,
+    "Sometimes": 3,
+    "Often": 4
 }
 
 # --- Numeric encoding ---
@@ -119,40 +137,24 @@ for col in FREQ_COLS:
         df_numeric[col]
         .astype(str)
         .str.strip()
-        .map(FREQ_MAP)
+        .map(freq_map)
     )
 
+# Fix encoding issues
+df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
 
-LIKERT_COLS = [
-    'Assignments_Stress',
-    'Academic_Workload_Anxiety',
-    'Difficulty_Sleeping_University_Pressure',
-    'Friends_Family_Support',
-    'Manage_Emotion_Stressful_Periods',
-    'Social_Media_Relaxation',
-    'Emotional_Connection_Social_Media',
-    'Social_Media_Daily_Routine',
-    'Social_Media_Waste_Time',
-    'Sleep_Affected_By_Social_Media',
-    'Studies_Affected_By_Social_Media',
-    'Seek_Help_Online_When_Stress',
-    'Social_Media_Positive_Impact_on_Wellbeing',
-    'Social_Media_Negative_Impact_on_Wellbeing'
-]
-
-FREQ_MAP = {
-    "Never": 1,
-    "Rarely": 2,
-    "Sometimes": 3,
-    "Often": 4
-}
-
-FREQ_COLS = [
-    'Mental_Health_Info_Through_Internet',
-    'Use_Online_Communities_for_Support',
-    'Across_Upsetting_Content_Online'
-]
-
+# ----- CATEGORICAL ORDER -----
+df["Social_Media_Use_Frequency"] = pd.Categorical(
+    df["Social_Media_Use_Frequency"],
+    categories=[
+        "Less than 1 hour per day",
+        "1 to 2 hours per day",
+        "3 to 4 hours per day",
+        "5 to 6 hours per day",
+        "More than 6 hours per day"
+    ],
+    ordered=True
+)
 
 mental_cols = [
     "Assignments_Stress",
