@@ -176,11 +176,8 @@ academic_map = {
     "Very Good": 5,
     "Excellent": 6
 }
-
-df["General_Academic_Performance_Numeric"] = (
-    df["General_Academic_Performance"]
-    .astype(str)
-    .str.strip()
+filtered_df["General_Academic_Performance_Numeric"] = (
+    filtered_df["General_Academic_Performance"]
     .map(academic_map)
 )
 
