@@ -425,10 +425,9 @@ with tab1:
 
         # Histogram
         with col3:
-            st.subheader("Perception of Wasting Time on Social Media")
-
             fig = px.histogram(
                 filtered_df,
+                title="Perception of Wasting Time on Social Media",
                 x="Social_Media_Waste_Time",
                 color_discrete_sequence=COLOR_SEQ,
                 category_orders={"Social_Media_Waste_Time": [
