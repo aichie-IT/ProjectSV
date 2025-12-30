@@ -146,22 +146,18 @@ freq_map = {
     "Often": 4
 }
 
+df_numeric = df.copy()
+
 # Likert (1–5)
 for col in LIKERT_COLS:
     df_numeric[col + "_Numeric"] = (
-        df_numeric[col]
-        .astype(str)
-        .str.strip()
-        .map(likert_map)
+        df_numeric[col].astype(str).str.strip().map(likert_map)
     )
 
 # Frequency (1–4)
 for col in FREQ_COLS:
     df_numeric[col + "_Numeric"] = (
-        df_numeric[col]
-        .astype(str)
-        .str.strip()
-        .map(freq_map)
+        df_numeric[col].astype(str).str.strip().map(freq_map)
     )
 
 # Fix encoding issues
@@ -176,7 +172,7 @@ study_hours_map = {
     "More than 20 hours": 22.5
 }
 
-df["Study_Hours_Numeric"] = df["Hours_Study_per_Week"].map(study_hours_map)
+df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map(study_hours_map)
 
 # Social media hours (numeric)
 social_media_hours_map = {
@@ -187,7 +183,17 @@ social_media_hours_map = {
     "More than 6 hours per day": 7
 }
 
-df["Social_Media_Hours_Numeric"] = df["Social_Media_Use_Frequency"].map(social_media_hours_map)
+# Social media hours numeric
+df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map(social_media_hours_map)
+
+academic_map = {
+    "Poor": 1,
+    "Below Average": 2,
+    "Average": 3,
+    "Good": 4,
+    "Very Good": 5,
+    "Excellent": 6
+}
 
 # ----- CATEGORICAL ORDER -----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
@@ -218,20 +224,9 @@ for col in mental_cols:
         .map(likert_map)
     )
 
-academic_map = {
-    "Poor": 1,
-    "Below Average": 2,
-    "Average": 3,
-    "Good": 4,
-    "Very Good": 5,
-    "Excellent": 6
-}
-
-df["General_Academic_Performance_Numeric"] = (
-    df["General_Academic_Performance"]
-    .astype(str)
-    .str.strip()
-    .map(academic_map)
+# Academic performance numeric
+df_numeric["General_Academic_Performance_Numeric"] = (
+    df_numeric["General_Academic_Performance"].astype(str).str.strip().map(academic_map)
 )
 
 # Create numeric version of filtered data
@@ -244,9 +239,6 @@ filtered_numeric["Academic_Stress_Index"] = filtered_numeric[
         "Difficulty_Sleeping_University_Pressure_Numeric"
     ]
 ].mean(axis=1)
-
-# --- Numeric encoding ---
-df_numeric = df.copy()
 
 # ====== SIDEBAR ======
 with st.sidebar:
