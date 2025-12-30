@@ -85,90 +85,67 @@ with st.sidebar:
         st.markdown("Select filters to refine your dashboard view:")
 
         # --- Multi-select Filters ---
-        severity = st.multiselect(
-            "Accident Severity",
-            options=sorted(df["Accident_Severity"].dropna().unique()),
-            default=sorted(df["Accident_Severity"].dropna().unique())
+        # --- Gender ---
+        gender_filter = st.multiselect(
+            "Gender",
+            options=sorted(df["Gender"].dropna().unique()),
+            default=sorted(df["Gender"].dropna().unique())
         )
 
-        weather = st.multiselect(
-            "Weather Condition",
-            options=sorted(df["Weather"].dropna().unique()),
-            default=sorted(df["Weather"].dropna().unique())
+        # --- Year of Study ---
+        year_filter = st.multiselect(
+            "Year of Study",
+            options=sorted(df["Year_of_Study"].dropna().unique()),
+            default=sorted(df["Year_of_Study"].dropna().unique())
         )
 
-        time_of_day = st.multiselect(
-            "Time of Day",
-            options=sorted(df["Time_of_Day"].dropna().unique()),
-            default=sorted(df["Time_of_Day"].dropna().unique())
+        # --- Programme ---
+        programme_filter = st.multiselect(
+            "Programme of Study",
+            options=sorted(df["Programme_of_Study"].dropna().unique()),
+            default=sorted(df["Programme_of_Study"].dropna().unique())
         )
 
-        road_type = st.multiselect(
-            "Road Type",
-            options=sorted(df["Road_Type"].dropna().unique()),
-            default=sorted(df["Road_Type"].dropna().unique())
+        # --- Social Media Usage ---
+        sm_filter = st.multiselect(
+            "Social Media Usage (Hours / Day)",
+            options=df["Social_Media_Use_Frequency"].cat.categories,
+            default=df["Social_Media_Use_Frequency"].cat.categories
         )
 
-        # --- Optional Filters ---
-        if "Biker_Alcohol" in df.columns:
-            alcohol = st.multiselect(
-                "Biker Alcohol Consumption",
-                options=sorted(df["Biker_Alcohol"].dropna().unique()),
-                default=sorted(df["Biker_Alcohol"].dropna().unique())
-            )
-        else:
-            alcohol = []
+        # --- Age Filter ---
+        min_age, max_age = st.slider(
+            "Age Range",
+            int(df["Age"].min()),
+            int(df["Age"].max()),
+            (int(df["Age"].min()), int(df["Age"].max()))
+        )
 
-        if "Traffic_Density" in df.columns:
-            traffic = st.multiselect(
-                "Traffic Density",
-                options=sorted(df["Traffic_Density"].dropna().unique()),
-                default=sorted(df["Traffic_Density"].dropna().unique())
-            )
-        else:
-            traffic = []
-
-        if "Valid_Driving_License" in df.columns:
-            license_status = st.multiselect(
-                "Valid Driving License",
-                options=sorted(df["Valid_Driving_License"].dropna().unique()),
-                default=sorted(df["Valid_Driving_License"].dropna().unique())
-            )
-        else:
-            license_status = []
-
-        # --- Numeric Filter: Biker Age ---
-        if "Biker_Age" in df.columns:
-            min_age, max_age = st.slider(
-                "Filter by Biker Age",
-                int(df["Biker_Age"].min()),
-                int(df["Biker_Age"].max()),
-                (int(df["Biker_Age"].min()), int(df["Biker_Age"].max()))
-            )
-        else:
-            min_age, max_age = None, None
-
-        # --- Apply Filters ---
+        # ===== APPLY FILTERS =====
         filtered_df = df.copy()
+        filtered_numeric = df_numeric.copy()
 
-        if severity:
-            filtered_df = filtered_df[filtered_df["Accident_Severity"].isin(severity)]
-        if weather:
-            filtered_df = filtered_df[filtered_df["Weather"].isin(weather)]
-        if time_of_day:
-            filtered_df = filtered_df[filtered_df["Time_of_Day"].isin(time_of_day)]
-        if road_type:
-            filtered_df = filtered_df[filtered_df["Road_Type"].isin(road_type)]
-        if alcohol:
-            filtered_df = filtered_df[filtered_df["Biker_Alcohol"].isin(alcohol)]
-        if traffic:
-            filtered_df = filtered_df[filtered_df["Traffic_Density"].isin(traffic)]
-        if license_status:
-            filtered_df = filtered_df[filtered_df["Valid_Driving_License"].isin(license_status)]
-        if min_age is not None:
-            filtered_df = filtered_df[
-                (filtered_df["Biker_Age"] >= min_age) & (filtered_df["Biker_Age"] <= max_age)
-            ]
+        if gender_filter:
+            filtered_df = filtered_df[filtered_df["Gender"].isin(gender_filter)]
+            filtered_numeric = filtered_numeric.loc[filtered_df.index]
+
+        if year_filter:
+            filtered_df = filtered_df[filtered_df["Year_of_Study"].isin(year_filter)]
+            filtered_numeric = filtered_numeric.loc[filtered_df.index]
+
+        if programme_filter:
+            filtered_df = filtered_df[filtered_df["Programme_of_Study"].isin(programme_filter)]
+            filtered_numeric = filtered_numeric.loc[filtered_df.index]
+
+        if sm_filter:
+            filtered_df = filtered_df[filtered_df["Social_Media_Use_Frequency"].isin(sm_filter)]
+            filtered_numeric = filtered_numeric.loc[filtered_df.index]
+
+        filtered_df = filtered_df[
+            (filtered_df["Age"] >= min_age) &
+            (filtered_df["Age"] <= max_age)
+        ]
+        filtered_numeric = filtered_numeric.loc[filtered_df.index]
 
     # --- Reset and Download Buttons ---
     col1, col2 = st.columns(2)
