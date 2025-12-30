@@ -211,7 +211,7 @@ else:
 st.markdown("---")
 
 # --- TAB LAYOUT ---
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "📈 Numerical Analysis", "📉 Advanced Visualizations", "🗺️ Correlation Insights"])
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "Ilya", "Hanis", "Ainun"])
 
 # ============ TAB 1: INTERNET USE VS. MENTAL HEALTH ============
 with tab1:
@@ -238,10 +238,10 @@ with tab1:
     st.markdown("---")
 
     # --- TAB LAYOUT ---
-    tab1, tab2, tab3, tab4 = st.tabs(["📉 Usage Patterns", "🎓 Academic Impact", "📈 Wellbeing Analysis", "🗺️ Correlation & Advanced Insights"])
+    usage_tab, academic_tab, wellbeing_tab, insight_tab = st.tabs(["📉 Usage Patterns", "🎓 Academic Impact", "📈 Wellbeing Analysis", "🗺️ Correlation & Advanced Insights"])
     
     # ============ TAB 1.1: USAGE PATTERNS ============
-    with tab1:
+    with usage_tab:
         st.subheader("Internet & Social Media Usage Patterns")
         st.markdown("Understand how much and how often students use the internet/social media.")
 
@@ -271,7 +271,7 @@ with tab1:
             freq_order = ["< 1 hr", "1–2 hrs", "3–4 hrs", "5–6 hrs", "> 6 hrs"]
 
             fig = px.bar(
-                df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+                filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
                 title="Distribution of Daily Social Media Usage",
                 labels={"value": "Number of Students", "index": "Hours per Day"},
                 color_discrete_sequence=px.colors.qualitative.Set2
@@ -290,7 +290,7 @@ with tab1:
             ]
 
             fig = px.bar(
-                df["Hours_Study_per_Week"].value_counts().reindex(study_order),
+                filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order),
                 title="Frequency of Study Hours per Week",
                 labels={"value": "Number of Students", "index": "Study Hours"},
                 color_discrete_sequence=px.colors.qualitative.Pastel
@@ -305,7 +305,7 @@ with tab1:
         # Box Plot
         with col2:
             fig = px.box(
-                df,
+                filtered_df,
                 x="Gender",
                 y="Social_Media_Use_Frequency",
                 title="Social Media Usage by Gender",
@@ -323,7 +323,7 @@ with tab1:
             st.subheader("Perception of Wasting Time on Social Media")
 
             fig = px.histogram(
-                df,
+                filtered_df,
                 x="Social_Media_Waste_Time",
                 color_discrete_sequence=COLOR_SEQ,
                 category_orders={"Social_Media_Waste_Time": [
@@ -344,7 +344,7 @@ with tab1:
 
         # Pie Donut
         with col4:
-            resource_counts = df[
+            resource_counts = filtered_df[
                 'Do you think universities should provide more online mental health resources?'
             ].value_counts().reset_index()
 
@@ -374,7 +374,7 @@ with tab1:
     """)
     
     # ============ TAB 1.2: ACADEMIC IMPACT ============
-    with tab2:
+    with academic_tab:
         st.subheader("Academic Impact of Social Media Analysis")
         st.markdown("Examine whether internet usage affects academic outcomes.")
 
@@ -405,7 +405,7 @@ with tab1:
             st.subheader("Academic Stress vs Social Media Usage")
 
             usage_group_mean = (
-                df_numeric.groupby("Social_Media_Use_Frequency")
+                filtered_numeric.groupby("Social_Media_Use_Frequency")
                 ["Academic_Stress_Index"]
                 .mean()
                 .reset_index()
@@ -485,7 +485,7 @@ with tab1:
        
 
     # ============ TAB 1.3: WELLBEING ANALYSIS ============
-    with tab3:
+    with wellbeing_tab:
         st.subheader("Mental & Emotional Wellbeing")
         st.markdown("Understand stress, sleep, and emotional responses linked to online behaviour.")
 
@@ -582,7 +582,7 @@ with tab1:
     """)
 
     # ============ TAB 1.4: CORRELATION & INSIGHTS ============
-    with tab4:
+    with insight_tab:
         st.subheader("Correlation & Deep Analysis")
         st.markdown("Reveal hidden relationships across variables (lecturer favourite).")
 
