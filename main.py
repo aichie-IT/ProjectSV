@@ -17,11 +17,11 @@ st.set_page_config(page_title="Internet Use and Mental Health Dashboard", page_i
 # --- LOAD DATA ---
 @st.cache_data
 def load_data():
-    url = "https://raw.githubusercontent.com/aichie-IT/ProjectSV/refs/heads/main/exploring_internet_use.csv"
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv"
     df = pd.read_csv(url)
     return df
 
-df = load_data(https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv)
+df = load_data()
 
 # Fix encoding issues
 df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
