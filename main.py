@@ -538,34 +538,65 @@ with tab1:
 
         col1, col2, col3 = st.columns(3)
 
-        # Box Plot
+        # Radar / Polar Chart
         with col1:
-            fig = px.box(
-                df,
-                x="Social_Media_Use_Frequency",
-                y="General_Academic_Performance",
-                title="Social Media Frequency vs Academic Performance",
-                color="Social_Media_Use_Frequency",
-                color_discrete_sequence=px.colors.qualitative.Set3
-            )
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        st.subheader("Mental Health Impact Profile")
 
-        # Scatter Plot
+        categories = [
+            'Assignments_Stress',
+            'Academic_Workload_Anxiety',
+            'Difficulty_Sleeping_University_Pressure',
+            'Sleep_Affected_By_Social_Media',
+            'Studies_Affected_By_Social_Media'
+        ]
+
+        values = df_numeric[categories].mean().tolist()
+
+        fig = go.Figure(
+            go.Scatterpolar(
+                r=values + [values[0]],
+                theta=categories + [categories[0]],
+                fill='toself',
+                line_color="#636EFA"
+            )
+        )
+
+        fig.update_layout(
+            polar=dict(radialaxis=dict(visible=True, range=[1,5])),
+            template="plotly_white"
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
+
+        # Parallel coordinates
         with col2:
-            fig = px.scatter(
-                df,
-                x="Age",
-                y="Studies_Affected_By_Social_Media",
-                title="Age vs Impact of Social Media on Studies",
-                color="Gender",
-                opacity=0.7,
-                color_discrete_sequence=px.colors.qualitative.Dark2
-            )
+            parallel_df = df_numeric[
+                [
+                    'Social_Media_Use_Frequency',
+                    'Assignments_Stress',
+                    'Academic_Workload_Anxiety',
+                    'Sleep_Affected_By_Social_Media',
+                    'Studies_Affected_By_Social_Media'
+                ]
+            ].dropna()
 
+            fig = px.parallel_coordinates(
+                parallel_df,
+                dimensions=[
+                   'Assignments_Stress',
+                   'Academic_Workload_Anxiety',
+                   'Sleep_Affected_By_Social_Media',
+                   'Studies_Affected_By_Social_Media'
+                ],
+                color='Assignments_Stress',
+                color_continuous_scale=CONTINUOUS_SCALE
+            )
+            fig.update_layout(template="plotly_white")
             st.plotly_chart(fig, use_container_width=True)
+
             st.success("""
             **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
             """)
@@ -636,24 +667,70 @@ Polar Chart (Usage Profile)	Behaviour clustering
 
         col1, col2, col3 = st.columns(3)
 
-        # Pie: Accident Severity
+        # Heatmap
         with col1:
-            severity_counts = filtered_df["Accident_Severity"].value_counts().reset_index()
-            severity_counts.columns = ["Accident_Severity", "Count"]
-            fig1 = px.pie(
-                severity_counts, 
-                values="Count", 
-                names="Accident_Severity",
-                title="Accident Severity Distribution",
-            color_discrete_sequence=color_theme
-        )
-        st.plotly_chart(fig1, use_container_width=True)
-        st.error("""
-        Strong correlations highlight the need for institutional awareness and early intervention.
-        """)
+            corr = df_numeric[
+                [
+                    'Assignments_Stress',
+                    'Academic_Workload_Anxiety',
+                    'Sleep_Affected_By_Social_Media',
+                    'Studies_Affected_By_Social_Media',
+                    'Social_Media_Hours_Numeric'
+                ]
+            ].corr()
 
-        # Pie: Helmet Usage
+            fig = px.imshow(
+                corr,
+                text_auto=".2f",
+                color_continuous_scale=CONTINUOUS_SCALE
+            )
+
+            fig.update_layout(
+                title="Correlation Between Internet Use & Mental Health",
+                template="plotly_white"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+            st.error("""
+            Strong correlations highlight the need for institutional awareness and early intervention.
+            """)
+
+        # Waterfall Chart
         with col2:
+            mean_vals = df_numeric[
+                [
+                   'Assignments_Stress',
+                   'Academic_Workload_Anxiety',
+                   'Sleep_Affected_By_Social_Media',
+                   'Studies_Affected_By_Social_Media'
+                ]
+            ].mean()
+
+            fig = go.Figure(go.Waterfall(
+                x=[
+                    "Assignments Stress",
+                    "Academic Anxiety",
+                    "Sleep Affected",
+                    "Studies Affected",
+                    "Overall Impact"
+                ],
+                y=[
+                    mean_vals[0],
+                    mean_vals[1],
+                    mean_vals[2],
+                    mean_vals[3],
+                    mean_vals.sum()
+                ],
+                measure=["relative","relative","relative","relative","total"]
+            ))
+
+            fig.update_layout(
+                title="Cumulative Mental Health Impact",
+                template="plotly_white"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+         
        
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
