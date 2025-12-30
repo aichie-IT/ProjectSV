@@ -11,18 +11,71 @@ px.defaults.color_continuous_scale = px.colors.sequential.Teal
 
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Internet Use and Mental Health Monitoring Insights Dashboard", page_icon="🏍️", layout="wide")
+st.set_page_config(page_title="Internet Use and Mental Health Monitoring Insights Dashboard", page_icon="📈", layout="wide")
 
 
 # --- LOAD DATA ---
 @st.cache_data
 def load_data():
-    url = "https://raw.githubusercontent.com/aichie-IT/SV25/refs/heads/main/motor_accident.csv"
+    url = "https://raw.githubusercontent.com/aichie-IT/ProjectSV/refs/heads/main/exploring_internet_use.csv"
     df = pd.read_csv(url)
     return df
 
-df = load_data()
+df = load_data(https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv)\
 
+# Cleaning & preprocessing (AFTER load)
+df = df.replace({
+    "â\x80\x93": "-",
+    "–": "-",
+    "—": "-"
+}, regex=True)
+
+for col in ["Social_Media_Use_Frequency", "Hours_Study_per_Week"]:
+    df[col] = (
+        df[col]
+        .astype(str)
+        .str.replace("-", " to ", regex=False)
+        .str.strip()
+    )
+
+# Categorical ordering
+df["Social_Media_Use_Frequency"] = pd.Categorical(
+    df["Social_Media_Use_Frequency"],
+    categories=[
+        "Less than 1 hour per day",
+        "1 to 2 hours per day",
+        "3 to 4 hours per day",
+        "5 to 6 hours per day",
+        "More than 6 hours per day"
+    ],
+    ordered=True
+)
+
+# Numeric transformations
+likert_map = {
+    "Strongly Disagree": 1,
+    "Disagree": 2,
+    "Neutral": 3,
+    "Agree": 4,
+    "Strongly Agree": 5
+}
+
+stress_cols = [
+    'Assignments_Stress',
+    'Academic_Workload_Anxiety',
+    'Difficulty_Sleeping_University_Pressure'
+]
+
+df_numeric = df.copy()
+for col in stress_cols:
+    df_numeric[col] = (
+        df_numeric[col]
+        .astype(str)
+        .str.split(" / ").str[0]
+        .map(likert_map)
+    )
+
+df_numeric["Academic_Stress_Index"] = df_numeric[stress_cols].mean(axis=1)
 
 # ====== SIDEBAR ======
 with st.sidebar:
@@ -272,160 +325,6 @@ with tab1:
 # ============ TAB 2: ACCIDENT FACTORS ============
 with tab2:
     st.subheader("Accident Severity by Categorical Factors")
-    st.markdown("Explore how factors like occupation, education, and road conditions impact severity.")
-
-    # ===== COLOR & ORDER SETTINGS =====
-    severity_order = ["No Accident", "Moderate Accident", "Severe Accident"]
-    severity_colors = {
-        "No Accident": "#A8E6CF",       # Pastel Green
-        "Moderate Accident": "#FFF3B0", # Pastel Yellow
-        "Severe Accident": "#FFD3B6"    # Pastel Orange
-    }
-
-    # Force correct dtype & order for Accident_Severity
-    filtered_df["Accident_Severity"] = pd.Categorical(
-        filtered_df["Accident_Severity"], categories=severity_order, ordered=True
-    )
-    
-    # Summary
-    col1, col2, col3 = st.columns(3)
-    top_severity = filtered_df['Accident_Severity'].mode()[0]
-    top_weather = filtered_df['Weather'].mode()[0]
-    top_road = filtered_df['Road_Type'].mode()[0]
-    col1.metric("Most Common Severity", top_severity, border=True)
-    col2.metric("Common Weather", top_weather, border=True)
-    col3.metric("Frequent Road Type", top_road, border=True)
-
-    st.markdown("### Summary")
-    st.info("""
-    Accident patterns vary significantly across occupational, educational, and environmental factors. 
-    Riders from certain occupations or lower education levels tend to experience more severe accidents, 
-    possibly due to riskier job exposure or lower safety awareness. Road and weather conditions also 
-    strongly influence accident frequency, especially on wet or uneven surfaces. Understanding these 
-    categorical trends allows targeted interventions to improve safety.
-    """)
-    st.markdown("---")
-
-    # --- OCCUPATION ---
-    agg_occ = (
-        filtered_df.groupby(["Biker_Occupation", "Accident_Severity"])
-        .size()
-        .reset_index(name="Count")
-    )
-    fig4 = px.bar(
-        agg_occ,
-        x="Biker_Occupation",
-        y="Count",
-        color="Accident_Severity",
-        title="Accident Severity by Biker Occupation",
-        color_discrete_sequence=color_theme,
-        barmode="group"
-    )
-
-    # --- EDUCATION ---
-    agg_edu = (
-        filtered_df.groupby(["Biker_Education_Level", "Accident_Severity"])
-        .size()
-        .reset_index(name="Count")
-    )
-    fig5 = px.bar(
-        agg_edu,
-        x="Biker_Education_Level",
-        y="Count",
-        color="Accident_Severity",
-        title="Accident Severity by Biker Education Level",
-        color_discrete_sequence=color_theme,
-        barmode="group"
-    )
-
-    col1, col2 = st.columns(2)
-    with col1:
-        st.plotly_chart(fig4, use_container_width=True)
-        st.info("""
-        *Interpretation:* Riders in delivery or transport occupations report higher accident severity, likely due to increased road exposure.
-        """)
-    with col2:
-        st.plotly_chart(fig5, use_container_width=True)
-        st.info("""
-        *Interpretation:* Bikers with higher education levels show lower accident severity, reflecting better safety awareness and risk management.
-        """)
-
-    st.markdown("---")
-    st.subheader("Other Influencing Factors")
-
-    # --- LOOP FOR OTHER CATEGORICAL VARIABLES ---
-    categorical_cols = [
-        "Wearing_Helmet", "Motorcycle_Ownership", "Valid_Driving_License",
-        "Bike_Condition", "Road_Type", "Road_condition", "Weather",
-        "Time_of_Day", "Traffic_Density", "Biker_Alcohol"
-    ]
-
-    # Consistent color mapping
-    severity_colors_map = {
-    "No Accident": "#A8E6CF",       # Pastel Green
-    "Moderate Accident": "#FFF3B0", # Pastel Yellow
-    "Severe Accident": "#FFD3B6"    # Pastel Orange
-     }
-
-    # Ensure categorical order for plotting
-    filtered_df["Accident_Severity"] = pd.Categorical(
-    filtered_df["Accident_Severity"], categories=severity_order, ordered=True
-    )
-
-    # Display 2 charts per row
-    for i in range(0, len(categorical_cols), 2):
-        col1, col2 = st.columns(2)
-
-        for j, col in enumerate(categorical_cols[i:i+2]):
-            
-            agg_df = (
-                filtered_df.groupby([col, "Accident_Severity"])
-                .size()
-                .reset_index(name="Count")
-                .sort_values("Count", ascending=False)
-            )
-
-            fig = px.bar(
-                agg_df,
-                x=col,
-                y="Count",
-                color="Accident_Severity",
-                title=f"Accident Severity by {col.replace('_', ' ')}",
-                color_discrete_map=severity_colors_map,
-                category_orders={"Accident_Severity": severity_order},
-                barmode="group"
-            )
-
-            # Force bars to use fully solid fill (no shading or transparency)
-            fig.for_each_trace(lambda t: t.update(marker=dict(line=dict(width=0), opacity=1.0)))
-
-            # Remove the default Plotly gradient shading
-            fig.update_traces(marker_coloraxis=None)
-
-            # Force consistent flat color rendering
-            fig.update_layout(
-                template=None,  # remove plotly's default style template
-                plot_bgcolor="white",
-                paper_bgcolor="white",
-                bargap=0.25,
-            )
-
-            if j == 0:
-                with col1:
-                    st.plotly_chart(fig, use_container_width=True)
-                    st.info(f"""*Interpretation:* The chart shows how {col.replace('_',' ').lower()} affects accident severity, where imbalance across categories indicates risk-prone conditions.""")
-            else:
-                with col2:
-                    st.plotly_chart(fig, use_container_width=True)
-                    st.info(f"""*Interpretation:* The chart shows how {col.replace('_',' ').lower()} affects accident severity, where imbalance across categories indicates risk-prone conditions.""")
-
-
-    st.markdown("#### 💬 Observation")
-    st.success("""
-    The grouped bar charts reveal that higher education correlates with fewer severe accidents, 
-    while adverse weather and poor road types contribute to higher accident counts. 
-    These findings support public safety campaigns focusing on awareness and road infrastructure improvements.
-    """)
 
 
 # ============ TAB 3: NUMERICAL ANALYSIS ============
@@ -591,177 +490,6 @@ with tab4:
         sns.scatterplot(x='Daily_Travel_Distance', y='Biker_Age', data=filtered_df, alpha=0.6)
         show_plot('Biker Age vs Daily Travel Distance', 'Daily Travel Distance', 'Biker Age')
         st.success("**Interpretation:** Younger bikers show higher accident severity, suggesting overconfidence and less risk awareness.")
-
-    st.markdown("#### 💬 Observation")
-    st.success("""
-    The violin plots highlight that severe accidents are concentrated among high-speed riders. 
-    Correlations between experience and severity indicate that experienced riders adapt speed 
-    better to conditions, validating behavioral safety theories.
-    """)
-
-# ---- Tab 5: Correlation Insights ----
-with tab5:
-    st.subheader("Correlation Insights")
-    st.markdown("Explore feature interrelationships through correlation heatmaps.")
-
-    numeric_cols = df.select_dtypes(include=['int', 'float']).columns
-    corr = df[numeric_cols].corr()
-
-    col1, col2 = st.columns(2)
-    top_corr = corr.unstack().sort_values(ascending=False)
-    col1.metric("Highest Positive Correlation", top_corr.index[1][0], f"{top_corr.iloc[1]:.2f}", border=True)
-    col2.metric("Lowest Negative Correlation", top_corr.index[-1][0], f"{top_corr.iloc[-1]:.2f}", border=True)
-    
-    st.markdown("### Summary")
-    st.info("""
-    The correlation matrix measures the strength of relationships among numeric attributes. 
-    Higher correlations between bike speed, experience, and accident severity imply that 
-    behavioral and skill factors are tightly coupled. Weak negative correlations between 
-    experience and alcohol use reflect safer patterns among trained riders.
-    """)
-    st.markdown("---")
-
-    fig = px.imshow(corr, text_auto=True, title="Correlation Heatmap", aspect="auto", color_continuous_scale="Tealrose")
-    st.plotly_chart(fig, use_container_width=True)
-    st.info("""
-    **Interpretation:** Bike speed and accident severity exhibit a strong positive correlation, confirming kinetic energy’s contribution to impact intensity.
-    """)
-
-    st.markdown("#### Interpretation")
-    st.success("""
-    Strong positive correlations between speed and accident severity confirm mechanical energy’s 
-    role in crash outcomes. Weak or negative correlations suggest factors like experience help 
-    moderate these risks.
-    """)
-    
-    st.markdown("#### 💬 Observation")
-    st.info("Higher correlations indicate stronger relationships between factors such as speed, experience, and accident severity.")
-
-# ---- Tab 6: Riding Behavior Insights ----
-with tab6:
-    st.subheader("🏍️ Riding Behavior Insights")
-    st.markdown("Analyze rider behavior patterns and how habits influence accident severity.")
-
-    # Calculate percentages
-    helmet = (filtered_df['Wearing_Helmet'].value_counts(normalize=True).get('Yes', 0) * 100)
-    alcohol = (filtered_df['Biker_Alcohol'].value_counts(normalize=True).get('Yes', 0) * 100)
-    talk = (filtered_df['Talk_While_Riding'].value_counts(normalize=True).get('Yes', 0) * 100)
-    smoke = (filtered_df['Smoke_While_Riding'].value_counts(normalize=True).get('Yes', 0) * 100)
-
-    # Styled metric summary using HTML/CSS
-    st.markdown("""
-    <style>
-        .metric-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-        .metric-card {
-            flex: 1;
-            background: #f9f9f9;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-            text-align: center;
-            transition: all 0.2s ease-in-out;
-        }
-        .metric-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-        }
-        .metric-title {
-            font-size: 0.9rem;
-            color: #555;
-            margin-bottom: 0.4rem;
-        }
-        .metric-value {
-            font-size: 1.6rem;
-            font-weight: bold;
-        }
-        .good { color: #2e7d32; }      /* Green for positive behavior */
-        .warning { color: #f57c00; }   /* Orange for risk behaviors */
-        .bad { color: #c62828; }       /* Red for negative behaviors */
-    </style>
-    """, unsafe_allow_html=True)
-
-    # Display metric boxes
-    st.markdown(f"""
-    <div class="metric-container">
-        <div class="metric-card">
-            <div class="metric-title">Helmet Usage</div>
-            <div class="metric-value {'good' if helmet > 70 else 'warning'}">{helmet:.1f}%</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-title">Alcohol Usage</div>
-            <div class="metric-value {'bad' if alcohol > 10 else 'good'}">{alcohol:.1f}%</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-title">Talk While Riding</div>
-            <div class="metric-value {'bad' if talk > 20 else 'good'}">{talk:.1f}%</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-title">Smoke While Riding</div>
-            <div class="metric-value {'bad' if smoke > 20 else 'good'}">{smoke:.1f}%</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("### Summary")
-    st.info("""
-    Behavior-based insights demonstrate how individual actions contribute to safety outcomes. 
-    Helmet usage is high but inconsistent across demographics, while alcohol and distraction behaviors 
-    (talking or smoking) remain significant risk enhancers. These findings reinforce behavioral safety 
-    as a cornerstone of accident prevention.
-    """)
-    st.markdown("---")
-
-    # Define behavior columns and color palette
-    behavior_cols = ["Talk_While_Riding", "Smoke_While_Riding", "Wearing_Helmet", "Biker_Alcohol"]
-    color_theme = px.colors.qualitative.Pastel
-
-    # Professional bar charts
-    for col in behavior_cols:
-        if col in filtered_df.columns:
-            data = filtered_df[col].value_counts().reset_index()
-            data.columns = [col, "Count"]
-
-            fig = px.bar(
-                data,
-                x=col,
-                y="Count",
-                text="Count",
-                color=col,
-                color_discrete_sequence=color_theme,
-                title=f"{col.replace('_', ' ')} Distribution"
-            )
-
-            fig.update_traces(textposition="outside")
-            fig.update_layout(
-                showlegend=False,
-                xaxis_title=None,
-                yaxis_title="Count",
-                title_x=0.0,
-                title_y=0.95,
-                title_font=dict(size=16, family="Arial", color="black"),
-                plot_bgcolor="rgba(0,0,0,0)",
-                paper_bgcolor="rgba(0,0,0,0)",
-                margin=dict(t=40, b=40),
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
-            st.success(f"""
-            **Interpretation:** The {col.replace('_',' ').lower()} pattern reveals behavioral influence on safety outcomes.
-            Higher counts in risky behaviors (e.g., alcohol or distraction) align with increased accident rates.
-            """)
-
-    st.markdown("#### 💬 Observation")
-    st.success("""
-    Riders who talk or smoke while riding show higher accident frequencies, validating the role of 
-    attention in safety. Helmet use correlates inversely with severe accidents, supporting mandatory 
-    safety gear enforcement.
-    """)
 
 # --- FOOTER ---
 st.markdown("---")
