@@ -168,6 +168,18 @@ df["Study_Hours_Numeric"] = df["Hours_Study_per_Week"].map(study_hours_map)
 
 df_numeric = df.copy()
 
+academic_map = {
+    "Poor": 1,
+    "Below Average": 2,
+    "Average": 3,
+    "Good": 4,
+    "Very Good": 5,
+    "Excellent": 6
+}
+filtered_df["General_Academic_Performance_Numeric"] = (
+    filtered_df["General_Academic_Performance"]
+    .map(academic_map)
+)
 
 df_numeric["Academic_Stress_Index"] = df_numeric[
     [
