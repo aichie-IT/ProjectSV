@@ -217,7 +217,7 @@ mental_cols = [
 ]
 
 for col in mental_cols:
-    df_numeric[col] = (
+    df_numeric[col + "_Numeric"] = (
         df_numeric[col]
         .astype(str)
         .str.split(" / ").str[0]
