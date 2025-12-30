@@ -127,6 +127,59 @@ likert_map = {
     "Strongly Agree": 5
 }
 
+# --- Numeric encoding ---
+df_numeric = df.copy()
+
+# Likert (1–5)
+for col in LIKERT_COLS:
+    df_numeric[col + "_Numeric"] = (
+        df_numeric[col]
+        .astype(str)
+        .str.strip()
+        .map(likert_map)
+    )
+
+# Frequency (1–4)
+for col in FREQ_COLS:
+    df_numeric[col + "_Numeric"] = (
+        df_numeric[col]
+        .astype(str)
+        .str.strip()
+        .map(FREQ_MAP)
+    )
+
+
+LIKERT_COLS = [
+    'Assignments_Stress',
+    'Academic_Workload_Anxiety',
+    'Difficulty_Sleeping_University_Pressure',
+    'Friends_Family_Support',
+    'Manage_Emotion_Stressful_Periods',
+    'Social_Media_Relaxation',
+    'Emotional_Connection_Social_Media',
+    'Social_Media_Daily_Routine',
+    'Social_Media_Waste_Time',
+    'Sleep_Affected_By_Social_Media',
+    'Studies_Affected_By_Social_Media',
+    'Seek_Help_Online_When_Stress',
+    'Social_Media_Positive_Impact_on_Wellbeing',
+    'Social_Media_Negative_Impact_on_Wellbeing'
+]
+
+FREQ_MAP = {
+    "Never": 1,
+    "Rarely": 2,
+    "Sometimes": 3,
+    "Often": 4
+}
+
+FREQ_COLS = [
+    'Mental_Health_Info_Through_Internet',
+    'Use_Online_Communities_for_Support',
+    'Across_Upsetting_Content_Online'
+]
+
+
 mental_cols = [
     "Assignments_Stress",
     "Academic_Workload_Anxiety",
