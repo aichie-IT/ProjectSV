@@ -373,8 +373,8 @@ col1, col2, col3, col4 = st.columns(4)
 if not filtered_df.empty:
     col1.metric("Total Records", f"{len(filtered_df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
-    col3.metric("Avg. Positive Impact", f"{filtered_df['Social_Media_Positive_Impact_on_Wellbeing'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
-    col4.metric("Avg. Negative Impact", f"{filtered_df['Social_Media_Negative_Impact_on_Wellbeing'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
+    col3.metric("Avg. Positive Impact", f"{filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
+    col4.metric("Avg. Negative Impact", f"{filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
 else:
     col1.metric("Total Records", "0", help="No data available")
     col2.metric("Avg. Age", "N/A", help="No data available")
@@ -662,10 +662,10 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Avg. Stress Level", f"{filtered_df['Assignments_Stress'].map(likert_map).mean():.2f}", border=True)
-        col2.metric("Sleep Affected (%)", f"{(filtered_df['Sleep_Affected_By_Social_Media'].map(likert_map).mean()/5*100):.1f}%", border=True)
-        col3.metric("Emotional Attachment", f"{filtered_df['Emotional_Connection_Social_Media'].map(likert_map).mean():.2f}", border=True)
-        col4.metric("Online Help Seeking (%)", f"{(filtered_df['Seek_Help_Online_When_Stress'].map(likert_map).mean()/5*100):.1f}%", border=True)
+        col1.metric("Avg. Stress Level", f"{filtered_numeric['Assignments_Stress_Numeric'].mean():.2f}", border=True)
+        col2.metric("Sleep Affected (%)", f"{(filtered_numeric['Sleep_Affected_By_Social_Media_Numeric'].mean()/5*100):.1f}%", border=True)
+        col3.metric("Emotional Attachment", f"{filtered_numeric['Emotional_Connection_Social_Media_Numeric'].mean():.2f}", border=True)
+        col4.metric("Online Help Seeking (%)", f"{(filtered_numeric['Seek_Help_Online_When_Stress_Numeric'].mean()/5*100):.1f}%", border=True)
 
         # Scientific Summary
         st.markdown("### Summary")
@@ -759,7 +759,7 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("SM Hours ↔ Stress", f"{filtered_df[['Social_Media_Hours_Numeric','Assignments_Stress']].corr().iloc[0,1]:.2f}", border=True)
+        col1.metric("SM Hours ↔ Stress", f"{filtered_numeric[['Social_Media_Hours_Numeric', 'Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
         col2.metric("Study Hours ↔ Stress", f"{filtered_df[['Study_Hours_Numeric','Assignments_Stress']].corr().iloc[0,1]:.2f}", border=True)
         impact_gap = (
             filtered_df['Social_Media_Positive_Impact_on_Wellbeing'].map(likert_map).mean()
