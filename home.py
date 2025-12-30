@@ -311,8 +311,6 @@ with st.sidebar:
             (filtered_df["Age"] <= max_age)
         ]
         filtered_numeric = filtered_numeric.loc[filtered_df.index]
-        # Create numeric version of filtered data
-        filtered_numeric = df_numeric.loc[filtered_df.index].copy()
 
     # --- Reset and Download Buttons ---
     col1, col2 = st.columns(2)
