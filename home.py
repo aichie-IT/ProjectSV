@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
@@ -92,7 +93,7 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
-# Drop Irrelevent Columns
+# Drop Irrelevant Columns
 cols_to_drop = [
     "Timestamp",
     "Type_of_Online_Content_Affects",
@@ -145,9 +146,6 @@ freq_map = {
     "Often": 4
 }
 
-# --- Numeric encoding ---
-df_numeric = df.copy()
-
 # Likert (1–5)
 for col in LIKERT_COLS:
     df_numeric[col + "_Numeric"] = (
@@ -168,6 +166,28 @@ for col in FREQ_COLS:
 
 # Fix encoding issues
 df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
+
+# Study hours (numeric)
+study_hours_map = {
+    "Less than 5 hours": 2.5,
+    "5 to 10 hours": 7.5,
+    "11 to 15 hours": 13,
+    "16 to 20 hours": 18,
+    "More than 20 hours": 22.5
+}
+
+df["Study_Hours_Numeric"] = df["Hours_Study_per_Week"].map(study_hours_map)
+
+# Social media hours (numeric)
+social_media_hours_map = {
+    "Less than 1 hour per day": 0.5,
+    "1 to 2 hours per day": 1.5,
+    "3 to 4 hours per day": 3.5,
+    "5 to 6 hours per day": 5.5,
+    "More than 6 hours per day": 7
+}
+
+df["Social_Media_Hours_Numeric"] = df["Social_Media_Use_Frequency"].map(social_media_hours_map)
 
 # ----- CATEGORICAL ORDER -----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
@@ -190,7 +210,6 @@ mental_cols = [
     "Studies_Affected_By_Social_Media"
 ]
 
-df_numeric = df.copy()
 for col in mental_cols:
     df_numeric[col] = (
         df_numeric[col]
@@ -198,30 +217,6 @@ for col in mental_cols:
         .str.split(" / ").str[0]
         .map(likert_map)
     )
-
-# Social media hours (numeric)
-social_media_hours_map = {
-    "Less than 1 hour per day": 0.5,
-    "1 to 2 hours per day": 1.5,
-    "3 to 4 hours per day": 3.5,
-    "5 to 6 hours per day": 5.5,
-    "More than 6 hours per day": 7
-}
-
-df["Social_Media_Hours_Numeric"] = df["Social_Media_Use_Frequency"].map(social_media_hours_map)
-
-# Study hours (numeric)
-study_hours_map = {
-    "Less than 5 hours": 2.5,
-    "5 to 10 hours": 7.5,
-    "11 to 15 hours": 13,
-    "16 to 20 hours": 18,
-    "More than 20 hours": 22.5
-}
-
-df["Study_Hours_Numeric"] = df["Hours_Study_per_Week"].map(study_hours_map)
-
-df_numeric = df.copy()
 
 academic_map = {
     "Poor": 1,
@@ -249,6 +244,9 @@ filtered_numeric["Academic_Stress_Index"] = filtered_numeric[
         "Difficulty_Sleeping_University_Pressure_Numeric"
     ]
 ].mean(axis=1)
+
+# --- Numeric encoding ---
+df_numeric = df.copy()
 
 # ====== SIDEBAR ======
 with st.sidebar:
@@ -428,7 +426,7 @@ with tab1:
         col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
         col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
         col3.metric("Most Common Social Media Usage", filtered_df['Social_Media_Use_Frequency'].mode()[0], border=True)
-        col4.metric("Avg. Study Hours / Week", f"{filtered_df['Study_Hours_Numeric'].mean():.1f}", border=True)
+        col4.metric("Avg. Study Hours / Week", f"{filtered_numeric['Study_Hours_Numeric'].mean():.1f}", border=True)
         
         # Scientific Summary
         st.markdown("### Summary")
@@ -559,7 +557,7 @@ with tab1:
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Study Impact Reported (%)", f"{(filtered_df['Studies_Affected_By_Social_Media'].map(likert_map).mean()/5*100):.1f}%", border=True)
         col2.metric("Avg. Academic Performance", f"{filtered_df['General_Academic_Performance_Numeric'].mean():.2f}", border=True)
-        high_users = filtered_df['Social_Media_Use_Frequency'].isin(['5–6 hrs', '> 6 hrs']).mean() * 100
+        high_users = filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100
         col3.metric("High Social Media Users (%)", f"{high_users:.1f}%", border=True)
         col4.metric("Avg. Weekly Study Hours", f"{filtered_df['Study_Hours_Numeric'].mean():.1f}", border=True)
 
