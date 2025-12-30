@@ -202,9 +202,6 @@ df_numeric["General_Academic_Performance_Numeric"] = (
     df_numeric["General_Academic_Performance"].astype(str).str.strip().map(academic_map)
 )
 
-# Create numeric version of filtered data
-filtered_numeric = df_numeric.loc[filtered_df.index].copy()
-
 filtered_numeric["Academic_Stress_Index"] = filtered_numeric[
     [
         "Assignments_Stress_Numeric",
