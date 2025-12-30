@@ -25,121 +25,6 @@ def load_data():
 
 df = load_data()
 
-# Clean Column Names
-df.columns = df.columns.str.strip()
-
-# Rename Columns
-df = df.rename(columns={
-    "Age / Umur:": "Age",
-    "Gender / Jantina:": "Gender",
-    "Race / Bangsa:": "Race",
-    "Year of Study / Tahun Belajar:": "Year_of_Study",
-    "Programme of Study / Program Pembelajaran (cth., SST):": "Programme_of_Study",
-    "Current living situation / Keadaan hidup sekarang:": "Current_Living_Situation",
-    "Employment Status / Status Pekerjaan:": "Employment_Status",
-    "Relationship Status / Status Perhubungan:": "Relationship_Status",
-    "How would you describe your general academic performance? / Bagaimanakah anda menerangkan prestasi akademik umum anda?": "General_Academic_Performance",
-    "How many hours do you study per week (outside class)? / Berapa jam anda belajar setiap minggu (di luar kelas)?": "Hours_Study_per_Week",
-    "How often do you use social media? / Berapa kerap anda menggunakan media sosial?": "Social_Media_Use_Frequency",
-    "Platforms you use most often (select all) / Platform yang paling kerap anda gunakan (pilih semua):": "Platforms_Most_Often_Used",
-    "I have been feeling stressed or overwhelmed with assignments. / Saya telah berasa tertekan atau terbeban dengan tugasan.": "Assignments_Stress",
-    "I often feel anxious about my academic workload. / Saya sering berasa bimbang tentang beban kerja akademik saya.": "Academic_Workload_Anxiety",
-    "I have difficulty sleeping due to university-related pressure. / Saya sukar tidur kerana tekanan berkaitan universiti.": "Difficulty_Sleeping_University_Pressure",
-    "I feel supported by friends or family when I am stressed. / Saya berasa disokong oleh rakan atau keluarga apabila saya tertekan.": "Friends_Family_Support",
-    "I can manage my emotions well during stressful periods. / Saya boleh menguruskan emosi saya dengan baik semasa tempoh tekanan.": "Manage_Emotion_Stressful_Periods",
-    "I use social media to relax or escape from academic stress. / Saya menggunakan media sosial untuk berehat atau melarikan diri daripada tekanan akademik.": "Social_Media_Relaxation",
-    "I feel emotionally connected to my social media accounts. / Saya berasa tersambung secara emosi dengan akaun media sosial saya.": "Emotional_Connection_Social_Media",
-    "Using social media is an important part of my daily routine. / Menggunakan media sosial adalah bahagian penting dalam rutin harian saya.": "Social_Media_Daily_Routine",
-    "I sometimes lose track of time when using social media. / Saya kadang-kadang terlepas masa apabila menggunakan media sosial.": "Social_Media_Waste_Time",
-    "Social media has affected my sleep (sleeping late or difficulty sleeping). / Media sosial telah menjejaskan tidur saya (tidur lewat atau sukar tidur).": "Sleep_Affected_By_Social_Media",
-    "Social media affects my ability to concentrate on studies. / Media sosial menjejaskan keupayaan saya untuk menumpukan perhatian kepada pelajaran.": "Studies_Affected_By_Social_Media",
-    "I use the Internet to look for mental health information (e.g., coping tips, stress-relief content). / Saya menggunakan Internet untuk mencari maklumat kesihatan mental (cth., petua mengatasi tekanan, kandungan melegakan tekanan).": "Mental_Health_Info_Through_Internet",
-    "I have come across upsetting or disturbing content online. / Saya telah menemui kandungan yang menjengkelkan atau mengganggu dalam talian.": "Across_Upsetting_Content_Online",
-    "When I feel stressed, I prefer to seek help online rather than talk to someone in person. / Apabila saya berasa tertekan, saya lebih suka mencari bantuan dalam talian daripada bercakap dengan seseorang secara peribadi.": "Seek_Help_Online_When_Stress",
-    "I know where to find reliable mental health information online. / Saya tahu di mana untuk mencari maklumat kesihatan mental yang boleh dipercayai dalam talian.": "Find_Mental_Health_Info_Online",
-    "I follow accounts that post motivational or mental health content. / Saya mengikuti akaun yang menyiarkan kandungan motivasi atau kesihatan mental.": "Follow_Motivational_Mental_Health_Content",
-    "I use online communities for academic or emotional support. / Saya menggunakan komuniti dalam talian untuk sokongan akademik atau emosi.": "Use_Online_Communities_for_Support",
-    "Social media has a generally positive impact on my wellbeing. / Media sosial secara amnya mempunyai kesan positif terhadap kesejahteraan saya.": "Social_Media_Positive_Impact_on_Wellbeing",
-    "Social media has a generally negative impact on my wellbeing. / Media sosial secara amnya mempunyai kesan negatif terhadap kesejahteraan saya.": "Social_Media_Negative_Impact_on_Wellbeing",
-    "Do you think universities should provide more online mental health resources? / Adakah anda fikir universiti harus menyediakan lebih banyak sumber kesihatan mental dalam talian?": "Do you think universities should provide more online mental health resources?",
-    "What type of online content affects you the most (positive or negative)? / Apakah jenis kandungan dalam talian yang paling mempengaruhi anda (positif atau negatif)?": "Type_of_Online_Content_Affects",
-    "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
-})
-
-# Drop Irrelevent Columns
-cols_to_drop = [
-    "Timestamp",
-    "Type_of_Online_Content_Affects",
-    "Universities_Support_Actions"
-]
-
-df = df.drop(columns=cols_to_drop, errors="ignore")
-
-# ================= SCALE DEFINITIONS =================
-
-# Likert-scale columns (1–5)
-LIKERT_COLS = [
-    'Assignments_Stress',
-    'Academic_Workload_Anxiety',
-    'Difficulty_Sleeping_University_Pressure',
-    'Friends_Family_Support',
-    'Manage_Emotion_Stressful_Periods',
-    'Social_Media_Relaxation',
-    'Emotional_Connection_Social_Media',
-    'Social_Media_Daily_Routine',
-    'Social_Media_Waste_Time',
-    'Sleep_Affected_By_Social_Media',
-    'Studies_Affected_By_Social_Media',
-    'Seek_Help_Online_When_Stress',
-    'Social_Media_Positive_Impact_on_Wellbeing',
-    'Social_Media_Negative_Impact_on_Wellbeing'
-]
-
-# Frequency-scale columns (1–4)
-FREQ_COLS = [
-    'Mental_Health_Info_Through_Internet',
-    'Use_Online_Communities_for_Support',
-    'Across_Upsetting_Content_Online'
-]
-
-# Likert mapping
-likert_map = {
-    "Strongly Disagree": 1,
-    "Disagree": 2,
-    "Neutral": 3,
-    "Agree": 4,
-    "Strongly Agree": 5
-}
-
-# Frequency mapping
-freq_map = {
-    "Never": 1,
-    "Rarely": 2,
-    "Sometimes": 3,
-    "Often": 4
-}
-
-# --- Numeric encoding ---
-df_numeric = df.copy()
-
-# Likert (1–5)
-for col in LIKERT_COLS:
-    df_numeric[col + "_Numeric"] = (
-        df_numeric[col]
-        .astype(str)
-        .str.strip()
-        .map(likert_map)
-    )
-
-# Frequency (1–4)
-for col in FREQ_COLS:
-    df_numeric[col + "_Numeric"] = (
-        df_numeric[col]
-        .astype(str)
-        .str.strip()
-        .map(freq_map)
-    )
-
 # Fix encoding issues
 df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
 
@@ -155,6 +40,15 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
     ],
     ordered=True
 )
+
+# ----- LIKERT MAPPING -----
+likert_map = {
+    "Strongly Disagree": 1,
+    "Disagree": 2,
+    "Neutral": 3,
+    "Agree": 4,
+    "Strongly Agree": 5
+}
 
 mental_cols = [
     "Assignments_Stress",
@@ -173,18 +67,7 @@ for col in mental_cols:
         .map(likert_map)
     )
 
-# Social media hours (numeric)
-social_media_hours_map = {
-    "Less than 1 hour per day": 0.5,
-    "1 to 2 hours per day": 1.5,
-    "3 to 4 hours per day": 3.5,
-    "5 to 6 hours per day": 5.5,
-    "More than 6 hours per day": 7
-}
-
-df["Social_Media_Hours_Numeric"] = df["Social_Media_Use_Frequency"].map(social_media_hours_map)
-
-# Study hours (numeric)
+# ----- DERIVED NUMERIC COLUMNS (FIXED) -----
 study_hours_map = {
     "Less than 5 hours": 2.5,
     "5 to 10 hours": 7.5,
@@ -192,35 +75,22 @@ study_hours_map = {
     "16 to 20 hours": 18,
     "More than 20 hours": 22.5
 }
+df_numeric["Social_Media_Use_Frequency"] = df_numeric["Social_Media_Use_Frequency"].map(study_hours_map)
 
-df["Study_Hours_Numeric"] = df["Hours_Study_per_Week"].map(study_hours_map)
-
-df_numeric = df.copy()
-
-academic_map = {
-    "Poor": 1,
-    "Below Average": 2,
-    "Average": 3,
-    "Good": 4,
-    "Very Good": 5,
-    "Excellent": 6
+social_media_hours_map = {
+    "Less than 1 hour per day": 0.5,
+    "1 to 2 hours per day": 1.5,
+    "3 to 4 hours per day": 3.5,
+    "5 to 6 hours per day": 5.5,
+    "More than 6 hours per day": 7
 }
+df_numeric["Hours_Study_per_Week"] = df_numeric["Hours_Study_per_Week"].map(social_media_hours_map)
 
-df["General_Academic_Performance_Numeric"] = (
-    df["General_Academic_Performance"]
-    .astype(str)
-    .str.strip()
-    .map(academic_map)
-)
-
-# Create numeric version of filtered data
-filtered_numeric = df_numeric.loc[filtered_df.index].copy()
-
-filtered_numeric["Academic_Stress_Index"] = filtered_numeric[
+df_numeric["Academic_Stress_Index"] = df_numeric[
     [
-        "Assignments_Stress_Numeric",
-        "Academic_Workload_Anxiety_Numeric",
-        "Difficulty_Sleeping_University_Pressure_Numeric"
+        "Assignments_Stress",
+        "Academic_Workload_Anxiety",
+        "Difficulty_Sleeping_University_Pressure"
     ]
 ].mean(axis=1)
 
@@ -352,8 +222,8 @@ col1, col2, col3, col4 = st.columns(4)
 if not filtered_df.empty:
     col1.metric("Total Records", f"{len(filtered_df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
-    col3.metric("Avg. Positive Impact", f"{filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
-    col4.metric("Avg. Negative Impact", f"{filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
+    col3.metric("Avg. Positive Impact", f"{filtered_df['Social_Media_Positive_Impact_on_Wellbeing'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
+    col4.metric("Avg. Negative Impact", f"{filtered_df['Social_Media_Negative_Impact_on_Wellbeing'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
 else:
     col1.metric("Total Records", "0", help="No data available")
     col2.metric("Avg. Age", "N/A", help="No data available")
@@ -472,9 +342,10 @@ with tab1:
 
         # Histogram
         with col3:
+            st.subheader("Perception of Wasting Time on Social Media")
+
             fig = px.histogram(
                 filtered_df,
-                title="Perception of Wasting Time on Social Media",
                 x="Social_Media_Waste_Time",
                 color_discrete_sequence=COLOR_SEQ,
                 category_orders={"Social_Media_Waste_Time": [
@@ -532,7 +403,7 @@ with tab1:
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Study Impact Reported (%)", f"{(filtered_df['Studies_Affected_By_Social_Media'].map(likert_map).mean()/5*100):.1f}%", border=True)
-        col2.metric("Avg. Academic Performance", f"{filtered_df['General_Academic_Performance_Numeric'].mean():.2f}", border=True)
+        col2.metric("Avg. Academic Performance", f"{filtered_df['General_Academic_Performance'].mean():.2f}", border=True)
         high_users = filtered_df['Social_Media_Use_Frequency'].isin(['5–6 hrs', '> 6 hrs']).mean() * 100
         col3.metric("High Social Media Users (%)", f"{high_users:.1f}%", border=True)
         col4.metric("Avg. Weekly Study Hours", f"{filtered_df['Study_Hours_Numeric'].mean():.1f}", border=True)
@@ -641,10 +512,10 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Avg. Stress Level", f"{filtered_numeric['Assignments_Stress_Numeric'].mean():.2f}", border=True)
-        col2.metric("Sleep Affected (%)", f"{(filtered_numeric['Sleep_Affected_By_Social_Media_Numeric'].mean()/5*100):.1f}%", border=True)
-        col3.metric("Emotional Attachment", f"{filtered_numeric['Emotional_Connection_Social_Media_Numeric'].mean():.2f}", border=True)
-        col4.metric("Online Help Seeking (%)", f"{(filtered_numeric['Seek_Help_Online_When_Stress_Numeric'].mean()/5*100):.1f}%", border=True)
+        col1.metric("Avg. Stress Level", f"{filtered_df['Assignments_Stress'].map(likert_map).mean():.2f}", border=True)
+        col2.metric("Sleep Affected (%)", f"{(filtered_df['Sleep_Affected_By_Social_Media'].map(likert_map).mean()/5*100):.1f}%", border=True)
+        col3.metric("Emotional Attachment", f"{filtered_df['Emotional_Connection_Social_Media'].map(likert_map).mean():.2f}", border=True)
+        col4.metric("Online Help Seeking (%)", f"{(filtered_df['Seek_Help_Online_When_Stress'].map(likert_map).mean()/5*100):.1f}%", border=True)
 
         # Scientific Summary
         st.markdown("### Summary")
@@ -738,7 +609,7 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("SM Hours ↔ Stress", f"{filtered_numeric[['Social_Media_Hours_Numeric', 'Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
+        col1.metric("SM Hours ↔ Stress", f"{filtered_df[['Social_Media_Hours_Numeric','Assignments_Stress']].corr().iloc[0,1]:.2f}", border=True)
         col2.metric("Study Hours ↔ Stress", f"{filtered_df[['Study_Hours_Numeric','Assignments_Stress']].corr().iloc[0,1]:.2f}", border=True)
         impact_gap = (
             filtered_df['Social_Media_Positive_Impact_on_Wellbeing'].map(likert_map).mean()
@@ -832,7 +703,7 @@ with tab1:
     which correlates with lower accident severity. Riders with valid licenses also
     exhibit safer driving trends, suggesting that training and enforcement play key roles.
     """)
-    
+
 # ============= MEMBER LAIN PUNYA ================
 
 # ============ TAB 2: ACCIDENT FACTORS ============
