@@ -217,7 +217,7 @@ mental_cols = [
 ]
 
 for col in mental_cols:
-    df_numeric[col + "_Numeric"] = (
+    df_numeric[col] = (
         df_numeric[col]
         .astype(str)
         .str.split(" / ").str[0]
@@ -231,9 +231,9 @@ df_numeric["General_Academic_Performance_Numeric"] = (
 
 filtered_numeric["Academic_Stress_Index"] = filtered_numeric[
     [
-        "Assignments_Stress_Numeric",
-        "Academic_Workload_Anxiety_Numeric",
-        "Difficulty_Sleeping_University_Pressure_Numeric"
+        "Assignments_Stress",
+        "Academic_Workload_Anxiety",
+        "Difficulty_Sleeping_University_Pressure"
     ]
 ].mean(axis=1)
 
