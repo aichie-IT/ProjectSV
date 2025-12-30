@@ -36,28 +36,25 @@ st.write(
     """
 )
 
-
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Internet Use and Mental Health Dashboard", page_icon="🧠", layout="wide")
-
+st.set_page_config(
+    page_title="Internet Use and Mental Health Dashboard",
+    page_icon="🧠",
+    layout="wide"
+)
 
 # --- LOAD DATA ---
 @st.cache_data
 def load_data():
-    url = "https://raw.githubusercontent.com/aichie-IT/ProjectSV/refs/heads/main/exploring_internet_use.csv"
-    df = pd.read_csv(url)
-    return df
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv"
+    return pd.read_csv(url)
 
-df = load_data(https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv)\
+df = load_data()
 
 # Fix encoding issues
 df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
 
-# Standardize ranges
-for col in ["Social_Media_Use_Frequency", "Hours_Study_per_Week"]:
-    df[col] = df[col].astype(str).str.replace("-", " to ", regex=False).str.strip()
-    
-# Categorical ordering
+# ----- CATEGORICAL ORDER -----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
     categories=[
@@ -70,7 +67,7 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
     ordered=True
 )
 
-# Numeric transformations
+# ----- LIKERT MAPPING -----
 likert_map = {
     "Strongly Disagree": 1,
     "Disagree": 2,
@@ -80,15 +77,14 @@ likert_map = {
 }
 
 mental_cols = [
-    'Assignments_Stress',
-    'Academic_Workload_Anxiety',
-    'Difficulty_Sleeping_University_Pressure',
-    'Sleep_Affected_By_Social_Media',
-    'Studies_Affected_By_Social_Media'
+    "Assignments_Stress",
+    "Academic_Workload_Anxiety",
+    "Difficulty_Sleeping_University_Pressure",
+    "Sleep_Affected_By_Social_Media",
+    "Studies_Affected_By_Social_Media"
 ]
 
 df_numeric = df.copy()
-
 for col in mental_cols:
     df_numeric[col] = (
         df_numeric[col]
@@ -97,7 +93,32 @@ for col in mental_cols:
         .map(likert_map)
     )
 
-df_numeric["Academic_Stress_Index"] = df_numeric[mental_cols[:3]].mean(axis=1)
+# ----- DERIVED NUMERIC COLUMNS (FIXED) -----
+study_hours_map = {
+    "Less than 5 hours": 2.5,
+    "5 to 10 hours": 7.5,
+    "11 to 15 hours": 13,
+    "16 to 20 hours": 18,
+    "More than 20 hours": 22.5
+}
+df_numeric["Social_Media_Use_Frequency"] = df_numeric["Social_Media_Use_Frequency"].map(study_hours_map)
+
+social_media_hours_map = {
+    "Less than 1 hour per day": 0.5,
+    "1 to 2 hours per day": 1.5,
+    "3 to 4 hours per day": 3.5,
+    "5 to 6 hours per day": 5.5,
+    "More than 6 hours per day": 7
+}
+df_numeric["Hours_Study_per_Week"] = df_numeric["Hours_Study_per_Week"].map(social_media_hours_map)
+
+df_numeric["Academic_Stress_Index"] = df_numeric[
+    [
+        "Assignments_Stress",
+        "Academic_Workload_Anxiety",
+        "Difficulty_Sleeping_University_Pressure"
+    ]
+].mean(axis=1)
 
 # ====== SIDEBAR ======
 with st.sidebar:
@@ -238,7 +259,7 @@ else:
 st.markdown("---")
 
 # --- TAB LAYOUT ---
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "📈 Numerical Analysis", "📉 Advanced Visualizations", "🗺️ Correlation Insights"])
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "Ilya", "Hanis", "Ainun"])
 
 # ============ TAB 1: INTERNET USE VS. MENTAL HEALTH ============
 with tab1:
@@ -249,7 +270,7 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
-    col3.metric("Avg Stress Index", f"{df_numeric['Academic_Stress_Index'].mean():.2f}", border=True)
+    col3.metric("Avg Stress Index", f"{df_numeric['Assignments_Stress'].mean():.2f}", border=True)
     col4.metric("High Usage (%)", f"{(df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day','More than 6 hours per day']).mean()*100):.1f}%", border=True)
 
     # Scientific Summary
@@ -265,10 +286,10 @@ with tab1:
     st.markdown("---")
 
     # --- TAB LAYOUT ---
-    tab1, tab2, tab3, tab4 = st.tabs(["📉 Usage Patterns", "🎓 Academic Impact", "📈 Wellbeing Analysis", "🗺️ Correlation & Advanced Insights"])
+    usage_tab, academic_tab, wellbeing_tab, insight_tab = st.tabs(["📉 Usage Patterns", "🎓 Academic Impact", "📈 Wellbeing Analysis", "🗺️ Correlation & Advanced Insights"])
     
     # ============ TAB 1.1: USAGE PATTERNS ============
-    with tab1:
+    with usage_tab:
         st.subheader("Internet & Social Media Usage Patterns")
         st.markdown("Understand how much and how often students use the internet/social media.")
 
@@ -298,7 +319,7 @@ with tab1:
             freq_order = ["< 1 hr", "1–2 hrs", "3–4 hrs", "5–6 hrs", "> 6 hrs"]
 
             fig = px.bar(
-                df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+                filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
                 title="Distribution of Daily Social Media Usage",
                 labels={"value": "Number of Students", "index": "Hours per Day"},
                 color_discrete_sequence=px.colors.qualitative.Set2
@@ -317,7 +338,7 @@ with tab1:
             ]
 
             fig = px.bar(
-                df["Hours_Study_per_Week"].value_counts().reindex(study_order),
+                filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order),
                 title="Frequency of Study Hours per Week",
                 labels={"value": "Number of Students", "index": "Study Hours"},
                 color_discrete_sequence=px.colors.qualitative.Pastel
@@ -332,7 +353,7 @@ with tab1:
         # Box Plot
         with col2:
             fig = px.box(
-                df,
+                filtered_df,
                 x="Gender",
                 y="Social_Media_Use_Frequency",
                 title="Social Media Usage by Gender",
@@ -350,7 +371,7 @@ with tab1:
             st.subheader("Perception of Wasting Time on Social Media")
 
             fig = px.histogram(
-                df,
+                filtered_df,
                 x="Social_Media_Waste_Time",
                 color_discrete_sequence=COLOR_SEQ,
                 category_orders={"Social_Media_Waste_Time": [
@@ -371,7 +392,7 @@ with tab1:
 
         # Pie Donut
         with col4:
-            resource_counts = df[
+            resource_counts = filtered_df[
                 'Do you think universities should provide more online mental health resources?'
             ].value_counts().reset_index()
 
@@ -401,7 +422,7 @@ with tab1:
     """)
     
     # ============ TAB 1.2: ACADEMIC IMPACT ============
-    with tab2:
+    with academic_tab:
         st.subheader("Academic Impact of Social Media Analysis")
         st.markdown("Examine whether internet usage affects academic outcomes.")
 
@@ -432,7 +453,7 @@ with tab1:
             st.subheader("Academic Stress vs Social Media Usage")
 
             usage_group_mean = (
-                df_numeric.groupby("Social_Media_Use_Frequency")
+                filtered_numeric.groupby("Social_Media_Use_Frequency")
                 ["Academic_Stress_Index"]
                 .mean()
                 .reset_index()
@@ -509,10 +530,9 @@ with tab1:
             st.success("""
             **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
             """)
-       
 
     # ============ TAB 1.3: WELLBEING ANALYSIS ============
-    with tab3:
+    with wellbeing_tab:
         st.subheader("Mental & Emotional Wellbeing")
         st.markdown("Understand stress, sleep, and emotional responses linked to online behaviour.")
 
@@ -609,7 +629,7 @@ with tab1:
     """)
 
     # ============ TAB 1.4: CORRELATION & INSIGHTS ============
-    with tab4:
+    with insight_tab:
         st.subheader("Correlation & Deep Analysis")
         st.markdown("Reveal hidden relationships across variables (lecturer favourite).")
 
