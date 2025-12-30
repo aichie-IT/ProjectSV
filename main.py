@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
@@ -8,7 +9,6 @@ warnings.filterwarnings("ignore")
 
 px.defaults.template = "plotly_white"
 px.defaults.color_continuous_scale = px.colors.sequential.Teal
-
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Internet Use and Mental Health Monitoring Insights Dashboard", page_icon="📈", layout="wide")
@@ -212,7 +212,8 @@ else:
     """, unsafe_allow_html=True)
 
 # ===== COLOR THEME =====
-color_theme = px.colors.qualitative.Pastel
+COLOR_SEQ = px.colors.qualitative.Set2
+CONTINUOUS_SCALE = "RdYlBu_r"
 
 
 # --- MAIN TITLE ---
