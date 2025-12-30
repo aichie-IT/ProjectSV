@@ -6,9 +6,12 @@ import seaborn as sns
 import warnings
 warnings.filterwarnings("ignore")
 
+px.defaults.template = "plotly_white"
+px.defaults.color_continuous_scale = px.colors.sequential.Teal
+
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="Motorbike Accident Insights Dashboard", page_icon="🏍️", layout="wide")
+st.set_page_config(page_title="Internet Use Dashboard", page_icon="🏍️", layout="wide")
 
 
 # --- LOAD DATA ---
