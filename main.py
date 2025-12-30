@@ -293,25 +293,58 @@ with tab1:
         st.markdown("---")
 
         col1, col2, col3 = st.columns(3)
-
-        # Pie: Accident Severity
+        
+        # Bar Chart
         with col1:
-            severity_counts = filtered_df["Accident_Severity"].value_counts().reset_index()
-            severity_counts.columns = ["Accident_Severity", "Count"]
-            fig1 = px.pie(
-                severity_counts, 
-                values="Count", 
-                names="Accident_Severity",
-                title="Accident Severity Distribution",
-            color_discrete_sequence=color_theme
-        )
-        st.plotly_chart(fig1, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+            freq_order = ["< 1 hr", "1–2 hrs", "3–4 hrs", "5–6 hrs", "> 6 hrs"]
 
-        # Pie: Helmet Usage
+            fig = px.bar(
+                df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+                title="Distribution of Daily Social Media Usage",
+                labels={"value": "Number of Students", "index": "Hours per Day"},
+                color_discrete_sequence=px.colors.qualitative.Set2
+            )
+
+            fig.update_layout(xaxis_tickangle=-30)
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
+            
+            # Bar Chart
+            study_order = [
+                "Less than 5 hours", "5 to 10 hours",
+                "11 to 15 hours", "16 to 20 hours", "More than 20 hours"
+            ]
+
+            fig = px.bar(
+                df["Hours_Study_per_Week"].value_counts().reindex(study_order),
+                title="Frequency of Study Hours per Week",
+                labels={"value": "Number of Students", "index": "Study Hours"},
+                color_discrete_sequence=px.colors.qualitative.Pastel
+            )
+
+            fig.update_layout(xaxis_tickangle=-25)
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
+
+        # Box Plot
         with col2:
+            fig = px.box(
+                df,
+                x="Gender",
+                y="Social_Media_Use_Frequency",
+                title="Social Media Usage by Gender",
+                color="Gender",
+                color_discrete_sequence=px.colors.qualitative.Safe
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
        
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
