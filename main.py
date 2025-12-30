@@ -23,7 +23,7 @@ def load_data():
 
 df = load_data(https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv)\
 
-# Cleaning & preprocessing (AFTER load)
+# Cleaning & preprocessing
 df = df.replace({
     "â\x80\x93": "-",
     "–": "-",
@@ -86,7 +86,7 @@ with st.sidebar:
     st.info(f"**Total Records:** {len(df):,}\n\n**Columns:** {len(df.columns)}")
 
     # --- Filters Section ---
-    with st.expander("🎯 Filter Options", expanded=True):
+    with st.expander("Filter Options", expanded=True):
         st.markdown("Select filters to refine your dashboard view:")
 
         # --- Multi-select Filters ---
@@ -217,8 +217,8 @@ CONTINUOUS_SCALE = "RdYlBu_r"
 
 
 # --- MAIN TITLE ---
-st.title("🏍️ Motorbike Accident Insights Dashboard")
-st.markdown("Explore accident patterns and biker behaviors with interactive visual analytics.")
+st.title(" Student Mental Health Monitoring Insights Dashboard")
+st.markdown("Exploring the Relationship Between Internet Use and Mental Health.")
 
 st.markdown("---")
 
@@ -226,15 +226,15 @@ st.markdown("---")
 col1, col2, col3, col4 = st.columns(4)
 
 if not filtered_df.empty:
-    col1.metric("Total Records", f"{len(filtered_df):,}", help="PLO 1: Total Motor Accident Records", border=True)
-    col2.metric("Avg. Age", f"{filtered_df['Biker_Age'].mean():.1f} years", help="PLO 2: Average Biker Age", border=True)
-    col3.metric("Avg. Speed", f"{filtered_df['Bike_Speed'].mean():.1f} km/h", help="PLO 3: Average Bike Speed", border=True)
-    col4.metric("Avg. Travel Distance", f"{filtered_df['Daily_Travel_Distance'].mean():.1f} km", help="PLO 4: Average Daily Travel Distance", border=True)
+    col1.metric("Total Records", f"{len(filtered_df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
+    col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
+    col3.metric("Avg. Positive Impact", f"{filtered_df['Social_Media_Positive_Impact_on_Wellbeing'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
+    col4.metric("Avg. Negative Impact", f"{filtered_df['Social_Media_Negative_Impact_on_Wellbeing'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
 else:
     col1.metric("Total Records", "0", help="No data available")
     col2.metric("Avg. Age", "N/A", help="No data available")
-    col3.metric("Avg. Speed", "N/A", help="No data available")
-    col4.metric("Avg. Travel Distance", "N/A", help="No data available")
+    col3.metric("Avg. Positive Impact", "N/A", help="No data available")
+    col4.metric("Avg. Negative Impact", "N/A", help="No data available")
 
 st.markdown("---")
 
@@ -292,7 +292,7 @@ with tab1:
         """)
         st.markdown("---")
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
         
         # Bar Chart
         with col1:
@@ -536,40 +536,40 @@ with tab1:
         """)
         st.markdown("---")
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
 
         # Radar / Polar Chart
         with col1:
-        st.subheader("Mental Health Impact Profile")
+            st.subheader("Mental Health Impact Profile")
 
-        categories = [
-            'Assignments_Stress',
-            'Academic_Workload_Anxiety',
-            'Difficulty_Sleeping_University_Pressure',
-            'Sleep_Affected_By_Social_Media',
-            'Studies_Affected_By_Social_Media'
-        ]
+            categories = [
+                'Assignments_Stress',
+                'Academic_Workload_Anxiety',
+                'Difficulty_Sleeping_University_Pressure',
+                'Sleep_Affected_By_Social_Media',
+                'Studies_Affected_By_Social_Media'
+            ]
 
-        values = df_numeric[categories].mean().tolist()
-
-        fig = go.Figure(
-            go.Scatterpolar(
-                r=values + [values[0]],
-                theta=categories + [categories[0]],
-                fill='toself',
-                line_color="#636EFA"
+            values = df_numeric[categories].mean().tolist()
+ 
+            fig = go.Figure(
+               go.Scatterpolar(
+                   r=values + [values[0]],
+                   theta=categories + [categories[0]],
+                   fill='toself',
+                   line_color="#636EFA"
+               )
             )
-        )
 
-        fig.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[1,5])),
-            template="plotly_white"
-        )
+            fig.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[1,5])),
+                template="plotly_white"
+            )
 
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+            st.plotly_chart(fig, use_container_width=True)
+            st.success("""
+            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+            """)
 
         # Parallel coordinates
         with col2:
@@ -608,35 +608,6 @@ with tab1:
     which correlates with lower accident severity. Riders with valid licenses also
     exhibit safer driving trends, suggesting that training and enforcement play key roles.
     """)
-    
-TAB 2: Academic Impact of Social Media
-
-Goal: Examine whether internet usage affects academic outcomes.
-
-✅ Visualizations in this tab
-Visualization	Why
-Social Media Frequency vs Academic Performance (Box)	Direct academic impact
-Age vs Studies Affected (Scatter)	Behavioural patterns
-Study Hours vs Social Media Hours (Scatter – optional)
-
-TAB 3: Psychological & Emotional Wellbeing
-
-Goal: Understand stress, sleep, and emotional responses linked to online behaviour.
-
-✅ Visualizations
-Visualization	Why
-Likert Distributions (Bar / Radar)	Psychological patterns
-Sleep Affected by Social Media (Bar)	Physical wellbeing
-Emotional Connection vs Waste Time (Scatter)	Behaviour contradiction
-TAB 4: Correlation & Deep Analysis (Advanced)
-
-Goal: Reveal hidden relationships across variables (lecturer favourite).
-
-✅ Visualizations
-Visualization	Why
-Correlation Heatmap	Overall relationship
-Radar Chart (Likert Profile)	Psychological intensity
-Polar Chart (Usage Profile)	Behaviour clustering
 
     # ============ TAB 1.4: CORRELATION & INSIGHTS ============
     with tab4:
@@ -665,7 +636,7 @@ Polar Chart (Usage Profile)	Behaviour clustering
         """)
         st.markdown("---")
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
 
         # Heatmap
         with col1:
