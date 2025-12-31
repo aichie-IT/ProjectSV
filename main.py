@@ -79,7 +79,7 @@ cols_to_drop = [
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
 
-# ================= SCALE DEFINITIONS =================
+# Filtering & Transformation (Individual Part) - Aishah
 
 # Likert-scale columns (1–5)
 LIKERT_COLS = [
