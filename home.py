@@ -32,7 +32,7 @@ st.markdown(
 st.markdown(
     """
     <div class="banner">
-        <img src="homepage dashboard.jpeg">
+        <img src="banner.jpeg">
     </div>
     """,
     unsafe_allow_html=True
