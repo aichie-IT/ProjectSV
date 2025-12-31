@@ -195,6 +195,12 @@ academic_map = {
     "Excellent": 6
 }
 
+# Academic performance numeric
+df_numeric["General_Academic_Performance_Numeric"] = (
+    df_numeric["General_Academic_Performance"].astype(str).str.strip().map(academic_map)
+)
+
+
 # ----- CATEGORICAL ORDER -----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
@@ -223,11 +229,6 @@ for col in mental_cols:
         .str.split(" / ").str[0]
         .map(likert_map)
     )
-
-# Academic performance numeric
-df_numeric["General_Academic_Performance_Numeric"] = (
-    df_numeric["General_Academic_Performance"].astype(str).str.strip().map(academic_map)
-)
 
 # Academic Stress Index
 df_numeric["Academic_Stress_Index"] = df_numeric[
