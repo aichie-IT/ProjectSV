@@ -415,102 +415,98 @@ with tab1:
         col1, col2, col3, col4 = st.columns(4)
         
         # Bar Chart
-        with col1:
-            freq_order = ["< 1 hr", "1–2 hrs", "3–4 hrs", "5–6 hrs", "> 6 hrs"]
+        freq_order = ["< 1 hr", "1–2 hrs", "3–4 hrs", "5–6 hrs", "> 6 hrs"]
 
-            fig = px.bar(
-                filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
-                title="Distribution of Daily Social Media Usage",
-                labels={"value": "Number of Students", "index": "Hours per Day"},
-                color_discrete_sequence=px.colors.qualitative.Set2
-            )
+        fig = px.bar(
+            filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+            title="Distribution of Daily Social Media Usage",
+            labels={"value": "Number of Students", "index": "Hours per Day"},
+            color_discrete_sequence=px.colors.qualitative.Set2
+        )
 
-            fig.update_layout(xaxis_tickangle=-30)
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        fig.update_layout(xaxis_tickangle=-30)
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
             
-            # Bar Chart
-            study_order = [
-                "Less than 5 hours", "5 to 10 hours",
-                "11 to 15 hours", "16 to 20 hours", "More than 20 hours"
-            ]
+        # Bar Chart
+        study_order = [
+            "Less than 5 hours", "5 to 10 hours",
+            "11 to 15 hours", "16 to 20 hours", "More than 20 hours"
+        ]
 
-            fig = px.bar(
-                filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order),
-                title="Frequency of Study Hours per Week",
-                labels={"value": "Number of Students", "index": "Study Hours"},
-                color_discrete_sequence=px.colors.qualitative.Pastel
-            )
+        fig = px.bar(
+            filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order),
+            title="Frequency of Study Hours per Week",
+            labels={"value": "Number of Students", "index": "Study Hours"},
+            color_discrete_sequence=px.colors.qualitative.Pastel
+        )
 
-            fig.update_layout(xaxis_tickangle=-25)
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        fig.update_layout(xaxis_tickangle=-25)
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
 
         # Box Plot
-        with col2:
-            fig = px.box(
-                filtered_df,
-                x="Gender",
-                y="Social_Media_Use_Frequency",
-                title="Social Media Usage by Gender",
-                color="Gender",
-                color_discrete_sequence=px.colors.qualitative.Safe
-            )
+        fig = px.box(
+            filtered_df,
+            x="Gender",
+            y="Social_Media_Use_Frequency",
+            title="Social Media Usage by Gender",
+            color="Gender",
+            color_discrete_sequence=px.colors.qualitative.Safe
+        )
 
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
 
         # Histogram
-        with col3:
-            fig = px.histogram(
-                filtered_df,
-                title="Perception of Wasting Time on Social Media",
-                x="Social_Media_Waste_Time",
-                color_discrete_sequence=COLOR_SEQ,
-                category_orders={"Social_Media_Waste_Time": [
-                "Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"
-                ]}
-            )
+        fig = px.histogram(
+            filtered_df,
+            title="Perception of Wasting Time on Social Media",
+            x="Social_Media_Waste_Time",
+            color_discrete_sequence=COLOR_SEQ,
+            category_orders={"Social_Media_Waste_Time": [
+            "Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"
+            ]}
+        )
 
-            fig.update_layout(
-                xaxis_title="Response Level",
-                yaxis_title="Number of Students",
-                template="plotly_white"
-            )
+        fig.update_layout(
+            xaxis_title="Response Level",
+            yaxis_title="Number of Students",
+            template="plotly_white"
+        )
 
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
 
         # Pie Donut
-        with col4:
-            resource_counts = filtered_df[
-                'Do you think universities should provide more online mental health resources?'
-            ].value_counts().reset_index()
+        resource_counts = filtered_df[
+            'Do you think universities should provide more online mental health resources?'
+        ].value_counts().reset_index()
 
-            resource_counts.columns = ["Response", "Count"]
+        resource_counts.columns = ["Response", "Count"]
 
-            fig = px.pie(
-                resource_counts,
-                names="Response",
-                values="Count",
-                hole=0.45,
-                color_discrete_sequence=COLOR_SEQ,
-                title="Need for Online Mental Health Resources"
-            )
-            fig.update_traces(textposition="inside", textinfo="percent+label")
-            st.plotly_chart(fig, use_container_width=True)
+        fig = px.pie(
+            resource_counts,
+            names="Response",
+            values="Count",
+            hole=0.45,
+            color_discrete_sequence=COLOR_SEQ,
+            title="Need for Online Mental Health Resources"
+        )
+        fig.update_traces(textposition="inside", textinfo="percent+label")
+        st.plotly_chart(fig, use_container_width=True)
 
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
        
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
@@ -548,86 +544,83 @@ with tab1:
         col1, col2, col3 = st.columns(3)
 
         # Bar Chart
-        with col1:
-            usage_group_mean = (
-                filtered_numeric.groupby("Social_Media_Use_Frequency")
-                ["Academic_Stress_Index"]
-                .mean()
-                .reset_index()
-            )
+        usage_group_mean = (
+            filtered_numeric.groupby("Social_Media_Use_Frequency")
+            ["Academic_Stress_Index"]
+            .mean()
+            .reset_index()
+        )
 
-            fig = px.bar(
-                usage_group_mean,
-                title="Academic Stress vs Social Media Usage",
-                x="Social_Media_Use_Frequency",
-                y="Academic_Stress_Index",
-                color="Academic_Stress_Index",
-                color_continuous_scale=CONTINUOUS_SCALE
-            )
+        fig = px.bar(
+            usage_group_mean,
+            title="Academic Stress vs Social Media Usage",
+            x="Social_Media_Use_Frequency",
+            y="Academic_Stress_Index",
+            color="Academic_Stress_Index",
+            color_continuous_scale=CONTINUOUS_SCALE
+        )
 
-            fig.update_layout(
-                xaxis_title="Social Media Usage",
-                yaxis_title="Academic Stress Index",
-                template="plotly_white"
-            )
+        fig.update_layout(
+            xaxis_title="Social Media Usage",
+            yaxis_title="Academic Stress Index",
+            template="plotly_white"
+        )
 
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
         
         # Box Plot
-        with col2:
-            fig = px.box(
-                df,
-                x="Social_Media_Use_Frequency",
-                y="General_Academic_Performance",
-                title="Social Media Frequency vs Academic Performance",
-                color="Social_Media_Use_Frequency",
-                color_discrete_sequence=px.colors.qualitative.Set3
-            )
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        fig = px.box(
+            df,
+            x="Social_Media_Use_Frequency",
+            y="General_Academic_Performance",
+            title="Social Media Frequency vs Academic Performance",
+            color="Social_Media_Use_Frequency",
+            color_discrete_sequence=px.colors.qualitative.Set3
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
 
-            # Box Plot
-            fig = px.box(
-                df_numeric,
-                x="Social_Media_Use_Frequency",
-                y="Sleep_Affected_By_Social_Media",
-                color="Social_Media_Use_Frequency",
-                color_discrete_sequence=COLOR_SEQ
-            )
+        # Box Plot
+        fig = px.box(
+            df_numeric,
+            x="Social_Media_Use_Frequency",
+            y="Sleep_Affected_By_Social_Media",
+            color="Social_Media_Use_Frequency",
+            color_discrete_sequence=COLOR_SEQ
+        )
 
-            fig.update_layout(
-                title="Sleep Disturbance by Social Media Usage",
-                xaxis_title="Usage Frequency",
-                yaxis_title="Sleep Affected Score",
-                template="plotly_white"
-            )
+        fig.update_layout(
+            title="Sleep Disturbance by Social Media Usage",
+            xaxis_title="Usage Frequency",
+            yaxis_title="Sleep Affected Score",
+            template="plotly_white"
+        )
 
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
 
         # Scatter Plot
-        with col3:
-            fig = px.scatter(
-                df,
-                x="Age",
-                y="Studies_Affected_By_Social_Media",
-                title="Age vs Impact of Social Media on Studies",
-                color="Gender",
-                opacity=0.7,
-                color_discrete_sequence=px.colors.qualitative.Dark2
-            )
+        fig = px.scatter(
+            df,
+            x="Age",
+            y="Studies_Affected_By_Social_Media",
+            title="Age vs Impact of Social Media on Studies",
+            color="Gender",
+            opacity=0.7,
+            color_discrete_sequence=px.colors.qualitative.Dark2
+        )
 
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
 
     # ============ TAB 1.3: WELLBEING ANALYSIS ============
     with wellbeing_tab:
@@ -656,67 +649,65 @@ with tab1:
         col1, col2 = st.columns(2)
 
         # Radar / Polar Chart
-        with col1:
-            st.subheader("Mental Health Impact Profile")
+        st.subheader("Mental Health Impact Profile")
+            
+        categories = [
+            'Assignments_Stress',
+            'Academic_Workload_Anxiety',
+            'Difficulty_Sleeping_University_Pressure',
+            'Sleep_Affected_By_Social_Media',
+            'Studies_Affected_By_Social_Media'
+        ]
 
-            categories = [
+        values = df_numeric[categories].mean().tolist()
+ 
+        fig = go.Figure(
+            go.Scatterpolar(
+                r=values + [values[0]],
+                theta=categories + [categories[0]],
+                fill='toself',
+                line_color="#636EFA"
+            )
+        )
+
+        fig.update_layout(
+            polar=dict(radialaxis=dict(visible=True, range=[1,5])),
+            template="plotly_white"
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
+
+        # Parallel coordinates
+        parallel_df = df_numeric[
+            [
+                'Social_Media_Use_Frequency',
                 'Assignments_Stress',
                 'Academic_Workload_Anxiety',
-                'Difficulty_Sleeping_University_Pressure',
                 'Sleep_Affected_By_Social_Media',
                 'Studies_Affected_By_Social_Media'
             ]
+        ].dropna()
 
-            values = df_numeric[categories].mean().tolist()
- 
-            fig = go.Figure(
-               go.Scatterpolar(
-                   r=values + [values[0]],
-                   theta=categories + [categories[0]],
-                   fill='toself',
-                   line_color="#636EFA"
-               )
-            )
+        fig = px.parallel_coordinates(
+            parallel_df,
+            dimensions=[
+                'Assignments_Stress',
+                'Academic_Workload_Anxiety',
+                'Sleep_Affected_By_Social_Media',
+                'Studies_Affected_By_Social_Media'
+            ],
+            color='Assignments_Stress',
+            color_continuous_scale=CONTINUOUS_SCALE
+        )
+        fig.update_layout(template="plotly_white")
+        st.plotly_chart(fig, use_container_width=True)
 
-            fig.update_layout(
-                polar=dict(radialaxis=dict(visible=True, range=[1,5])),
-                template="plotly_white"
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
-
-        # Parallel coordinates
-        with col2:
-            parallel_df = df_numeric[
-                [
-                    'Social_Media_Use_Frequency',
-                    'Assignments_Stress',
-                    'Academic_Workload_Anxiety',
-                    'Sleep_Affected_By_Social_Media',
-                    'Studies_Affected_By_Social_Media'
-                ]
-            ].dropna()
-
-            fig = px.parallel_coordinates(
-                parallel_df,
-                dimensions=[
-                   'Assignments_Stress',
-                   'Academic_Workload_Anxiety',
-                   'Sleep_Affected_By_Social_Media',
-                   'Studies_Affected_By_Social_Media'
-                ],
-                color='Assignments_Stress',
-                color_continuous_scale=CONTINUOUS_SCALE
-            )
-            fig.update_layout(template="plotly_white")
-            st.plotly_chart(fig, use_container_width=True)
-
-            st.success("""
-            **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-            """)
+        st.success("""
+        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+        """)
        
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
@@ -757,68 +748,66 @@ with tab1:
         col1, col2 = st.columns(2)
 
         # Heatmap
-        with col1:
-            corr = df_numeric[
-                [
-                    'Assignments_Stress',
-                    'Academic_Workload_Anxiety',
-                    'Sleep_Affected_By_Social_Media',
-                    'Studies_Affected_By_Social_Media',
-                    'Social_Media_Hours_Numeric'
-                ]
-            ].corr()
+        corr = df_numeric[
+            [
+                'Assignments_Stress',
+                'Academic_Workload_Anxiety',
+                'Sleep_Affected_By_Social_Media',
+                'Studies_Affected_By_Social_Media',
+                'Social_Media_Hours_Numeric'
+            ]
+        ].corr()
 
-            fig = px.imshow(
-                corr,
-                text_auto=".2f",
-                color_continuous_scale=CONTINUOUS_SCALE
-            )
+        fig = px.imshow(
+            corr,
+            text_auto=".2f",
+            color_continuous_scale=CONTINUOUS_SCALE
+        )
 
-            fig.update_layout(
-                title="Correlation Between Internet Use & Mental Health",
-                template="plotly_white"
-            )
+        fig.update_layout(
+            title="Correlation Between Internet Use & Mental Health",
+            template="plotly_white"
+        )
 
-            st.plotly_chart(fig, use_container_width=True)
-            st.error("""
-            Strong correlations highlight the need for institutional awareness and early intervention.
-            """)
+        st.plotly_chart(fig, use_container_width=True)
+        st.error("""
+        Strong correlations highlight the need for institutional awareness and early intervention.
+        """)
 
         # Waterfall Chart
-        with col2:
-            mean_vals = df_numeric[
-                [
-                   'Assignments_Stress',
-                   'Academic_Workload_Anxiety',
-                   'Sleep_Affected_By_Social_Media',
-                   'Studies_Affected_By_Social_Media'
-                ]
-            ].mean()
+        mean_vals = df_numeric[
+            [
+                'Assignments_Stress',
+                'Academic_Workload_Anxiety',
+                'Sleep_Affected_By_Social_Media',
+                'Studies_Affected_By_Social_Media'
+            ]
+        ].mean()
 
-            fig = go.Figure(go.Waterfall(
-                x=[
-                    "Assignments Stress",
-                    "Academic Anxiety",
-                    "Sleep Affected",
-                    "Studies Affected",
-                    "Overall Impact"
-                ],
-                y=[
-                    mean_vals[0],
-                    mean_vals[1],
-                    mean_vals[2],
-                    mean_vals[3],
-                    mean_vals.sum()
-                ],
-                measure=["relative","relative","relative","relative","total"]
-            ))
+        fig = go.Figure(go.Waterfall(
+            x=[
+                "Assignments Stress",
+                "Academic Anxiety",
+                "Sleep Affected",
+                "Studies Affected",
+                "Overall Impact"
+            ],
+            y=[
+                mean_vals[0],
+                mean_vals[1],
+                mean_vals[2],
+                mean_vals[3],
+                mean_vals.sum()
+            ],
+            measure=["relative","relative","relative","relative","total"]
+        ))
 
-            fig.update_layout(
-                title="Cumulative Mental Health Impact",
-                template="plotly_white"
-            )
+        fig.update_layout(
+            title="Cumulative Mental Health Impact",
+            template="plotly_white"
+        )
 
-            st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True)
          
        
     # --- Observation Section (Fixed Indentation) ---
