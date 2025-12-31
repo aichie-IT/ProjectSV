@@ -737,9 +737,9 @@ with tab1:
         col1.metric("SM Hours ↔ Stress", f"{filtered_numeric[['Social_Media_Hours_Numeric', 'Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
         col2.metric("Study Hours ↔ Stress", f"{filtered_numeric[['Study_Hours_Numeric','Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
         impact_gap = (
-            filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing'].mean()
+            filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing_Numeric'].mean(skipna=True)
             -
-            filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing'].mean()
+            filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing_Numeric'].mean(skipna=True)
         )
         col3.metric("Wellbeing Impact Gap", f"{impact_gap:.2f}", border=True)
         col4.metric("Support-Seeking Score", f"{filtered_df['Use_Online_Communities_for_Support'].map(likert_map).mean():.2f}", border=True)
