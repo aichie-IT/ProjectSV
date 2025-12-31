@@ -99,6 +99,25 @@ LIKERT_COLS = [
     'Social_Media_Negative_Impact_on_Wellbeing'
 ]
 
+likert_map = {
+    "Strongly Disagree": 1,
+    "Disagree": 2,
+    "Neutral": 3,
+    "Agree": 4,
+    "Strongly Agree": 5
+}
+
+# Numeric Likert Columns
+for col in LIKERT_COLS:
+    if col in df_numeric.columns:
+        df_numeric[col + "_Numeric"] = (
+            df_numeric[col]
+            .astype(str)
+            .str.split(" / ").str[0]
+            .str.strip()
+            .map(likert_map)
+        )
+
 # Frequency-scale columns (1–4)
 FREQ_COLS = [
     'Mental_Health_Info_Through_Internet',
@@ -158,15 +177,6 @@ df_numeric["General_Academic_Performance_Numeric"] = (
     })
     .map(academic_map)
 )
-
-# Likert mapping
-likert_map = {
-    "Strongly Disagree": 1,
-    "Disagree": 2,
-    "Neutral": 3,
-    "Agree": 4,
-    "Strongly Agree": 5
-}
 
 mental_cols = [
     "Assignments_Stress",
