@@ -591,15 +591,9 @@ with tab1:
             usage_group_mean,
             x="Social_Media_Use_Frequency",
             y="Academic_Stress_Index",
-            title="Academic Stress vs Social Media Usage",
             color="Academic_Stress_Index",
+            title="Academic Stress vs Social Media Usage",
             color_continuous_scale=CONTINUOUS_SCALE
-        )
-
-        fig.update_layout(
-            xaxis_title="Social Media Usage",
-            yaxis_title="Academic Stress Index",
-            template="plotly_white"
         )
 
         st.plotly_chart(fig, use_container_width=True)
