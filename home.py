@@ -542,13 +542,13 @@ with tab1:
         **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
         """)
        
-    # --- Observation Section (Fixed Indentation) ---
-    st.markdown("#### 💬 Observation")
-    st.success("""
-    The majority of accidents are classified as minor. Helmet usage is generally high,
-    which correlates with lower accident severity. Riders with valid licenses also
-    exhibit safer driving trends, suggesting that training and enforcement play key roles.
-    """)
+        # --- Observation Section (Fixed Indentation) ---
+        st.markdown("#### 💬 Observation")
+        st.success("""
+        The majority of accidents are classified as minor. Helmet usage is generally high,
+        which correlates with lower accident severity. Riders with valid licenses also
+        exhibit safer driving trends, suggesting that training and enforcement play key roles.
+        """)
     
     # ============ TAB 1.2: ACADEMIC IMPACT ============
     with academic_tab:
