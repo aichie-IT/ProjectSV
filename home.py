@@ -126,6 +126,14 @@ LIKERT_COLS = [
     'Social_Media_Negative_Impact_on_Wellbeing'
 ]
 
+likert_map = {
+    "Strongly Disagree": 1,
+    "Disagree": 2,
+    "Neutral": 3,
+    "Agree": 4,
+    "Strongly Agree": 5
+}
+
 # Numeric Likert Columns
 for col in LIKERT_COLS:
     if col in df_numeric.columns:
