@@ -135,6 +135,7 @@ for col in LIKERT_COLS:
             .astype(str)
             .str.split(" / ").str[0]
             .str.strip()
+            .replace("nan", None)
             .map(likert_map)
         )
 
@@ -577,8 +578,13 @@ with tab1:
         col1, col2, col3 = st.columns(3)
 
         # Bar Chart
+        filtered_numeric = filtered_numeric.dropna(
+            subset=["Academic_Stress_Index"]
+        )
+
         usage_group_mean = (
-            filtered_numeric.groupby("Social_Media_Use_Frequency")
+            filtered_numeric
+            .groupby("Social_Media_Use_Frequency", observed=True)
             ["Academic_Stress_Index"]
             .mean()
             .reset_index()
@@ -586,9 +592,9 @@ with tab1:
 
         fig = px.bar(
             usage_group_mean,
-            title="Academic Stress vs Social Media Usage",
             x="Social_Media_Use_Frequency",
             y="Academic_Stress_Index",
+            title="Academic Stress vs Social Media Usage",
             color="Academic_Stress_Index",
             color_continuous_scale=CONTINUOUS_SCALE
         )
