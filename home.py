@@ -15,29 +15,11 @@ st.set_page_config(
 )
 
 # banner
-st.markdown(
-    """
-    <style>
-    .banner img {
-        width: 100%;
-        border-radius: 16px;
-        margin-bottom: 24px;
-        box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
+st.image(
+    "banner.jpeg",
+    use_container_width=True,
+    caption="Internet Use and Mental Health Dashboard"
 )
-
-st.markdown(
-    """
-    <div class="banner">
-        <img src="banner.jpeg">
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
 
 # Add the extended explanation
 st.write(
