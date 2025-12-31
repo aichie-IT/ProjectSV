@@ -100,24 +100,6 @@ df_numeric = df.copy()
 
 # ================= SCALE DEFINITIONS =================
 
-# Likert-scale columns (1–5)
-LIKERT_COLS = [
-    'Assignments_Stress',
-    'Academic_Workload_Anxiety',
-    'Difficulty_Sleeping_University_Pressure',
-    'Friends_Family_Support',
-    'Manage_Emotion_Stressful_Periods',
-    'Social_Media_Relaxation',
-    'Emotional_Connection_Social_Media',
-    'Social_Media_Daily_Routine',
-    'Social_Media_Waste_Time',
-    'Sleep_Affected_By_Social_Media',
-    'Studies_Affected_By_Social_Media',
-    'Seek_Help_Online_When_Stress',
-    'Social_Media_Positive_Impact_on_Wellbeing',
-    'Social_Media_Negative_Impact_on_Wellbeing'
-]
-
 # Likert mapping
 likert_map = {
     "Strongly Disagree": 1,
@@ -127,16 +109,25 @@ likert_map = {
     "Strongly Agree": 5
 }
 
-# Numeric Likert Columns
+# Likert-scale columns (1–5)
+LIKERT_COLS = [
+    "Assignments_Stress",
+    "Academic_Workload_Anxiety",
+    "Difficulty_Sleeping_University_Pressure",
+    "Sleep_Affected_By_Social_Media",
+    "Studies_Affected_By_Social_Media"
+]
+
 for col in LIKERT_COLS:
     if col in df_numeric.columns:
         df_numeric[col + "_Numeric"] = (
             df_numeric[col]
             .astype(str)
-            .str.split(" / ").str[0]
+            .str.split(" / ").str[0]   # ✅ THIS IS CRITICAL
             .str.strip()
             .map(likert_map)
         )
+
 
 # Frequency-scale columns (1–4)
 FREQ_COLS = [
@@ -224,8 +215,7 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
         "Academic_Workload_Anxiety_Numeric",
         "Difficulty_Sleeping_University_Pressure_Numeric"
     ]
-].mean(axis=1, skipna=True)
-
+].mean(axis=1)
 
 # ----- CATEGORICAL ORDER -----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
