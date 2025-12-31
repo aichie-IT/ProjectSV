@@ -126,6 +126,18 @@ LIKERT_COLS = [
     'Social_Media_Negative_Impact_on_Wellbeing'
 ]
 
+# Numeric Likert Columns
+for col in LIKERT_COLS:
+    if col in df_numeric.columns:
+        df_numeric[col + "_Numeric"] = (
+            df_numeric[col]
+            .astype(str)
+            .str.split(" / ").str[0]
+            .str.strip()
+            .map(likert_map)
+        )
+
+
 # Frequency-scale columns (1–4)
 FREQ_COLS = [
     'Mental_Health_Info_Through_Internet',
