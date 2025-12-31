@@ -686,8 +686,8 @@ with tab1:
 
         # Radar / Polar Chart
         with col1:
-            title="Mental Health Impact Profile",
-
+            st.subheader("Mental Health Impact Profile")
+            
             categories = [
                 'Assignments_Stress',
                 'Academic_Workload_Anxiety',
