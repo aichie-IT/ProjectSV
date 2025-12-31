@@ -399,8 +399,8 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
-    col3.metric("Avg Stress Index", f"{filtered_numeric['Academic_Stress_Index'].mean():.2f}"), border=True)
-    col4.metric("High Usage (%)", f"{(df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day','More than 6 hours per day']).mean()*100):.1f}%", border=True)
+    col3.metric("Avg Stress Index", f"{filtered_numeric['Academic_Stress_Index'].mean():.2f}", border=True)
+    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day','More than 6 hours per day']).mean()*100):.1f}%", border=True)
 
     # Scientific Summary
     st.markdown("### Summary")
