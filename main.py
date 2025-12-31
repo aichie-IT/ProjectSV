@@ -159,6 +159,16 @@ social_media_hours_map = {
 # Social media hours numeric
 df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map(social_media_hours_map)
 
+performance_map = {
+    "Very Poor": 1,
+    "Poor": 2,
+    "Average": 3,
+    "Good": 4,
+    "Very Good": 5
+}
+
+df_numeric["General_Academic_Performance_Numeric"] = (df_numeric["General_Academic_Performance"].map(performance_map))
+
 academic_map = {
     "Poor": 1,
     "Below Average": 2,
