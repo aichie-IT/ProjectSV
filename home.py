@@ -93,6 +93,9 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
+# Fix encoding issues
+df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
+
 # Drop Irrelevant Columns
 cols_to_drop = [
     "Timestamp",
@@ -101,6 +104,7 @@ cols_to_drop = [
 ]
 
 df = df.drop(columns=cols_to_drop, errors="ignore")
+df_numeric = df.copy()
 
 # ================= SCALE DEFINITIONS =================
 
@@ -129,6 +133,59 @@ FREQ_COLS = [
     'Across_Upsetting_Content_Online'
 ]
 
+# Frequency mapping
+freq_map = {
+    "Never": 1,
+    "Rarely": 2,
+    "Sometimes": 3,
+    "Often": 4
+}
+
+# Frequency (1–4)
+for col in FREQ_COLS:
+    if col in df_numeric.columns:
+        df_numeric[col + "_Numeric"] = (
+            df_numeric[col].astype(str).str.strip().map(freq_map)
+        )
+    
+# Study hours
+df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map({
+    "Less than 5 hours": 2.5,
+    "5 to 10 hours": 7.5,
+    "11 to 15 hours": 13,
+    "16 to 20 hours": 18,
+    "More than 20 hours": 22.5
+})
+
+# Social media hours
+df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map({
+    "Less than 1 hour per day": 0.5,
+    "1 to 2 hours per day": 1.5,
+    "3 to 4 hours per day": 3.5,
+    "5 to 6 hours per day": 5.5,
+    "More than 6 hours per day": 7
+})
+
+# Academic performance mapping
+academic_map = {
+    "Below Average": 1,
+    "Average": 2,
+    "Good": 3,
+    "Excellent": 4
+}
+
+# Academic performance numeric
+df_numeric["General_Academic_Performance_Numeric"] = (
+    df_numeric["General_Academic_Performance"]
+    .astype(str)
+    .str.strip()
+    .replace({
+        "Excellent ": "Excellent",
+        "Good ": "Good"
+    })
+    .map(academic_map)
+)
+
 # Likert mapping
 likert_map = {
     "Strongly Disagree": 1,
@@ -138,68 +195,33 @@ likert_map = {
     "Strongly Agree": 5
 }
 
-# Frequency mapping
-freq_map = {
-    "Never": 1,
-    "Rarely": 2,
-    "Sometimes": 3,
-    "Often": 4
-}
-
-df_numeric = df.copy()
+mental_cols = [
+    "Assignments_Stress",
+    "Academic_Workload_Anxiety",
+    "Difficulty_Sleeping_University_Pressure",
+    "Sleep_Affected_By_Social_Media",
+    "Studies_Affected_By_Social_Media"
+]
 
 # Likert (1–5)
-for col in LIKERT_COLS:
-    df_numeric[col + "_Numeric"] = (
-        df_numeric[col].astype(str).str.strip().map(likert_map)
-    )
+for col in mental_cols:
+    if col in df_numeric.columns:
+        df_numeric[col + "_Numeric"] = (
+            df_numeric[col]
+            .astype(str)
+            .str.split(" / ").str[0]
+            .map(likert_map)
+        )
 
-# Frequency (1–4)
-for col in FREQ_COLS:
-    df_numeric[col + "_Numeric"] = (
-        df_numeric[col].astype(str).str.strip().map(freq_map)
-    )
 
-# Fix encoding issues
-df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
-
-# Study hours (numeric)
-study_hours_map = {
-    "Less than 5 hours": 2.5,
-    "5 to 10 hours": 7.5,
-    "11 to 15 hours": 13,
-    "16 to 20 hours": 18,
-    "More than 20 hours": 22.5
-}
-
-df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map(study_hours_map)
-
-# Social media hours (numeric)
-social_media_hours_map = {
-    "Less than 1 hour per day": 0.5,
-    "1 to 2 hours per day": 1.5,
-    "3 to 4 hours per day": 3.5,
-    "5 to 6 hours per day": 5.5,
-    "More than 6 hours per day": 7
-}
-
-# Social media hours numeric
-df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map(social_media_hours_map)
-
-academic_map = {
-    "Poor": 1,
-    "Below Average": 2,
-    "Average": 3,
-    "Good": 4,
-    "Very Good": 5,
-    "Excellent": 6
-}
-
-# Academic performance numeric
-df_numeric["General_Academic_Performance_Numeric"] = (
-    df_numeric["General_Academic_Performance"].astype(str).str.strip().map(academic_map)
-)
-
+# Academic Stress Index
+df_numeric["Academic_Stress_Index"] = df_numeric[
+    [
+        "Assignments_Stress_Numeric",
+        "Academic_Workload_Anxiety_Numeric",
+        "Difficulty_Sleeping_University_Pressure_Numeric"
+    ]
+].mean(axis=1)
 
 # ----- CATEGORICAL ORDER -----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
@@ -214,35 +236,11 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
     ordered=True
 )
 
-mental_cols = [
-    "Assignments_Stress",
-    "Academic_Workload_Anxiety",
-    "Difficulty_Sleeping_University_Pressure",
-    "Sleep_Affected_By_Social_Media",
-    "Studies_Affected_By_Social_Media"
-]
-
-for col in mental_cols:
-    df_numeric[col] = (
-        df_numeric[col]
-        .astype(str)
-        .str.split(" / ").str[0]
-        .map(likert_map)
-    )
-
-# Academic Stress Index
-df_numeric["Academic_Stress_Index"] = df_numeric[
-    [
-        "Assignments_Stress_Numeric",
-        "Academic_Workload_Anxiety_Numeric",
-        "Difficulty_Sleeping_University_Pressure_Numeric"
-    ]
-].mean(axis=1)
 
 # ====== SIDEBAR ======
 with st.sidebar:
     st.title("Dashboard Controls")
-
+    
     # --- Data Summary ---
     st.markdown("### 🧾 Data Summary")
     st.info(f"**Total Records:** {len(df):,}\n\n**Columns:** {len(df.columns)}")
