@@ -100,6 +100,24 @@ df_numeric = df.copy()
 
 # ================= SCALE DEFINITIONS =================
 
+# Likert-scale columns (1–5)
+LIKERT_COLS = [
+    'Assignments_Stress',
+    'Academic_Workload_Anxiety',
+    'Difficulty_Sleeping_University_Pressure',
+    'Friends_Family_Support',
+    'Manage_Emotion_Stressful_Periods',
+    'Social_Media_Relaxation',
+    'Emotional_Connection_Social_Media',
+    'Social_Media_Daily_Routine',
+    'Social_Media_Waste_Time',
+    'Sleep_Affected_By_Social_Media',
+    'Studies_Affected_By_Social_Media',
+    'Seek_Help_Online_When_Stress',
+    'Social_Media_Positive_Impact_on_Wellbeing',
+    'Social_Media_Negative_Impact_on_Wellbeing'
+]
+
 # Likert mapping
 likert_map = {
     "Strongly Disagree": 1,
@@ -109,22 +127,15 @@ likert_map = {
     "Strongly Agree": 5
 }
 
-# Likert-scale columns (1–5)
-LIKERT_COLS = [
-    "Assignments_Stress",
-    "Academic_Workload_Anxiety",
-    "Difficulty_Sleeping_University_Pressure",
-    "Sleep_Affected_By_Social_Media",
-    "Studies_Affected_By_Social_Media"
-]
-
+# Numeric Likert Columns
 for col in LIKERT_COLS:
     if col in df_numeric.columns:
         df_numeric[col + "_Numeric"] = (
             df_numeric[col]
             .astype(str)
-            .str.split(" / ").str[0]   # ✅ THIS IS CRITICAL
+            .str.split(" / ").str[0]
             .str.strip()
+            .replace("nan", None)
             .map(likert_map)
         )
 
@@ -566,18 +577,10 @@ with tab1:
 
         col1, col2, col3 = st.columns(3)
 
-        st.write("Filtered numeric shape:", filtered_numeric.shape)
-        st.write(
-            filtered_numeric[
-                ["Social_Media_Use_Frequency", "Academic_Stress_Index"]
-            ].head(10)
-        )
-
-        
         # Bar Chart
-        filtered_numeric = filtered_numeric[
-            filtered_numeric["Academic_Stress_Index"].notna()
-        ]
+        filtered_numeric = filtered_numeric.dropna(
+            subset=["Academic_Stress_Index"]
+        )
 
         usage_group_mean = (
             filtered_numeric
@@ -591,9 +594,15 @@ with tab1:
             usage_group_mean,
             x="Social_Media_Use_Frequency",
             y="Academic_Stress_Index",
-            color="Academic_Stress_Index",
             title="Academic Stress vs Social Media Usage",
+            color="Academic_Stress_Index",
             color_continuous_scale=CONTINUOUS_SCALE
+        )
+
+        fig.update_layout(
+            xaxis_title="Social Media Usage",
+            yaxis_title="Academic Stress Index",
+            template="plotly_white"
         )
 
         st.plotly_chart(fig, use_container_width=True)
