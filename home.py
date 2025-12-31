@@ -444,24 +444,6 @@ with tab1:
             "More than 6 hours per day"
         ]
 
-        fig = px.bar(
-            df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
-            title="Distribution of Daily Social Media Usage",
-            labels={"value": "Number of Students", "index": "Hours per Day"},
-            color_discrete_sequence=px.colors.qualitative.Set2
-        )
-
-        fig.update_layout(xaxis_tickangle=-30)
-        st.plotly_chart(fig, use_container_width=True)
-
-        freq_order = [
-            "Less than 1 hour per day",
-            "1 to 2 hours per day",
-            "3 to 4 hours per day",
-            "5 to 6 hours per day",
-            "More than 6 hours per day"
-        ]
-
         filtered_df["Social_Media_Use_Frequency"] = pd.Categorical(
             filtered_df["Social_Media_Use_Frequency"],
             categories=freq_order,
