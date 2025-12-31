@@ -549,8 +549,6 @@ with tab1:
 
         # Bar Chart
         with col1:
-            st.subheader("Academic Stress vs Social Media Usage")
-
             usage_group_mean = (
                 filtered_numeric.groupby("Social_Media_Use_Frequency")
                 ["Academic_Stress_Index"]
@@ -560,6 +558,7 @@ with tab1:
 
             fig = px.bar(
                 usage_group_mean,
+                title="Academic Stress vs Social Media Usage",
                 x="Social_Media_Use_Frequency",
                 y="Academic_Stress_Index",
                 color="Academic_Stress_Index",
