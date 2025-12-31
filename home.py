@@ -436,7 +436,13 @@ with tab1:
         col1, col2, col3, col4 = st.columns(4)
         
         # Bar Chart
-        freq_order = ["< 1 hr", "1–2 hrs", "3–4 hrs", "5–6 hrs", "> 6 hrs"]
+        freq_order = [
+            "Less than 1 hour per day",
+            "1 to 2 hours per day",
+            "3 to 4 hours per day",
+            "5 to 6 hours per day",
+            "More than 6 hours per day"
+        ]
 
         fig = px.bar(
             filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
