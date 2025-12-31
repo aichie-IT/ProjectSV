@@ -370,8 +370,8 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
-    col3.metric("Avg Stress Index", f"{df_numeric['Assignments_Stress'].mean():.2f}", border=True)
-    col4.metric("High Usage (%)", f"{(df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day','More than 6 hours per day']).mean()*100):.1f}%", border=True)
+    col3.metric("Avg Stress Index", f"{filtered_numeric['Academic_Stress_Index'].mean():.2f}", border=True)
+    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day','More than 6 hours per day']).mean()*100):.1f}%", border=True)
 
     # Scientific Summary
     st.markdown("### Summary")
@@ -531,7 +531,7 @@ with tab1:
         col2.metric("Avg. Academic Performance", f"{filtered_numeric['General_Academic_Performance_Numeric'].mean():.2f}", border=True)
         high_users = filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100
         col3.metric("High Social Media Users (%)", f"{high_users:.1f}%", border=True)
-        col4.metric("Avg. Weekly Study Hours", f"{filtered_df['Study_Hours_Numeric'].mean():.1f}", border=True)
+        col4.metric("Avg. Weekly Study Hours", f"{filtered_numeric['Study_Hours_Numeric'].mean():.1f}", border=True)
 
         # Scientific Summary
         st.markdown("### Summary")
@@ -735,7 +735,7 @@ with tab1:
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("SM Hours ↔ Stress", f"{filtered_numeric[['Social_Media_Hours_Numeric', 'Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
-        col2.metric("Study Hours ↔ Stress", f"{filtered_df[['Study_Hours_Numeric','Assignments_Stress']].corr().iloc[0,1]:.2f}", border=True)
+        col2.metric("Study Hours ↔ Stress", f"{filtered_numeric[['Study_Hours_Numeric','Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
         impact_gap = (
             filtered_df['Social_Media_Positive_Impact_on_Wellbeing'].map(likert_map).mean()
             -
