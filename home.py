@@ -7,20 +7,37 @@ import seaborn as sns
 import warnings
 warnings.filterwarnings("ignore")
 
-# Add a banner image at the top
-banner_image = 'https://raw.githubusercontent.com/fakhitah3/FHPK-TVET/main/3u1i.jpeg'
-st.image(banner_image, use_container_width=True)
-
-# Add the main introduction paragraph
-st.write(
-    """
-    **Scientific Visualization** is a multidisciplinary field that focuses on transforming complex scientific data into visual forms that are easier to understand, interpret, and communicate.
-    Through the use of computational techniques, visualization helps researchers explore datasets, identify hidden patterns, and gain insights that would otherwise remain obscure in numerical form.
-    """
+# --- PAGE CONFIG ---
+st.set_page_config(
+    page_title="Internet Use and Mental Health Dashboard",
+    page_icon="🧠",
+    layout="wide"
 )
 
-banner_image = 'https://raw.githubusercontent.com/fakhitah3/FHPK-TVET/main/3u1i_2.jpeg'
-st.image(banner_image, use_container_width=True)
+# banner
+st.markdown(
+    """
+    <style>
+    .banner img {
+        width: 100%;
+        border-radius: 16px;
+        margin-bottom: 24px;
+        box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <div class="banner">
+        <img src="homepage dashboard.jpeg">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 
 # Add the extended explanation
 st.write(
@@ -35,13 +52,6 @@ st.write(
    
     By the end of this exercise, students should be able to produce **informative, accurate, and interactive visualizations** that effectively communicate scientific findings to both expert and non-expert audiences.
     """
-)
-
-# --- PAGE CONFIG ---
-st.set_page_config(
-    page_title="Internet Use and Mental Health Dashboard",
-    page_icon="🧠",
-    layout="wide"
 )
 
 # --- LOAD DATA ---
