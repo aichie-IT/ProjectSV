@@ -229,11 +229,12 @@ df_numeric["General_Academic_Performance_Numeric"] = (
     df_numeric["General_Academic_Performance"].astype(str).str.strip().map(academic_map)
 )
 
-filtered_numeric["Academic_Stress_Index"] = filtered_numeric[
+# Academic Stress Index
+df_numeric["Academic_Stress_Index"] = df_numeric[
     [
-        "Assignments_Stress",
-        "Academic_Workload_Anxiety",
-        "Difficulty_Sleeping_University_Pressure"
+        "Assignments_Stress_Numeric",
+        "Academic_Workload_Anxiety_Numeric",
+        "Difficulty_Sleeping_University_Pressure_Numeric"
     ]
 ].mean(axis=1)
 
