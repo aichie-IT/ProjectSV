@@ -135,10 +135,8 @@ for col in LIKERT_COLS:
             .astype(str)
             .str.split(" / ").str[0]
             .str.strip()
-            .replace("nan", None)
             .map(likert_map)
         )
-
 
 # Frequency-scale columns (1–4)
 FREQ_COLS = [
@@ -226,7 +224,8 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
         "Academic_Workload_Anxiety_Numeric",
         "Difficulty_Sleeping_University_Pressure_Numeric"
     ]
-].mean(axis=1)
+].mean(axis=1, skipna=True)
+
 
 # ----- CATEGORICAL ORDER -----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
@@ -578,9 +577,9 @@ with tab1:
         col1, col2, col3 = st.columns(3)
 
         # Bar Chart
-        filtered_numeric = filtered_numeric.dropna(
-            subset=["Academic_Stress_Index"]
-        )
+        filtered_numeric = filtered_numeric[
+            filtered_numeric["Academic_Stress_Index"].notna()
+        ]
 
         usage_group_mean = (
             filtered_numeric
