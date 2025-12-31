@@ -576,6 +576,14 @@ with tab1:
 
         col1, col2, col3 = st.columns(3)
 
+        st.write("Filtered numeric shape:", filtered_numeric.shape)
+        st.write(
+            filtered_numeric[
+                ["Social_Media_Use_Frequency", "Academic_Stress_Index"]
+            ].head(10)
+        )
+
+        
         # Bar Chart
         filtered_numeric = filtered_numeric[
             filtered_numeric["Academic_Stress_Index"].notna()
