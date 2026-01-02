@@ -410,457 +410,450 @@ tab1, tab2, tab3, tab4 = st.tabs(["📉 Usage Patterns", "🎓 Academic Impact",
     
 # ============ TAB 1: USAGE PATTERNS ============
 with tab1:
-        st.subheader("Internet & Social Media Usage Patterns")
-        st.markdown("Understand how much and how often students use the internet/social media.")
+    st.subheader("Internet & Social Media Usage Patterns")
+    st.markdown("Understand how much and how often students use the internet/social media.")
 
-        # Summary box
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
-        col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
-        col3.metric("Most Common Social Media Usage", filtered_df['Social_Media_Use_Frequency'].mode()[0], border=True)
-        col4.metric("Avg. Study Hours / Week", f"{filtered_numeric['Study_Hours_Numeric'].mean():.1f}", border=True)
+    # Summary box
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
+    col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
+    col3.metric("Most Common Social Media Usage", filtered_df['Social_Media_Use_Frequency'].mode()[0], border=True)
+    col4.metric("Avg. Study Hours / Week", f"{filtered_numeric['Study_Hours_Numeric'].mean():.1f}", border=True)
         
-        # Scientific Summary
-        st.markdown("### Summary")
-        st.info("""
-        This overview highlights general distributions in the dataset. Most riders wear helmets, 
-        and the average biking speed is moderate compared to the speed limits observed. 
-        The distribution of accident severity suggests that minor and moderate accidents dominate, 
-        implying that protective behaviors like helmet use and valid licensing may contribute 
-        to reducing severe outcomes. These insights establish a foundation for understanding 
-        how individual safety practices and environmental conditions interact.
-        """)
-        st.markdown("---")
-
-        col1, col2, col3, col4 = st.columns(4)
+    # Scientific Summary
+    st.markdown("### Summary")
+    st.info("""
+    This overview highlights general distributions in the dataset. Most riders wear helmets, 
+    And the average biking speed is moderate compared to the speed limits observed. 
+    The distribution of accident severity suggests that minor and moderate accidents dominate, 
+    implying that protective behaviors like helmet use and valid licensing may contribute 
+    to reducing severe outcomes. These insights establish a foundation for understanding 
+    how individual safety practices and environmental conditions interact.
+    """)
+    st.markdown("---")
         
-        # Bar Chart
-        freq_order = [
-            "Less than 1 hour per day",
-            "1 to 2 hours per day",
-            "3 to 4 hours per day",
-            "5 to 6 hours per day",
-            "More than 6 hours per day"
-        ]
+    # Bar Chart
+    freq_order = [
+        "Less than 1 hour per day",
+        "1 to 2 hours per day",
+        "3 to 4 hours per day",
+        "5 to 6 hours per day",
+        "More than 6 hours per day"
+    ]
 
-        filtered_df["Social_Media_Use_Frequency"] = pd.Categorical(
-            filtered_df["Social_Media_Use_Frequency"],
-            categories=freq_order,
-            ordered=True
-        )
+    filtered_df["Social_Media_Use_Frequency"] = pd.Categorical(
+        filtered_df["Social_Media_Use_Frequency"],
+        categories=freq_order,
+        ordered=True
+    )
 
-        fig = px.bar(
-            filtered_df,
-            x="Social_Media_Use_Frequency",
-            title="Distribution of Daily Social Media Usage",
-            labels={"Social_Media_Use_Frequency": "Hours per Day"},
-            color_discrete_sequence=px.colors.qualitative.Set2
-        )
+    fig = px.bar(
+        filtered_df,
+        x="Social_Media_Use_Frequency",
+        title="Distribution of Daily Social Media Usage",
+        labels={"Social_Media_Use_Frequency": "Hours per Day"},
+        color_discrete_sequence=px.colors.qualitative.Set2
+    )
 
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+    st.plotly_chart(fig, use_container_width=True)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
             
-        # Bar Chart
-        study_order = [
-            "Less than 5 hours", "5 to 10 hours",
-            "11 to 15 hours", "16 to 20 hours", "More than 20 hours"
-        ]
+    # Bar Chart
+    study_order = [
+        "Less than 5 hours", "5 to 10 hours",
+        "11 to 15 hours", "16 to 20 hours", "More than 20 hours"
+    ]
 
-        fig = px.bar(
-            filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order),
-            title="Frequency of Study Hours per Week",
-            labels={"value": "Number of Students", "index": "Study Hours"},
-            color_discrete_sequence=px.colors.qualitative.Pastel
-        )
+    fig = px.bar(
+        filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order),
+        title="Frequency of Study Hours per Week",
+        labels={"value": "Number of Students", "index": "Study Hours"},
+        color_discrete_sequence=px.colors.qualitative.Pastel
+    )
 
-        fig.update_layout(xaxis_tickangle=-25)
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+    fig.update_layout(xaxis_tickangle=-25)
+    st.plotly_chart(fig, use_container_width=True)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
 
-        # Box Plot
-        fig = px.box(
-            filtered_df,
-            x="Gender",
-            y="Social_Media_Use_Frequency",
-            title="Social Media Usage by Gender",
-            color="Gender",
-            color_discrete_sequence=px.colors.qualitative.Safe
-        )
+    # Box Plot
+    fig = px.box(
+        filtered_df,
+        x="Gender",
+        y="Social_Media_Use_Frequency",
+        title="Social Media Usage by Gender",
+        color="Gender",
+        color_discrete_sequence=px.colors.qualitative.Safe
+    )
 
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+    st.plotly_chart(fig, use_container_width=True)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
 
-        # Histogram
-        fig = px.histogram(
-            filtered_df,
-            title="Perception of Wasting Time on Social Media",
-            x="Social_Media_Waste_Time",
-            color_discrete_sequence=COLOR_SEQ,
-            category_orders={"Social_Media_Waste_Time": [
-            "Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"
-            ]}
-        )
+    # Histogram
+    fig = px.histogram(
+        filtered_df,
+        title="Perception of Wasting Time on Social Media",
+        x="Social_Media_Waste_Time",
+        color_discrete_sequence=COLOR_SEQ,
+        category_orders={"Social_Media_Waste_Time": [
+        "Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"
+        ]}
+    )
 
-        fig.update_layout(
-            xaxis_title="Response Level",
-            yaxis_title="Number of Students",
-            template="plotly_white"
-        )
+    fig.update_layout(
+        xaxis_title="Response Level",
+        yaxis_title="Number of Students",
+        template="plotly_white"
+    )
 
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+    st.plotly_chart(fig, use_container_width=True)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
 
-        # Pie Donut
-        resource_counts = filtered_df[
-            'Do you think universities should provide more online mental health resources?'
-        ].value_counts().reset_index()
+    # Pie Donut
+    resource_counts = filtered_df[
+        'Do you think universities should provide more online mental health resources?'
+    ].value_counts().reset_index()
 
-        resource_counts.columns = ["Response", "Count"]
+    resource_counts.columns = ["Response", "Count"]
 
-        fig = px.pie(
-            resource_counts,
-            names="Response",
-            values="Count",
-            hole=0.45,
-            color_discrete_sequence=COLOR_SEQ,
-            title="Need for Online Mental Health Resources"
-        )
-        fig.update_traces(textposition="inside", textinfo="percent+label")
-        st.plotly_chart(fig, use_container_width=True)
+    fig = px.pie(
+        resource_counts,
+        names="Response",
+        values="Count",
+        hole=0.45,
+        color_discrete_sequence=COLOR_SEQ,
+        title="Need for Online Mental Health Resources"
+    )
+    fig.update_traces(textposition="inside", textinfo="percent+label")
+    st.plotly_chart(fig, use_container_width=True)
 
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
        
-        # --- Observation Section (Fixed Indentation) ---
-        st.markdown("#### 💬 Observation")
-        st.success("""
-        The majority of accidents are classified as minor. Helmet usage is generally high,
-        which correlates with lower accident severity. Riders with valid licenses also
-        exhibit safer driving trends, suggesting that training and enforcement play key roles.
-        """)
+    # --- Observation Section (Fixed Indentation) ---
+    st.markdown("#### 💬 Observation")
+    st.success("""
+    The majority of accidents are classified as minor. Helmet usage is generally high,
+    which correlates with lower accident severity. Riders with valid licenses also
+    exhibit safer driving trends, suggesting that training and enforcement play key roles.
+    """)
     
-    # ============ TAB 2: ACADEMIC IMPACT ============
-    with tab2:
-        st.subheader("Academic Impact of Social Media Analysis")
-        st.markdown("Examine whether internet usage affects academic outcomes.")
+    
+# ============ TAB 2: ACADEMIC IMPACT ============
+with tab2:
+    st.subheader("Academic Impact of Social Media Analysis")
+    st.markdown("Examine whether internet usage affects academic outcomes.")
 
-        # Summary box
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Study Impact Reported (%)", f"{(filtered_df['Studies_Affected_By_Social_Media'].map(likert_map).mean()/5*100):.1f}%", border=True)
-        col2.metric("Avg. Academic Performance", f"{filtered_numeric['General_Academic_Performance_Numeric'].mean():.2f}", border=True)
-        high_users = filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100
-        col3.metric("High Social Media Users (%)", f"{high_users:.1f}%", border=True)
-        col4.metric("Avg. Weekly Study Hours", f"{filtered_numeric['Study_Hours_Numeric'].mean():.1f}", border=True)
+    # Summary box
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Study Impact Reported (%)", f"{(filtered_df['Studies_Affected_By_Social_Media'].map(likert_map).mean()/5*100):.1f}%", border=True)
+    col2.metric("Avg. Academic Performance", f"{filtered_numeric['General_Academic_Performance_Numeric'].mean():.2f}", border=True)
+    high_users = filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100
+    col3.metric("High Social Media Users (%)", f"{high_users:.1f}%", border=True)
+    col4.metric("Avg. Weekly Study Hours", f"{filtered_numeric['Study_Hours_Numeric'].mean():.1f}", border=True)
 
-        # Scientific Summary
-        st.markdown("### Summary")
-        st.info("""
-        This overview highlights general distributions in the dataset. Most riders wear helmets, 
-        and the average biking speed is moderate compared to the speed limits observed. 
-        The distribution of accident severity suggests that minor and moderate accidents dominate, 
-        implying that protective behaviors like helmet use and valid licensing may contribute 
-        to reducing severe outcomes. These insights establish a foundation for understanding 
-        how individual safety practices and environmental conditions interact.
-        """)
-        st.markdown("---")
+    # Scientific Summary
+    st.markdown("### Summary")
+    st.info("""
+    This overview highlights general distributions in the dataset. Most riders wear helmets, 
+    and the average biking speed is moderate compared to the speed limits observed. 
+    The distribution of accident severity suggests that minor and moderate accidents dominate, 
+    implying that protective behaviors like helmet use and valid licensing may contribute 
+    to reducing severe outcomes. These insights establish a foundation for understanding 
+    how individual safety practices and environmental conditions interact.
+    """)
+    st.markdown("---")
 
-        col1, col2, col3 = st.columns(3)
+    # Bar Chart
+    filtered_numeric = filtered_numeric.dropna(
+        subset=["Academic_Stress_Index"]
+    )
 
-        # Bar Chart
-        filtered_numeric = filtered_numeric.dropna(
-            subset=["Academic_Stress_Index"]
-        )
+    usage_group_mean = (
+        filtered_numeric
+        .groupby("Social_Media_Use_Frequency", observed=True)
+        ["Academic_Stress_Index"]
+        .mean()
+        .reset_index()
+    )
 
-        usage_group_mean = (
-            filtered_numeric
-            .groupby("Social_Media_Use_Frequency", observed=True)
-            ["Academic_Stress_Index"]
-            .mean()
-            .reset_index()
-        )
+    fig = px.bar(
+        usage_group_mean,
+        x="Social_Media_Use_Frequency",
+        y="Academic_Stress_Index",
+        title="Academic Stress vs Social Media Usage",
+        color="Academic_Stress_Index",
+        color_continuous_scale=CONTINUOUS_SCALE
+    )
 
-        fig = px.bar(
-            usage_group_mean,
-            x="Social_Media_Use_Frequency",
-            y="Academic_Stress_Index",
-            title="Academic Stress vs Social Media Usage",
-            color="Academic_Stress_Index",
-            color_continuous_scale=CONTINUOUS_SCALE
-        )
+    fig.update_layout(
+        xaxis_title="Social Media Usage",
+        yaxis_title="Academic Stress Index",
+        template="plotly_white"
+    )
 
-        fig.update_layout(
-            xaxis_title="Social Media Usage",
-            yaxis_title="Academic Stress Index",
-            template="plotly_white"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+    st.plotly_chart(fig, use_container_width=True)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
         
-        # Box Plot
-        fig = px.box(
-            df,
-            x="Social_Media_Use_Frequency",
-            y="General_Academic_Performance",
-            title="Social Media Frequency vs Academic Performance",
-            color="Social_Media_Use_Frequency",
-            color_discrete_sequence=px.colors.qualitative.Set3
-        )
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+    # Box Plot
+    fig = px.box(
+        df,
+        x="Social_Media_Use_Frequency",
+        y="General_Academic_Performance",
+        title="Social Media Frequency vs Academic Performance",
+        color="Social_Media_Use_Frequency",
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
 
-        # Box Plot
-        fig = px.box(
-            df_numeric,
-            x="Social_Media_Use_Frequency",
-            y="Sleep_Affected_By_Social_Media",
-            color="Social_Media_Use_Frequency",
-            color_discrete_sequence=COLOR_SEQ
-        )
+    # Box Plot
+    fig = px.box(
+        df_numeric,
+        x="Social_Media_Use_Frequency",
+        y="Sleep_Affected_By_Social_Media",
+        color="Social_Media_Use_Frequency",
+        color_discrete_sequence=COLOR_SEQ
+    )
 
-        fig.update_layout(
-            title="Sleep Disturbance by Social Media Usage",
-            xaxis_title="Usage Frequency",
-            yaxis_title="Sleep Affected Score",
-            template="plotly_white"
-        )
+    fig.update_layout(
+        title="Sleep Disturbance by Social Media Usage",
+        xaxis_title="Usage Frequency",
+        yaxis_title="Sleep Affected Score",
+        template="plotly_white"
+    )
 
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+    st.plotly_chart(fig, use_container_width=True)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
 
-        # Scatter Plot
-        fig = px.scatter(
-            df,
-            x="Age",
-            y="Studies_Affected_By_Social_Media",
-            title="Age vs Impact of Social Media on Studies",
-            color="Gender",
-            opacity=0.7,
-            color_discrete_sequence=px.colors.qualitative.Dark2
-        )
+    # Scatter Plot
+    fig = px.scatter(
+        df,
+        x="Age",
+        y="Studies_Affected_By_Social_Media",
+        title="Age vs Impact of Social Media on Studies",
+        color="Gender",
+        opacity=0.7,
+        color_discrete_sequence=px.colors.qualitative.Dark2
+    )
 
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
-        # --- Observation Section (Fixed Indentation) ---
-        st.markdown("#### 💬 Observation")
-        st.success("""
-        The majority of accidents are classified as minor. Helmet usage is generally high,
-        which correlates with lower accident severity. Riders with valid licenses also
-        exhibit safer driving trends, suggesting that training and enforcement play key roles.
-        """)
+    st.plotly_chart(fig, use_container_width=True)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
+    # --- Observation Section (Fixed Indentation) ---
+    st.markdown("#### 💬 Observation")
+    st.success("""
+    The majority of accidents are classified as minor. Helmet usage is generally high,
+    which correlates with lower accident severity. Riders with valid licenses also
+    exhibit safer driving trends, suggesting that training and enforcement play key roles.
+    """)
 
-    # ============ TAB 3: WELLBEING ANALYSIS ============
-    with tab3:
-        st.subheader("Mental & Emotional Wellbeing")
-        st.markdown("Understand stress, sleep, and emotional responses linked to online behaviour.")
+# ============ TAB 3: WELLBEING ANALYSIS ============
+with tab3:
+    st.subheader("Mental & Emotional Wellbeing")
+    st.markdown("Understand stress, sleep, and emotional responses linked to online behaviour.")
 
-        # Summary box
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Avg. Stress Level", f"{filtered_numeric['Assignments_Stress_Numeric'].mean():.2f}", border=True)
-        col2.metric("Sleep Affected (%)", f"{(filtered_numeric['Sleep_Affected_By_Social_Media_Numeric'].mean()/5*100):.1f}%", border=True)
-        col3.metric("Emotional Attachment", f"{filtered_numeric['Emotional_Connection_Social_Media_Numeric'].mean():.2f}", border=True)
-        col4.metric("Online Help Seeking (%)", f"{(filtered_numeric['Seek_Help_Online_When_Stress_Numeric'].mean()/5*100):.1f}%", border=True)
+    # Summary box
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Avg. Stress Level", f"{filtered_numeric['Assignments_Stress_Numeric'].mean():.2f}", border=True)
+    col2.metric("Sleep Affected (%)", f"{(filtered_numeric['Sleep_Affected_By_Social_Media_Numeric'].mean()/5*100):.1f}%", border=True)
+    col3.metric("Emotional Attachment", f"{filtered_numeric['Emotional_Connection_Social_Media_Numeric'].mean():.2f}", border=True)
+    col4.metric("Online Help Seeking (%)", f"{(filtered_numeric['Seek_Help_Online_When_Stress_Numeric'].mean()/5*100):.1f}%", border=True)
 
-        # Scientific Summary
-        st.markdown("### Summary")
-        st.info("""
-        This overview highlights general distributions in the dataset. Most riders wear helmets, 
-        and the average biking speed is moderate compared to the speed limits observed. 
-        The distribution of accident severity suggests that minor and moderate accidents dominate, 
-        implying that protective behaviors like helmet use and valid licensing may contribute 
-        to reducing severe outcomes. These insights establish a foundation for understanding 
-        how individual safety practices and environmental conditions interact.
-        """)
-        st.markdown("---")
+    # Scientific Summary
+    st.markdown("### Summary")
+    st.info("""
+    This overview highlights general distributions in the dataset. Most riders wear helmets, 
+    and the average biking speed is moderate compared to the speed limits observed. 
+    The distribution of accident severity suggests that minor and moderate accidents dominate, 
+    implying that protective behaviors like helmet use and valid licensing may contribute 
+    to reducing severe outcomes. These insights establish a foundation for understanding 
+    how individual safety practices and environmental conditions interact.
+    """)
+    st.markdown("---")
 
-        col1, col2 = st.columns(2)
-
-        # Radar / Polar Chart
-        st.subheader("Mental Health Impact Profile")
+    # Radar / Polar Chart
+    st.subheader("Mental Health Impact Profile")
             
-        categories = [
+    categories = [
+        'Assignments_Stress',
+        'Academic_Workload_Anxiety',
+        'Difficulty_Sleeping_University_Pressure',
+        'Sleep_Affected_By_Social_Media',
+        'Studies_Affected_By_Social_Media'
+    ]
+
+    values = df_numeric[categories].mean().tolist()
+ 
+    fig = go.Figure(
+        go.Scatterpolar(
+            r=values + [values[0]],
+            theta=categories + [categories[0]],
+            fill='toself',
+            line_color="#636EFA"
+        )
+    )
+
+    fig.update_layout(
+        polar=dict(radialaxis=dict(visible=True, range=[1,5])),
+        template="plotly_white"
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
+
+    # Parallel coordinates
+    parallel_df = df_numeric[
+        [
+            'Social_Media_Use_Frequency',
             'Assignments_Stress',
             'Academic_Workload_Anxiety',
-            'Difficulty_Sleeping_University_Pressure',
             'Sleep_Affected_By_Social_Media',
             'Studies_Affected_By_Social_Media'
         ]
+    ].dropna()
 
-        values = df_numeric[categories].mean().tolist()
- 
-        fig = go.Figure(
-            go.Scatterpolar(
-                r=values + [values[0]],
-                theta=categories + [categories[0]],
-                fill='toself',
-                line_color="#636EFA"
-            )
-        )
+    fig = px.parallel_coordinates(
+        parallel_df,
+        dimensions=[
+            'Assignments_Stress',
+            'Academic_Workload_Anxiety',
+            'Sleep_Affected_By_Social_Media',
+            'Studies_Affected_By_Social_Media'
+        ],
+        color='Assignments_Stress',
+        color_continuous_scale=CONTINUOUS_SCALE
+    )
+    fig.update_layout(template="plotly_white")
+    st.plotly_chart(fig, use_container_width=True)
 
-        fig.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[1,5])),
-            template="plotly_white"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
-
-        # Parallel coordinates
-        parallel_df = df_numeric[
-            [
-                'Social_Media_Use_Frequency',
-                'Assignments_Stress',
-                'Academic_Workload_Anxiety',
-                'Sleep_Affected_By_Social_Media',
-                'Studies_Affected_By_Social_Media'
-            ]
-        ].dropna()
-
-        fig = px.parallel_coordinates(
-            parallel_df,
-            dimensions=[
-                'Assignments_Stress',
-                'Academic_Workload_Anxiety',
-                'Sleep_Affected_By_Social_Media',
-                'Studies_Affected_By_Social_Media'
-            ],
-            color='Assignments_Stress',
-            color_continuous_scale=CONTINUOUS_SCALE
-        )
-        fig.update_layout(template="plotly_white")
-        st.plotly_chart(fig, use_container_width=True)
-
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+    st.success("""
+    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
+    """)
        
-        # --- Observation Section (Fixed Indentation) ---
-        st.markdown("#### 💬 Observation")
-        st.success("""
-        The majority of accidents are classified as minor. Helmet usage is generally high,
-        which correlates with lower accident severity. Riders with valid licenses also
-        exhibit safer driving trends, suggesting that training and enforcement play key roles.
-        """)
+    # --- Observation Section (Fixed Indentation) ---
+    st.markdown("#### 💬 Observation")
+    st.success("""
+    The majority of accidents are classified as minor. Helmet usage is generally high,
+    which correlates with lower accident severity. Riders with valid licenses also
+    exhibit safer driving trends, suggesting that training and enforcement play key roles.
+    """)
 
-    # ============ TAB 4: CORRELATION & INSIGHTS ============
-    with tab4:
-        st.subheader("Correlation & Deep Analysis")
-        st.markdown("Reveal hidden relationships across variables (lecturer favourite).")
+# ============ TAB 4: CORRELATION & INSIGHTS ============
+with tab4:
+    st.subheader("Correlation & Deep Analysis")
+    st.markdown("Reveal hidden relationships across variables (lecturer favourite).")
 
-        # Summary box
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("SM Hours ↔ Stress", f"{filtered_numeric[['Social_Media_Hours_Numeric', 'Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
-        col2.metric("Study Hours ↔ Stress", f"{filtered_numeric[['Study_Hours_Numeric','Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
-        impact_gap = (
-            filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing_Numeric'].mean(skipna=True)
-            -
-            filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing_Numeric'].mean(skipna=True)
-        )
-        col3.metric("Wellbeing Impact Gap", f"{impact_gap:.2f}", border=True)
-        col4.metric("Support-Seeking Score", f"{filtered_df['Use_Online_Communities_for_Support'].map(likert_map).mean():.2f}", border=True)
-        # Scientific Summary
-        st.markdown("### Summary")
-        st.info("""
-        This overview highlights general distributions in the dataset. Most riders wear helmets, 
-        and the average biking speed is moderate compared to the speed limits observed. 
-        The distribution of accident severity suggests that minor and moderate accidents dominate, 
-        implying that protective behaviors like helmet use and valid licensing may contribute 
-        to reducing severe outcomes. These insights establish a foundation for understanding 
-        how individual safety practices and environmental conditions interact.
-        """)
-        st.markdown("---")
+    # Summary box
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("SM Hours ↔ Stress", f"{filtered_numeric[['Social_Media_Hours_Numeric', 'Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
+    col2.metric("Study Hours ↔ Stress", f"{filtered_numeric[['Study_Hours_Numeric','Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
+    impact_gap = (
+        filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing_Numeric'].mean(skipna=True)
+        -
+        filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing_Numeric'].mean(skipna=True)
+    )
+    col3.metric("Wellbeing Impact Gap", f"{impact_gap:.2f}", border=True)
+    col4.metric("Support-Seeking Score", f"{filtered_df['Use_Online_Communities_for_Support'].map(likert_map).mean():.2f}", border=True)
+    
+    # Scientific Summary
+    st.markdown("### Summary")
+    st.info("""
+    This overview highlights general distributions in the dataset. Most riders wear helmets, 
+    and the average biking speed is moderate compared to the speed limits observed. 
+    The distribution of accident severity suggests that minor and moderate accidents dominate, 
+    implying that protective behaviors like helmet use and valid licensing may contribute 
+    to reducing severe outcomes. These insights establish a foundation for understanding 
+    how individual safety practices and environmental conditions interact.
+    """)
+    st.markdown("---")
 
-        col1, col2 = st.columns(2)
+    # Heatmap
+    corr = df_numeric[
+        [
+            'Assignments_Stress',
+            'Academic_Workload_Anxiety',
+            'Sleep_Affected_By_Social_Media',
+            'Studies_Affected_By_Social_Media',
+            'Social_Media_Hours_Numeric'
+        ]
+    ].corr()
 
-        # Heatmap
-        corr = df_numeric[
-            [
-                'Assignments_Stress',
-                'Academic_Workload_Anxiety',
-                'Sleep_Affected_By_Social_Media',
-                'Studies_Affected_By_Social_Media',
-                'Social_Media_Hours_Numeric'
-            ]
-        ].corr()
+    fig = px.imshow(
+        corr,
+        text_auto=".2f",
+        color_continuous_scale=CONTINUOUS_SCALE
+    )
 
-        fig = px.imshow(
-            corr,
-            text_auto=".2f",
-            color_continuous_scale=CONTINUOUS_SCALE
-        )
+    fig.update_layout(
+        title="Correlation Between Internet Use & Mental Health",
+        template="plotly_white"
+    )
 
-        fig.update_layout(
-            title="Correlation Between Internet Use & Mental Health",
-            template="plotly_white"
-        )
+    st.plotly_chart(fig, use_container_width=True)
+    st.error("""
+    Strong correlations highlight the need for institutional awareness and early intervention.
+    """)
 
-        st.plotly_chart(fig, use_container_width=True)
-        st.error("""
-        Strong correlations highlight the need for institutional awareness and early intervention.
-        """)
+    # Waterfall Chart
+    mean_vals = df_numeric[
+        [
+            'Assignments_Stress',
+            'Academic_Workload_Anxiety',
+            'Sleep_Affected_By_Social_Media',
+            'Studies_Affected_By_Social_Media'
+        ]
+    ].mean()
 
-        # Waterfall Chart
-        mean_vals = df_numeric[
-            [
-                'Assignments_Stress',
-                'Academic_Workload_Anxiety',
-                'Sleep_Affected_By_Social_Media',
-                'Studies_Affected_By_Social_Media'
-            ]
-        ].mean()
+    fig = go.Figure(go.Waterfall(
+        x=[
+            "Assignments Stress",
+            "Academic Anxiety",
+            "Sleep Affected",
+            "Studies Affected",
+            "Overall Impact"
+        ],
+        y=[
+            mean_vals[0],
+            mean_vals[1],
+            mean_vals[2],
+            mean_vals[3],
+            mean_vals.sum()
+        ],
+        measure=["relative","relative","relative","relative","total"]
+    ))
 
-        fig = go.Figure(go.Waterfall(
-            x=[
-                "Assignments Stress",
-                "Academic Anxiety",
-                "Sleep Affected",
-                "Studies Affected",
-                "Overall Impact"
-            ],
-            y=[
-                mean_vals[0],
-                mean_vals[1],
-                mean_vals[2],
-                mean_vals[3],
-                mean_vals.sum()
-            ],
-            measure=["relative","relative","relative","relative","total"]
-        ))
+    fig.update_layout(
+        title="Cumulative Mental Health Impact",
+        template="plotly_white"
+    )
 
-        fig.update_layout(
-            title="Cumulative Mental Health Impact",
-            template="plotly_white"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
          
-       
-        # --- Observation Section (Fixed Indentation) ---
-        st.markdown("#### 💬 Observation")
-        st.success("""
-        The majority of accidents are classified as minor. Helmet usage is generally high,
-        which correlates with lower accident severity. Riders with valid licenses also
-        exhibit safer driving trends, suggesting that training and enforcement play key roles.
-        """)
+    # --- Observation Section (Fixed Indentation) ---
+    st.markdown("#### 💬 Observation")
+    st.success("""
+    The majority of accidents are classified as minor. Helmet usage is generally high,
+    which correlates with lower accident severity. Riders with valid licenses also
+    exhibit safer driving trends, suggesting that training and enforcement play key roles.
+    """)
 
 # --- FOOTER ---
 st.markdown("---")
