@@ -85,6 +85,19 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
+# ----- CATEGORICAL ORDER -----
+df["Social_Media_Use_Frequency"] = pd.Categorical(
+    df["Social_Media_Use_Frequency"],
+    categories=[
+        "Less than 1 hour per day",
+        "1 to 2 hours per day",
+        "3 to 4 hours per day",
+        "5 to 6 hours per day",
+        "More than 6 hours per day"
+    ],
+    ordered=True
+)
+
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
 st.header("📊 Overall Social Media Usage (All Respondents)")
 
@@ -255,19 +268,6 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
         "Difficulty_Sleeping_University_Pressure_Numeric"
     ]
 ].mean(axis=1)
-
-# ----- CATEGORICAL ORDER -----
-df["Social_Media_Use_Frequency"] = pd.Categorical(
-    df["Social_Media_Use_Frequency"],
-    categories=[
-        "Less than 1 hour per day",
-        "1 to 2 hours per day",
-        "3 to 4 hours per day",
-        "5 to 6 hours per day",
-        "More than 6 hours per day"
-    ],
-    ordered=True
-)
 
 
 # ====== SIDEBAR ======
