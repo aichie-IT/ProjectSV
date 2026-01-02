@@ -252,6 +252,15 @@ freq_order = [
     "More than 6 hours per day"
 ]
 
+usage_group_mean = (
+    filtered_numeric
+    .groupby("Social_Media_Use_Frequency", observed=True)
+    ["Academic_Stress_Index"]
+    .mean()
+    .reindex(freq_order)
+    .reset_index()
+)
+
 overall_counts = (
     df["Social_Media_Use_Frequency"]
     .value_counts()
