@@ -85,27 +85,36 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
-# Fix encoding issues
-df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
+# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
+st.header("📊 Overall Social Media Usage (All Respondents)")
 
-# ================= CANONICAL SOCIAL MEDIA CATEGORY (FINAL FIX) =================
-sm_clean_map = {
-    "less than 1 hour per day": "Less than 1 hour per day",
-    "1 to 2 hours per day": "1 to 2 hours per day",
-    "3 to 4 hours per day": "3 to 4 hours per day",
-    "5 to 6 hours per day": "5 to 6 hours per day",
-    "more than 6 hours per day": "More than 6 hours per day"
-}
+overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
 
-df["SM_Usage_Clean"] = (
-    df["Social_Media_Use_Frequency"]
-    .astype(str)
-    .str.lower()
-    .str.replace(r"\s+", " ", regex=True)
-    .str.strip()
-    .map(sm_clean_map)
+fig_overall = px.bar(
+    x=overall_counts.index,
+    y=overall_counts.values,
+    labels={
+        "x": "Hours per Day",
+        "y": "Number of Students"
+    },
+    title="Overall Distribution of Daily Social Media Usage",
+    color=overall_counts.index,
+    color_discrete_sequence=px.colors.qualitative.Set2
 )
 
+fig_overall.update_layout(xaxis_tickangle=-30)
+st.plotly_chart(fig_overall, use_container_width=True)
+
+
+st.info(
+    "This chart represents the **entire respondent population** without any filters applied. "
+    "It serves as a baseline for comparison with filtered subgroup analyses."
+)
+
+st.markdown("---")
+
+# Fix encoding issues
+df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
 
 # Drop Irrelevant Columns
 cols_to_drop = [
@@ -191,7 +200,7 @@ df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map({
 })
 
 # Social media hours
-df_numeric["Social_Media_Hours_Numeric"] = df["SM_Usage_Clean"].map({
+df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map({
     "Less than 1 hour per day": 0.5,
     "1 to 2 hours per day": 1.5,
     "3 to 4 hours per day": 3.5,
@@ -248,8 +257,8 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
 ].mean(axis=1)
 
 # ----- CATEGORICAL ORDER -----
-df["SM_Usage_Clean"] = pd.Categorical(
-    df["SM_Usage_Clean"],
+df["Social_Media_Use_Frequency"] = pd.Categorical(
+    df["Social_Media_Use_Frequency"],
     categories=[
         "Less than 1 hour per day",
         "1 to 2 hours per day",
@@ -260,34 +269,6 @@ df["SM_Usage_Clean"] = pd.Categorical(
     ordered=True
 )
 
-# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
-st.header("📊 Overall Social Media Usage (All Respondents)")
-
-overall_counts = df["SM_Usage_Clean"].value_counts(sort=False)
-
-fig_overall = px.bar(
-    x=overall_counts.index,
-    y=overall_counts.values,
-    labels={
-        "x": "Hours per Day",
-        "y": "Number of Students"
-    },
-    title="Overall Distribution of Daily Social Media Usage",
-    color=overall_counts.index,
-    color_discrete_sequence=px.colors.qualitative.Set2
-)
-
-fig_overall.update_layout(xaxis_tickangle=-30)
-st.plotly_chart(fig_overall, use_container_width=True)
-
-
-st.info(
-    "This chart represents the **entire respondent population** without any filters applied. "
-    "It serves as a baseline for comparison with filtered subgroup analyses."
-)
-
-st.markdown("---")
-
 
 # ====== SIDEBAR ======
 with st.sidebar:
@@ -295,7 +276,7 @@ with st.sidebar:
     
     # --- Data Summary ---
     st.markdown("### 🧾 Data Summary")
-    st.info(f"**Total Records:** {len(df):,}\n\n**Columns:** {len(df.columns)}")
+    st.info(f"*Total Records:* {len(df):,}\n\n*Columns:* {len(df.columns)}")
 
     # --- Filters Section ---
     with st.expander("Filter Options", expanded=True):
@@ -326,8 +307,8 @@ with st.sidebar:
         # --- Social Media Usage ---
         sm_filter = st.multiselect(
             "Social Media Usage (Hours / Day)",
-            options=df["SM_Usage_Clean"].cat.categories,
-            default=df["SM_Usage_Clean"].cat.categories
+            options=df["Social_Media_Use_Frequency"].cat.categories,
+            default=df["Social_Media_Use_Frequency"].cat.categories
         )
 
         # --- Age Filter ---
@@ -355,7 +336,7 @@ with st.sidebar:
             filtered_numeric = filtered_numeric.loc[filtered_df.index]
 
         if sm_filter:
-            filtered_df = filtered_df[filtered_df["SM_Usage_Clean"].isin(sm_filter)]
+            filtered_df = filtered_df[filtered_df["Social_Media_Use_Frequency"].isin(sm_filter)]
             filtered_numeric = filtered_numeric.loc[filtered_df.index]
 
         filtered_df = filtered_df[
@@ -376,7 +357,7 @@ with st.sidebar:
         st.download_button(
             label="Download CSV",
             data=filtered_df.to_csv(index=False).encode("utf-8"),
-            file_name="motor_accident_data.csv",
+            file_name="students_data.csv",
             mime="text/csv"
         )
     st.markdown("---")
