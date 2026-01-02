@@ -88,7 +88,19 @@ df = df.rename(columns={
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
 st.header("📊 Overall Social Media Usage (All Respondents)")
 
-overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
+category_order = [
+    "Less than 1 hour per day",
+    "1 to 2 hours per day",
+    "3 to 4 hours per day",
+    "5 to 6 hours per day",
+    "More than 6 hours per day"
+]
+
+overall_counts = (
+    df["Social_Media_Use_Frequency"]
+    .value_counts()
+    .reindex(category_order, fill_value=0)
+)
 
 fig_overall = px.bar(
     x=overall_counts.index,
@@ -102,9 +114,13 @@ fig_overall = px.bar(
     color_discrete_sequence=px.colors.qualitative.Set2
 )
 
-fig_overall.update_layout(xaxis_tickangle=-30)
-st.plotly_chart(fig_overall, use_container_width=True)
+fig_overall.update_xaxes(
+    categoryorder="array",
+    categoryarray=category_order,
+    tickangle=-30
+)
 
+st.plotly_chart(fig_overall, use_container_width=True)
 
 st.info(
     "This chart represents the **entire respondent population** without any filters applied. "
