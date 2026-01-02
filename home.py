@@ -384,7 +384,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "Ilya",
 
 # ============ TAB 1: INTERNET USE VS. MENTAL HEALTH ============
 with tab1:
-    st.subheader("🧠 Internet Use & Mental Health Insights")
+    st.subheader("Internet Use & Mental Health Insights")
     st.markdown("Analyzing interrelationships between social media usage, academic stress, and student wellbeing.")
 
     # Summary box
