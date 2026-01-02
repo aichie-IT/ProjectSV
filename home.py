@@ -88,7 +88,7 @@ df = df.rename(columns={
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
 st.header("📊 Overall Social Media Usage (All Respondents)")
 
-overall_counts = df["SM_Usage_Clean"].value_counts(sort=False)
+overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
 
 fig_overall = px.bar(
     x=overall_counts.index,
@@ -104,7 +104,6 @@ fig_overall = px.bar(
 
 fig_overall.update_layout(xaxis_tickangle=-30)
 st.plotly_chart(fig_overall, use_container_width=True)
-
 
 st.info(
     "This chart represents the **entire respondent population** without any filters applied. "
