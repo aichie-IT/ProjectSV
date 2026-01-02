@@ -241,56 +241,6 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
     ordered=True
 )
 
-# ================= OVERALL (UNFILTERED) ANALYSIS =================
-st.header("📊 Overall Survey Overview (All Respondents)")
-
-freq_order = [
-    "Less than 1 hour per day",
-    "1 to 2 hours per day",
-    "3 to 4 hours per day",
-    "5 to 6 hours per day",
-    "More than 6 hours per day"
-]
-
-usage_group_mean = (
-    filtered_numeric
-    .groupby("Social_Media_Use_Frequency", observed=True)
-    ["Academic_Stress_Index"]
-    .mean()
-    .reindex(freq_order)
-    .reset_index()
-)
-
-overall_counts = (
-    df["Social_Media_Use_Frequency"]
-    .value_counts()
-    .reindex(freq_order)
-    .fillna(0)
-)
-
-fig_overall = px.bar(
-    x=overall_counts.index,
-    y=overall_counts.values,
-    labels={
-        "x": "Hours per Day",
-        "y": "Number of Students"
-    },
-    title="Overall Distribution of Daily Social Media Usage (All Respondents)",
-    color=overall_counts.index,
-    color_discrete_sequence=px.colors.qualitative.Set2
-)
-
-fig_overall.update_layout(xaxis_tickangle=-30)
-st.plotly_chart(fig_overall, use_container_width=True)
-
-st.info(
-    "**Interpretation:** This chart presents the overall social media usage pattern of all UMK student respondents. "
-    "It provides a population-level baseline, which is later compared against subgroup analyses using filters."
-)
-
-st.markdown("---")
-
-
 # ====== SIDEBAR ======
 with st.sidebar:
     st.title("Dashboard Controls")
