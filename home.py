@@ -88,6 +88,17 @@ df = df.rename(columns={
 # Fix encoding issues
 df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
 
+# ================= STANDARDIZE SOCIAL MEDIA TEXT =================
+df["Social_Media_Use_Frequency"] = (
+    df["Social_Media_Use_Frequency"]
+    .astype(str)
+    .str.replace("–", "-", regex=False)
+    .str.replace("—", "-", regex=False)
+    .str.replace("  ", " ", regex=False)
+    .str.strip()
+)
+
+
 # Drop Irrelevant Columns
 cols_to_drop = [
     "Timestamp",
@@ -240,6 +251,39 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
     ],
     ordered=True
 )
+
+# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
+st.header("📊 Overall Social Media Usage (All Respondents)")
+
+overall_counts = (
+    df["Social_Media_Use_Frequency"]
+    .value_counts(dropna=False)
+    .reindex(df["Social_Media_Use_Frequency"].cat.categories)
+    .fillna(0)
+)
+
+fig_overall = px.bar(
+    x=overall_counts.index,
+    y=overall_counts.values,
+    labels={
+        "x": "Hours per Day",
+        "y": "Number of Students"
+    },
+    title="Overall Distribution of Daily Social Media Usage",
+    color=overall_counts.index,
+    color_discrete_sequence=px.colors.qualitative.Set2
+)
+
+fig_overall.update_layout(xaxis_tickangle=-30)
+st.plotly_chart(fig_overall, use_container_width=True)
+
+st.info(
+    "This chart represents the **entire respondent population** without any filters applied. "
+    "It serves as a baseline for comparison with filtered subgroup analyses."
+)
+
+st.markdown("---")
+
 
 # ====== SIDEBAR ======
 with st.sidebar:
