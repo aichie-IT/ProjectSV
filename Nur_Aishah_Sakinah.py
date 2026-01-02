@@ -862,21 +862,6 @@ with tab1:
         exhibit safer driving trends, suggesting that training and enforcement play key roles.
         """)
 
-# ============= MEMBER LAIN PUNYA ================
-
-# ============ TAB 2: ACCIDENT FACTORS ============
-with tab2:
-    st.subheader("Accident Severity by Categorical Factors")
-
-
-# ============ TAB 3: NUMERICAL ANALYSIS ============
-with tab3:
-    st.subheader("Distribution of Numeric Variables")
-
-# ============ TAB 4: ADVANCED VISUALIZATIONS ============
-with tab4:
-    st.subheader("Distribution of Numeric Variables")
-   
 # --- FOOTER ---
 st.markdown("---")
 st.caption("© 2025 Motorbike Accident Dashboard | Designed with ❤️ using Streamlit & Plotly")
