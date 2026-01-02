@@ -256,6 +256,18 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
     ]
 ].mean(axis=1)
 
+# ----- CATEGORICAL ORDER -----
+df["Social_Media_Use_Frequency"] = pd.Categorical(
+    df["Social_Media_Use_Frequency"],
+    categories=[
+        "Less than 1 hour per day",
+        "1 to 2 hours per day",
+        "3 to 4 hours per day",
+        "5 to 6 hours per day",
+        "More than 6 hours per day"
+    ],
+    ordered=True
+)
 
 # ====== SIDEBAR ======
 with st.sidebar:
