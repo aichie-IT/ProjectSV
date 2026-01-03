@@ -101,27 +101,6 @@ with st.expander("🔍 View Dataset Preview (First 20 Records)"):
         use_container_width=True
     )
 
-# --- Missing Values Overview ---
-with st.expander("⚠️ Missing Values Summary"):
-    missing_df = (
-        df.isnull()
-        .sum()
-        .reset_index()
-        .rename(columns={"index": "Variable", 0: "Missing Values"})
-    )
-    missing_df = missing_df[missing_df["Missing Values"] > 0]
-
-    if missing_df.empty:
-        st.success("No missing values detected in the dataset.")
-    else:
-        st.dataframe(missing_df, use_container_width=True)
-
-st.markdown("""
-**Interpretation:**  
-The dataset overview confirms that the survey responses are sufficiently complete and structured,
-allowing reliable visualization and interrelationship analysis in subsequent sections.
-""")
-
 st.markdown("---")
 
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
