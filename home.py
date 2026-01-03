@@ -97,8 +97,8 @@ filtering or visualization is applied.
 st.markdown("---")
 
 # --- Dataset Preview ---
-st.expander("🔍 View Dataset Preview"):
-st.dataframe(df.head(20), use_container_width=True)
+with st.expander("🔍 View Dataset Preview"):
+    st.dataframe(df.head(20), use_container_width=True)
 
 st.markdown("---")
 
