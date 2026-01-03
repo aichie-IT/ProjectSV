@@ -94,16 +94,6 @@ It allows users to understand the **scope, structure, and completeness** of the 
 performing any visual or analytical interpretation.
 """)
 
-# --- Dataset Summary Metrics ---
-col1, col2, col3, col4 = st.columns(4)
-
-col1.metric("Total Respondents", f"{len(df):,}")
-col2.metric("Total Variables", f"{df.shape[1]}")
-col3.metric("Numeric Variables", f"{df.select_dtypes(include='number').shape[1]}")
-col4.metric("Categorical Variables", f"{df.select_dtypes(exclude='number').shape[1]}")
-
-st.markdown("---")
-
 # --- Expandable Data Preview ---
 with st.expander("🔍 View Dataset Preview (First 20 Records)"):
     st.dataframe(
