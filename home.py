@@ -85,6 +85,55 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
+# ================= DATASET OVERVIEW =================
+st.header("📋 Dataset Overview")
+
+st.markdown("""
+This section provides an **overall overview of the dataset** collected from UMK students.  
+It allows users to understand the **scope, structure, and completeness** of the data before
+performing any visual or analytical interpretation.
+""")
+
+# --- Dataset Summary Metrics ---
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric("Total Respondents", f"{len(df):,}")
+col2.metric("Total Variables", f"{df.shape[1]}")
+col3.metric("Numeric Variables", f"{df.select_dtypes(include='number').shape[1]}")
+col4.metric("Categorical Variables", f"{df.select_dtypes(exclude='number').shape[1]}")
+
+st.markdown("---")
+
+# --- Expandable Data Preview ---
+with st.expander("🔍 View Dataset Preview (First 20 Records)"):
+    st.dataframe(
+        df.head(20),
+        use_container_width=True
+    )
+
+# --- Missing Values Overview ---
+with st.expander("⚠️ Missing Values Summary"):
+    missing_df = (
+        df.isnull()
+        .sum()
+        .reset_index()
+        .rename(columns={"index": "Variable", 0: "Missing Values"})
+    )
+    missing_df = missing_df[missing_df["Missing Values"] > 0]
+
+    if missing_df.empty:
+        st.success("No missing values detected in the dataset.")
+    else:
+        st.dataframe(missing_df, use_container_width=True)
+
+st.markdown("""
+**Interpretation:**  
+The dataset overview confirms that the survey responses are sufficiently complete and structured,
+allowing reliable visualization and interrelationship analysis in subsequent sections.
+""")
+
+st.markdown("---")
+
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
 st.header("📊 Overall Social Media Usage (All Respondents)")
 
