@@ -85,24 +85,6 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
-# ================= DATASET OVERVIEW =================
-st.header("📋 Dataset Overview")
-
-st.markdown("""
-This section provides an **overall overview of the dataset** collected from UMK students.  
-It allows users to understand the **scope, structure, and completeness** of the data before
-performing any visual or analytical interpretation.
-""")
-
-# --- Expandable Data Preview ---
-with st.expander("🔍 View Dataset Preview (First 20 Records)"):
-    st.dataframe(
-        df.head(20),
-        use_container_width=True
-    )
-
-st.markdown("---")
-
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
 st.header("📊 Overall Social Media Usage (All Respondents)")
 
