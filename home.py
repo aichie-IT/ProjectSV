@@ -125,7 +125,8 @@ cols_to_drop = [
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
 
-# ================= SCALE DEFINITIONS =================
+# ============ INDIVIDUAL PART FILTERING AND MAPPING ============
+# ----------- AISHAH SAKINAH -----------
 
 # Likert-scale columns (1–5)
 LIKERT_COLS = [
@@ -408,6 +409,9 @@ st.markdown("---")
 
 # --- TAB LAYOUT ---
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "Ilya", "Hanis", "Ainun"])
+
+# ============ INDIVIDUAL PART VISUALIZATION ============
+# ----------- AISHAH SAKINAH -----------
 
 # ============ TAB 1: INTERNET USE VS. MENTAL HEALTH ============
 with tab1:
@@ -890,17 +894,18 @@ with tab1:
         exhibit safer driving trends, suggesting that training and enforcement play key roles.
         """)
 
-# ============= MEMBER LAIN PUNYA ================
+# ----------- ILYA -----------
 
 # ============ TAB 2: ACCIDENT FACTORS ============
 with tab2:
     st.subheader("Accident Severity by Categorical Factors")
 
-
+# ----------- HANIS NABILA -----------
 # ============ TAB 3: NUMERICAL ANALYSIS ============
 with tab3:
     st.subheader("Distribution of Numeric Variables")
-
+    
+# ----------- AINUN -----------
 # ============ TAB 4: ADVANCED VISUALIZATIONS ============
 with tab4:
     st.subheader("Distribution of Numeric Variables")
