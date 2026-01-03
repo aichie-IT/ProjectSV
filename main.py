@@ -79,7 +79,8 @@ cols_to_drop = [
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
 
-# Filtering & Transformation (Individual Part) - Aishah
+# ============ INDIVIDUAL PART FILTERING AND MAPPING ============
+# ----------- AISHAH SAKINAH -----------
 
 # Likert-scale columns (1–5)
 LIKERT_COLS = [
@@ -818,17 +819,17 @@ with tab1:
     exhibit safer driving trends, suggesting that training and enforcement play key roles.
     """)
 
-# ============= MEMBER LAIN PUNYA ================
-
+# ----------- ILYA -----------
 # ============ TAB 2: ACCIDENT FACTORS ============
 with tab2:
     st.subheader("Accident Severity by Categorical Factors")
 
-
+# ----------- HANIS NABILA -----------
 # ============ TAB 3: NUMERICAL ANALYSIS ============
 with tab3:
     st.subheader("Distribution of Numeric Variables")
 
+# ----------- AINUN -----------
 # ============ TAB 4: ADVANCED VISUALIZATIONS ============
 with tab4:
     st.subheader("Distribution of Numeric Variables")
