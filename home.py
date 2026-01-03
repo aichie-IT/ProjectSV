@@ -85,6 +85,52 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
+# ================= DATASET OVERVIEW =================
+st.header("📋 Dataset Overview")
+
+st.markdown("""
+This section provides an **overall overview of the survey dataset** collected from UMK students.
+It allows users to understand the **structure, size, and completeness** of the data before any
+filtering or visualization is applied.
+""")
+
+# --- Dataset Summary ---
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Total Respondents", f"{len(df):,}")
+col2.metric("Total Variables", f"{df.shape[1]}")
+col3.metric("Data Source", "Google Forms Survey")
+
+st.markdown("---")
+
+# --- Dataset Preview ---
+with st.expander("🔍 View Dataset Preview"):
+    st.dataframe(df.head(20), use_container_width=True)
+
+# --- Missing Values Summary ---
+with st.expander("⚠️ Missing Values Check"):
+    missing = df.isnull().sum()
+    missing = missing[missing > 0]
+
+    if missing.empty:
+        st.success("No missing values detected in the dataset.")
+    else:
+        st.dataframe(
+            missing.reset_index().rename(
+                columns={"index": "Variable", 0: "Missing Values"}
+            ),
+            use_container_width=True
+        )
+
+st.markdown("""
+**Note:**  
+The dataset overview confirms that the collected survey data is sufficiently complete and suitable
+for subsequent scientific visualization and analysis.
+""")
+
+st.markdown("---")
+
+
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
 st.header("📊 Overall Social Media Usage (All Respondents)")
 
