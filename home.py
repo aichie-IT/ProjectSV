@@ -90,27 +90,17 @@ df = df.rename(columns={
     "What type of online content affects you the most (positive or negative)? / Apakah jenis kandungan dalam talian yang paling mempengaruhi anda (positif atau negatif)?": "Type_of_Online_Content_Affects",
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
+# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
+st.header("📊 Overall Social Media Usage (All Respondents)")
 
 # ================= DATASET OVERVIEW =================
-st.header("📋 Dataset Overview")
+st.subheader("📋 Dataset Overview")
 
 st.markdown("""
 This section provides an **overall overview of the survey dataset** collected from UMK students.
 It allows users to understand the **structure, size, and completeness** of the data before any
 filtering or visualization is applied.
 """)
-
-st.markdown("---")
-
-# --- Dataset Preview ---
-with st.expander("🔍 View Dataset Preview"):
-    st.dataframe(df.head(20), use_container_width=True)
-
-st.markdown("---")
-
-
-# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
-st.header("📊 Overall Social Media Usage (All Respondents)")
 
 # --- SUMMARY BOX ---
 col1, col2, col3, col4 = st.columns(4)
@@ -122,6 +112,12 @@ col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Recor
 col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True) 
 col3.metric("Academic Performance", top_academic, help="PLO 3: Student Academic Performance", border=True)
 col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Usage", border=True)
+
+st.markdown("---")
+
+# --- Dataset Preview ---
+with st.expander("🔍 View Dataset Preview"):
+    st.dataframe(df.head(20), use_container_width=True)
 
 st.markdown("---")
 
