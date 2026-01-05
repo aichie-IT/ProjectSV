@@ -167,6 +167,16 @@ LIKERT_COLS = [
     'Social_Media_Negative_Impact_on_Wellbeing'
 ]
 
+def clean_likert(series):
+    return (
+        series
+        .astype(str)
+        .str.split(" / ").str[0]
+        .str.strip()
+        .replace("nan", None)
+    )
+
+
 # Likert mapping
 likert_map = {
     "Strongly Disagree": 1,
@@ -179,15 +189,7 @@ likert_map = {
 # Numeric Likert Columns
 for col in LIKERT_COLS:
     if col in df_numeric.columns:
-        df_numeric[col + "_Numeric"] = (
-            df_numeric[col]
-            .astype(str)
-            .str.split(" / ").str[0]
-            .str.strip()
-            .replace("nan", None)
-            .map(likert_map)
-        )
-
+        df_numeric[col + "_Numeric"] = clean_likert(df_numeric[col]).map(likert_map)
 
 # Frequency-scale columns (1–4)
 FREQ_COLS = [
@@ -248,25 +250,6 @@ df_numeric["General_Academic_Performance_Numeric"] = (
     })
     .map(academic_map)
 )
-
-mental_cols = [
-    "Assignments_Stress",
-    "Academic_Workload_Anxiety",
-    "Difficulty_Sleeping_University_Pressure",
-    "Sleep_Affected_By_Social_Media",
-    "Studies_Affected_By_Social_Media"
-]
-
-# Likert (1–5)
-for col in mental_cols:
-    if col in df_numeric.columns:
-        df_numeric[col + "_Numeric"] = (
-            df_numeric[col]
-            .astype(str)
-            .str.split(" / ").str[0]
-            .map(likert_map)
-        )
-
 
 # Academic Stress Index
 df_numeric["Academic_Stress_Index"] = df_numeric[
