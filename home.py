@@ -7,6 +7,15 @@ import seaborn as sns
 import warnings
 warnings.filterwarnings("ignore")
 
+def safe_corr(df, col_x, col_y):
+    if col_x not in df.columns or col_y not in df.columns:
+        return None
+    temp = df[[col_x, col_y]].dropna()
+    if len(temp) < 3:
+        return None
+    return temp.corr().iloc[0, 1]
+
+
 # --- MAIN TITLE ---
 st.title(" Student Mental Health Monitoring Insights Dashboard")
 st.markdown("Exploring the Relationship Between Internet Use and Mental Health.")
