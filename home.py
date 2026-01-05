@@ -596,10 +596,10 @@ with tab1:
             .mean() * 100
         )
 
-        col1.metric("Study Impact (%)", f"{(study_impact.mean()/5*100):.1f}%" if not study_impact.empty else "N/A", help="Average perceived impact of social media on studies")
-        col2.metric("Avg Academic Performance", f"{academic_perf.mean():.2f}" if not academic_perf.empty else "N/A", help="Numeric scale: 1=Below Avg → 4=Excellent")
-        col3.metric("High Usage Students (%)", f"{high_users_pct:.1f}%", help="Students using ≥5 hours/day")
-        col4.metric("Avg Weekly Study Hours", f"{study_hours.mean():.1f}" if not study_hours.empty else "N/A", help="Self-reported weekly study time")
+        col1.metric("Study Impact (%)", f"{(study_impact.mean()/5*100):.1f}%" if not study_impact.empty else "N/A", help="Average perceived impact of social media on studies", border=True)
+        col2.metric("Avg Academic Performance", f"{academic_perf.mean():.2f}" if not academic_perf.empty else "N/A", help="Numeric scale: 1=Below Avg → 4=Excellent", border=True)
+        col3.metric("High Usage Students (%)", f"{high_users_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
+        col4.metric("Avg Weekly Study Hours", f"{study_hours.mean():.1f}" if not study_hours.empty else "N/A", help="Self-reported weekly study time", border=True)
         
         # Scientific Summary
         st.markdown("### Summary")
