@@ -7,12 +7,6 @@ import seaborn as sns
 import warnings
 warnings.filterwarnings("ignore")
 
-# --- MAIN TITLE ---
-st.title(" Student Mental Health Monitoring Insights Dashboard")
-st.markdown("Exploring the Relationship Between Internet Use and Mental Health.")
-
-st.markdown("---")
-
 # --- PAGE CONFIG ---
 st.set_page_config(
     page_title="Internet Use and Mental Health Dashboard",
@@ -25,6 +19,21 @@ st.image(
     "banner.jpeg",
     use_container_width=True,
     caption="Internet Use and Mental Health Dashboard"
+)
+
+# Add the extended explanation
+st.write(
+    """
+    The aim of scientific visualization is not merely to present data attractively, but to **enhance comprehension and decision-making** through visual analytics.
+    Applications span across disciplines such as **climate science**, **medicine**, **engineering**, **data science**, and **environmental studies**.
+
+    In this course or module, students will learn to:
+    - Select relevant datasets for analysis and visualization.
+    - Apply various visualization techniques such as graphs, maps, and 3D models.
+    - Interpret visual outputs to support scientific conclusions and policy recommendations.
+   
+    By the end of this exercise, students should be able to produce **informative, accurate, and interactive visualizations** that effectively communicate scientific findings to both expert and non-expert audiences.
+    """
 )
 
 # --- LOAD DATA ---
@@ -76,11 +85,8 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
-# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
-st.header("Overall Social Media Usage (All Respondents)")
-
-# ------ DATASET OVERVIEW ------
-st.subheader("📋 Dataset Overview")
+# ================= DATASET OVERVIEW =================
+st.header("📋 Dataset Overview")
 
 st.markdown("""
 This section provides an **overall overview of the survey dataset** collected from UMK students.
@@ -90,30 +96,15 @@ filtering or visualization is applied.
 
 st.markdown("---")
 
-# --- SUMMARY BOX ---
-col1, col2, col3, col4 = st.columns(4)
-
-top_academic = df['General_Academic_Performance'].mode()[0]
-top_media = df['Social_Media_Use_Frequency'].mode()[0]
-
-if not filtered_df.empty:
-    col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
-    col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
-    col3.metric("Academic Performance", top_academic, help="PLO 3: Students Academic Performance", border=True)
-    col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Use Frecuency", border=True)
-else:
-    col1.metric("Total Records", "0", help="No data available")
-    col2.metric("Avg. Age", "N/A", help="No data available")
-    col3.metric("Academic Performance", "N/A", help="No data available")
-    col4.metric("Social Media Usage", "N/A", help="No data available")
-
-st.markdown("---")
-
 # --- Dataset Preview ---
 with st.expander("🔍 View Dataset Preview"):
     st.dataframe(df.head(20), use_container_width=True)
-    
+
 st.markdown("---")
+
+
+# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
+st.header("📊 Overall Social Media Usage (All Respondents)")
 
 overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
 
@@ -392,7 +383,6 @@ with st.sidebar:
         )
     st.markdown("---")
 
-
 # ===== THEME TOGGLE =====
 theme_mode = st.sidebar.radio("Select Theme Mode", ["Light 🌞", "Dark 🌙"], horizontal=True)
 
@@ -417,14 +407,33 @@ COLOR_SEQ = px.colors.qualitative.Set2
 CONTINUOUS_SCALE = "RdYlBu_r"
 
 
+# --- MAIN TITLE ---
+st.title(" Student Mental Health Monitoring Insights Dashboard")
+st.markdown("Exploring the Relationship Between Internet Use and Mental Health.")
+
+st.markdown("---")
+
+# --- SUMMARY BOX ---
+col1, col2, col3, col4 = st.columns(4)
+
+if not filtered_df.empty:
+    col1.metric("Total Records", f"{len(filtered_df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
+    col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
+    col3.metric("Avg. Positive Impact", f"{filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
+    col4.metric("Avg. Negative Impact", f"{filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
+else:
+    col1.metric("Total Records", "0", help="No data available")
+    col2.metric("Avg. Age", "N/A", help="No data available")
+    col3.metric("Avg. Positive Impact", "N/A", help="No data available")
+    col4.metric("Avg. Negative Impact", "N/A", help="No data available")
+
+st.markdown("---")
+
 # --- TAB LAYOUT ---
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "Ilya", "Hanis", "Ainun"])
 
 # ============ INDIVIDUAL PART VISUALIZATION ============
 # ----------- AISHAH SAKINAH -----------
-
-Help me fix this summary box, which is academic stress index show nan output
-
 
 # ============ TAB 1: INTERNET USE VS. MENTAL HEALTH ============
 with tab1:
@@ -457,9 +466,6 @@ with tab1:
     with usage_tab:
         st.subheader("Internet & Social Media Usage Patterns")
         st.markdown("Understand how much and how often students use the internet/social media.")
-
-        # Summary box
-        col1, col2, col3, col4 = st.columns(4)
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
