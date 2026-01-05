@@ -450,12 +450,20 @@ with tab1:
         # Scientific Summary
         st.markdown("### Summary")
         st.info("""
-        This overview highlights general distributions in the dataset. Most riders wear helmets, 
-        and the average biking speed is moderate compared to the speed limits observed. 
-        The distribution of accident severity suggests that minor and moderate accidents dominate, 
-        implying that protective behaviors like helmet use and valid licensing may contribute 
-        to reducing severe outcomes. These insights establish a foundation for understanding 
-        how individual safety practices and environmental conditions interact.
+        The **median social media usage of 7.0 hours per day** indicates that social
+        media is heavily embedded in students’ daily routines, with usage skewed
+        towards prolonged engagement.
+
+        Approximately **74.1% of students belong to the high-usage group**
+        (5 hours or more per day), confirming that excessive internet exposure is
+        common within the sample. In contrast, the **average study time is 6.2 hours
+        per week**, suggesting a comparatively lower allocation of time to academic
+        activities.
+
+        Interestingly, **none of the students explicitly perceived social media as a
+        waste of time (0.0%)**, which may reflect normalisation of high usage or a lack
+        of awareness of its potential impact on productivity rather than an absence
+        of actual time displacement.
         """)
         st.markdown("---")
 
