@@ -76,9 +76,9 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
-st.header("📊 Overall Social Media Usage (All Respondents)")
+st.header("Overall Social Media Usage (All Respondents)")
 
-# ================= DATASET OVERVIEW =================
+# ------ DATASET OVERVIEW -------
 st.subheader("📋 Dataset Overview")
 
 st.markdown("""
@@ -101,7 +101,7 @@ col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Usage", b
 st.markdown("---")
 
 # --- Dataset Preview ---
-with st.expander("🔍 View Dataset Preview"):
+with st.expander("View Dataset Preview"):
     st.dataframe(df.head(20), use_container_width=True)
 
 st.markdown("---")
