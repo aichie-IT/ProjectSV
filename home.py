@@ -90,7 +90,7 @@ df = df.rename(columns={
 })
 
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
-st.header("📊 Overall Social Media Usage (All Respondents)")
+st.header("Overall Social Media Usage (All Respondents)")
 
 # ------ DATASET OVERVIEW ------
 st.subheader("📋 Dataset Overview")
@@ -100,8 +100,6 @@ This section provides an **overall overview of the survey dataset** collected fr
 It allows users to understand the **structure, size, and completeness** of the data before any
 filtering or visualization is applied.
 """)
-
-st.markdown("---")
 
 # --- SUMMARY BOX ---
 col1, col2, col3, col4 = st.columns(4)
@@ -123,10 +121,8 @@ else:
 st.markdown("---")
 
 # --- Dataset Preview ---
-with st.expander("🔍 View Dataset Preview"):
+with st.expander("View Dataset Preview"):
     st.dataframe(df.head(20), use_container_width=True)
-
-st.markdown("---")
 
 overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
 
