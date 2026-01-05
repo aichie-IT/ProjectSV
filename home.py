@@ -730,12 +730,15 @@ with tab1:
         # Scientific Summary
         st.markdown("### Summary")
         st.info("""
-        This overview highlights general distributions in the dataset. Most riders wear helmets, 
-        and the average biking speed is moderate compared to the speed limits observed. 
-        The distribution of accident severity suggests that minor and moderate accidents dominate, 
-        implying that protective behaviors like helmet use and valid licensing may contribute 
-        to reducing severe outcomes. These insights establish a foundation for understanding 
-        how individual safety practices and environmental conditions interact.
+        The wellbeing analysis indicates a **moderate average stress level of {stress.mean():.2f}**, 
+        suggesting that academic and online demands contribute noticeably to students’ daily stress.
+
+        Approximately **{(sleep.mean()/5*100):.1f}%** of students reported that their sleep patterns are affected by social media use, 
+        highlighting the potential impact of excessive screen time on rest and recovery. 
+        The **emotional attachment score of {emotion.mean():.2f}** reflects a moderate emotional connection to social media platforms.
+
+        Furthermore, **{(help_seek.mean()/5*100):.1f}%** of students indicated that they seek help or emotional support online during stressful periods, 
+        suggesting that digital platforms play a significant role in students’ coping and support-seeking behaviours.
         """)
         st.markdown("---")
 
@@ -834,12 +837,17 @@ with tab1:
         # Scientific Summary
         st.markdown("### Summary")
         st.info("""
-        This overview highlights general distributions in the dataset. Most riders wear helmets, 
-        and the average biking speed is moderate compared to the speed limits observed. 
-        The distribution of accident severity suggests that minor and moderate accidents dominate, 
-        implying that protective behaviors like helmet use and valid licensing may contribute 
-        to reducing severe outcomes. These insights establish a foundation for understanding 
-        how individual safety practices and environmental conditions interact.
+        The correlation analysis shows a **weak positive relationship (r = {corr_sm_stress:.2f})** between daily social media usage and academic stress, 
+        showing that increased time spent online is associated with slightly higher stress levels.
+
+        Similarly, **study hours exhibit a weak positive correlation with stress (r = {corr_study_stress:.2f})**, 
+        suggesting that higher academic workload may contribute to increased stress rather than reducing it.
+
+        The **wellbeing impact gap of {impact_gap:.2f}** indicates that perceived positive effects of social media slightly outweigh negative effects, 
+        implying a balanced but cautious role of social media in students’ wellbeing.
+
+        Lastly, the **support-seeking score of {support_score.mean():.2f}** reflects a moderate tendency for students to use online communities 
+        as a source of emotional or mental health support during stressful periods.
         """)
         st.markdown("---")
 
