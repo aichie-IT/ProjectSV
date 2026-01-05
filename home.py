@@ -445,10 +445,10 @@ with tab1:
             .mean() * 100
         )
 
-        col1.metric("Median SM Hours / Day", f"{median_usage:.1f} hrs", help="Typical daily social media usage (median)")
-        col2.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using ≥5 hours/day")
-        col3.metric("Avg Study Hours / Week", f"{avg_study_hours:.1f}", help="Average academic study commitment")
-        col4.metric("Perceived Time Loss (%)", f"{time_waste_pct:.1f}%", help="Students who feel social media wastes their time")
+        col1.metric("Median SM Hours / Day", f"{median_usage:.1f} hrs", help="Typical daily social media usage (median)", border=True)
+        col2.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
+        col3.metric("Avg Study Hours / Week", f"{avg_study_hours:.1f}", help="Average academic study commitment", border=True)
+        col4.metric("Perceived Time Loss (%)", f"{time_waste_pct:.1f}%", help="Students who feel social media wastes their time", border=True)
         
         # Scientific Summary
         st.markdown("### Summary")
