@@ -447,10 +447,16 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
+
+        valid_stress = filtered_numeric["Academic_Stress_Index"].dropna()
+
         col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
         col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
-        col3.metric("Most Common Social Media Usage", filtered_df['Social_Media_Use_Frequency'].mode()[0], border=True)
-        col4.metric("Avg. Study Hours / Week", f"{filtered_numeric['Study_Hours_Numeric'].mean():.1f}", border=True)
+        if not valid_stress.empty:
+            col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
+        else:
+            col3.metric("Avg Stress Index", "N/A", help="No valid stress index data after filtering", border=True)
+            col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
         
         # Scientific Summary
         st.markdown("### Summary")
