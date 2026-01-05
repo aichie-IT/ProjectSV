@@ -413,12 +413,19 @@ with tab1:
     # Scientific Summary
     st.markdown("### Summary")
     st.info("""
-    This overview highlights general distributions in the dataset. Most riders wear helmets, 
-    and the average biking speed is moderate compared to the speed limits observed. 
-    The distribution of accident severity suggests that minor and moderate accidents dominate, 
-    implying that protective behaviors like helmet use and valid licensing may contribute 
-    to reducing severe outcomes. These insights establish a foundation for understanding 
-    how individual safety practices and environmental conditions interact.
+    This overview presents the overall profile of UMK students included in the analysis.
+    A total of **27 students** were analysed, with an average age of **22.7 years**, reflecting
+    a typical undergraduate population.
+
+    The **average Academic Stress Index of 2.98** indicates a moderate level of academic-related
+    stress, suggesting that many students experience noticeable pressure from coursework,
+    assignments, and academic workload.
+
+    Notably, **74.1% of students fall into the high social media usage category**
+    (5 hours or more per day), highlighting the strong integration of social media into
+    students’ daily routines. This high prevalence of intensive internet use provides a
+    critical context for examining its potential influence on academic stress and mental
+    wellbeing in subsequent analyses.
     """)
     st.markdown("---")
 
