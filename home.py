@@ -93,8 +93,8 @@ st.markdown("---")
 # --- SUMMARY BOX ---
 col1, col2, col3, col4 = st.columns(4)
 
-top_academic = filtered_df['General_Academic_Performance'].mode()[0]
-top_media = filtered_df['Social_Media_Use_Frequency'].mode()[0]
+top_academic = df['General_Academic_Performance'].mode()[0]
+top_media = df['Social_Media_Use_Frequency'].mode()[0]
 
 if not filtered_df.empty:
     col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
