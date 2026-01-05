@@ -115,16 +115,13 @@ st.header("📊 Overall Social Media Usage (All Respondents)")
 # --- SUMMARY BOX ---
 col1, col2, col3, col4 = st.columns(4)
 
-if not filtered_df.empty:
-    col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
-    col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
-    col3.metric("Avg. Academic Performance", f"{df['General_Academic_Performance'].mean():.1f}", help="PLO 3: Student Academic Performance", border=True)
-    col4.metric("Avg. Social Media Usage", f"{df_numeric['Social_Media_Use_Frequency'].mean():.1f}", help="PLO 4: Social Media Usage", border=True)
-else:
-    col1.metric("Total Records", "0", help="No data available")
-    col2.metric("Avg. Age", "N/A", help="No data available")
-    col3.metric("Avg. Academic Performance", "N/A", help="No data available")
-    col4.metric("Avg. Social Media Usage", "N/A", help="No data available")
+top_academic = df['General_Academic_Performance'].mode()[0]
+top_media = df['Social_Media_Use_Frequency'].mode()[0]
+    
+col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)   
+col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True) 
+col3.metric("Academic Performance", top_academic, help="PLO 3: Student Academic Performance", border=True)
+col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Usage", border=True)
 
 st.markdown("---")
 
