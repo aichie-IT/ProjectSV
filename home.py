@@ -109,7 +109,7 @@ col1, col2, col3, col4 = st.columns(4)
 top_academic = df['General_Academic_Performance'].mode()[0]
 top_media = df['Social_Media_Use_Frequency'].mode()[0]
 
-if not filtered_df.empty:
+if not df.empty:
     col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
     col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
     col3.metric("Academic Performance", top_academic, help="PLO 3: Students Academic Performance", border=True)
