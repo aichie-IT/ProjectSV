@@ -27,6 +27,21 @@ st.image(
     caption="Internet Use and Mental Health Dashboard"
 )
 
+# Add the extended explanation
+st.write(
+    """
+    The aim of scientific visualization is not merely to present data attractively, but to **enhance comprehension and decision-making** through visual analytics.
+    Applications span across disciplines such as **climate science**, **medicine**, **engineering**, **data science**, and **environmental studies**.
+
+    In this course or module, students will learn to:
+    - Select relevant datasets for analysis and visualization.
+    - Apply various visualization techniques such as graphs, maps, and 3D models.
+    - Interpret visual outputs to support scientific conclusions and policy recommendations.
+   
+    By the end of this exercise, students should be able to produce **informative, accurate, and interactive visualizations** that effectively communicate scientific findings to both expert and non-expert audiences.
+    """
+)
+
 # --- LOAD DATA ---
 @st.cache_data
 def load_data():
@@ -75,11 +90,9 @@ df = df.rename(columns={
     "What type of online content affects you the most (positive or negative)? / Apakah jenis kandungan dalam talian yang paling mempengaruhi anda (positif atau negatif)?": "Type_of_Online_Content_Affects",
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
-# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
-st.header("Overall Social Media Usage (All Respondents)")
 
-# ------ DATASET OVERVIEW -------
-st.subheader("📋 Dataset Overview")
+# ================= DATASET OVERVIEW =================
+st.header("📋 Dataset Overview")
 
 st.markdown("""
 This section provides an **overall overview of the survey dataset** collected from UMK students.
@@ -87,22 +100,31 @@ It allows users to understand the **structure, size, and completeness** of the d
 filtering or visualization is applied.
 """)
 
-# --- SUMMARY BOX ---
-col1, col2, col3, col4 = st.columns(4)
-
-top_academic = df['General_Academic_Performance'].mode()[0]
-top_media = df['Social_Media_Use_Frequency'].mode()[0]
-    
-col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)   
-col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True) 
-col3.metric("Academic Performance", top_academic, help="PLO 3: Student Academic Performance", border=True)
-col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Usage", border=True)
-
 st.markdown("---")
 
 # --- Dataset Preview ---
-with st.expander("View Dataset Preview"):
+with st.expander("🔍 View Dataset Preview"):
     st.dataframe(df.head(20), use_container_width=True)
+
+st.markdown("---")
+
+
+# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
+st.header("📊 Overall Social Media Usage (All Respondents)")
+
+# --- SUMMARY BOX ---
+col1, col2, col3, col4 = st.columns(4)
+
+if not filtered_df.empty:
+    col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
+    col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
+    col3.metric("Avg. Positive Impact", f"{df['Social_Media_Positive_Impact_on_Wellbeing'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
+    col4.metric("Avg. Negative Impact", f"{df['Social_Media_Negative_Impact_on_Wellbeing'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
+else:
+    col1.metric("Total Records", "0", help="No data available")
+    col2.metric("Avg. Age", "N/A", help="No data available")
+    col3.metric("Avg. Positive Impact", "N/A", help="No data available")
+    col4.metric("Avg. Negative Impact", "N/A", help="No data available")
 
 st.markdown("---")
 
@@ -383,6 +405,7 @@ with st.sidebar:
         )
     st.markdown("---")
 
+
 # ===== THEME TOGGLE =====
 theme_mode = st.sidebar.radio("Select Theme Mode", ["Light 🌞", "Dark 🌙"], horizontal=True)
 
@@ -413,21 +436,20 @@ tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "Ilya",
 # ============ INDIVIDUAL PART VISUALIZATION ============
 # ----------- AISHAH SAKINAH -----------
 
+Help me fix this summary box, which is academic stress index show nan output
+
+
 # ============ TAB 1: INTERNET USE VS. MENTAL HEALTH ============
 with tab1:
     st.subheader("Internet Use & Mental Health Insights")
     st.markdown("Analyzing interrelationships between social media usage, academic stress, and student wellbeing.")
 
     # Summary box
-    valid_stress = filtered_numeric["Academic_Stress_Index"].dropna()
-
+    col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
-    if not valid_stress.empty:
-        col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
-    else:
-        col3.metric("Avg Stress Index", "N/A", help="No valid stress index data after filtering", border=True)
-        col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
+    col3.metric("Avg Stress Index", f"{filtered_numeric['Academic_Stress_Index'].mean():.2f}", border=True)
+    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day','More than 6 hours per day']).mean()*100):.1f}%", border=True)
 
     # Scientific Summary
     st.markdown("### Summary")
