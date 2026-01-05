@@ -400,7 +400,7 @@ with tab1:
         col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
     else:
         col3.metric("Avg Stress Index", "N/A", help="No valid stress index data after filtering", border=True)
-        col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
+    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
 
     # Scientific Summary
     st.markdown("### Summary")
