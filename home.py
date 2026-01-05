@@ -18,28 +18,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# banner
-st.image(
-    "banner.jpeg",
-    use_container_width=True,
-    caption="Internet Use and Mental Health Dashboard"
-)
-
-# Add the extended explanation
-st.write(
-    """
-    The aim of scientific visualization is not merely to present data attractively, but to **enhance comprehension and decision-making** through visual analytics.
-    Applications span across disciplines such as **climate science**, **medicine**, **engineering**, **data science**, and **environmental studies**.
-
-    In this course or module, students will learn to:
-    - Select relevant datasets for analysis and visualization.
-    - Apply various visualization techniques such as graphs, maps, and 3D models.
-    - Interpret visual outputs to support scientific conclusions and policy recommendations.
-   
-    By the end of this exercise, students should be able to produce **informative, accurate, and interactive visualizations** that effectively communicate scientific findings to both expert and non-expert audiences.
-    """
-)
-
 # --- LOAD DATA ---
 @st.cache_data
 def load_data():
@@ -118,11 +96,11 @@ else:
     col3.metric("Academic Performance", "N/A", help="No data available")
     col4.metric("Social Media Usage", "N/A", help="No data available")
 
-st.markdown("---")
-
 # --- Dataset Preview ---
 with st.expander("View Dataset Preview"):
     st.dataframe(df.head(20), use_container_width=True)
+
+st.markdown("---")
 
 overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
 
