@@ -422,6 +422,8 @@ with tab1:
     st.markdown("Analyzing interrelationships between social media usage, academic stress, and student wellbeing.")
 
     # Summary box
+    col1, col2, col3, col4 = st.columns(4)
+    
     valid_stress = filtered_numeric["Academic_Stress_Index"].dropna()
 
     col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
