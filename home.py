@@ -77,7 +77,7 @@ df = df.rename(columns={
 })
 
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
-st.header("📊 Overall Social Media Usage (All Respondents)")
+st.header("Overall Social Media Usage (All Respondents)")
 
 # ------ DATASET OVERVIEW ------
 st.subheader("📋 Dataset Overview")
@@ -90,11 +90,6 @@ filtering or visualization is applied.
 
 st.markdown("---")
 
-# --- Dataset Preview ---
-with st.expander("🔍 View Dataset Preview"):
-    st.dataframe(df.head(20), use_container_width=True)
-
-st.markdown("---")
 # --- SUMMARY BOX ---
 col1, col2, col3, col4 = st.columns(4)
 
@@ -112,6 +107,12 @@ else:
     col3.metric("Academic Performance", "N/A", help="No data available")
     col4.metric("Social Media Usage", "N/A", help="No data available")
 
+st.markdown("---")
+
+# --- Dataset Preview ---
+with st.expander("🔍 View Dataset Preview"):
+    st.dataframe(df.head(20), use_container_width=True)
+    
 st.markdown("---")
 
 overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
