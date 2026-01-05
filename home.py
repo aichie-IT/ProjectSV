@@ -413,19 +413,17 @@ with tab1:
     # Scientific Summary
     st.markdown("### Summary")
     st.info("""
-    This overview presents the overall profile of UMK students included in the analysis.
     A total of **27 students** were analysed, with an average age of **22.7 years**, reflecting
     a typical undergraduate population.
 
-    The **average Academic Stress Index of 2.98** indicates a moderate level of academic-related
+    The **average Academic Stress Index of 2.98** shows a moderate level of academic-related
     stress, suggesting that many students experience noticeable pressure from coursework,
     assignments, and academic workload.
 
-    Notably, **74.1% of students fall into the high social media usage category**
+    While, **74.1% of students fall into the high social media usage category**
     (5 hours or more per day), highlighting the strong integration of social media into
-    students’ daily routines. This high prevalence of intensive internet use provides a
-    critical context for examining its potential influence on academic stress and mental
-    wellbeing in subsequent analyses.
+    students’ daily routines. This high internet usage provides a critical context for examining its potential influence on academic stress and mental
+    well-being.
     """)
     st.markdown("---")
 
