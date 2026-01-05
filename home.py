@@ -116,10 +116,10 @@ st.header("📊 Overall Social Media Usage (All Respondents)")
 col1, col2, col3, col4 = st.columns(4)
 
 if not filtered_df.empty:
-    col1.metric("Total Records", f"{len(filtered_df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
-    col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
-    col3.metric("Avg. Positive Impact", f"{filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
-    col4.metric("Avg. Negative Impact", f"{filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing_Numeric'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
+    col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
+    col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
+    col3.metric("Avg. Positive Impact", f"{df['Social_Media_Positive_Impact_on_Wellbeing'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
+    col4.metric("Avg. Negative Impact", f"{df['Social_Media_Negative_Impact_on_Wellbeing'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
 else:
     col1.metric("Total Records", "0", help="No data available")
     col2.metric("Avg. Age", "N/A", help="No data available")
