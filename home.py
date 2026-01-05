@@ -809,8 +809,8 @@ with tab1:
         )
         support_score = filtered_numeric["Use_Online_Communities_for_Support_Numeric"].dropna()
 
-        col1.metric("Social Media Hours ↔ Stress", f"{corr_sm_stress:.2f}" if corr_sm_stress else "N/A", border=True)
-        col2.metric("Study Hours ↔ Stress", f"{corr_study_stress:.2f}" if corr_study_stress else "N/A", border=True)
+        col1.metric("Social Media Hours ↔ Stress", f"{corr_sm_stress:.2f}" if corr_sm_stress is not None else "N/A", border=True)
+        col2.metric("Study Hours ↔ Stress", f"{corr_study_stress:.2f}" if corr_sm_stress is not None else "N/A", border=True)
         col3.metric("Wellbeing Impact Gap", f"{impact_gap:.2f}", help="Positive = benefits outweigh harms", border=True)
         col4.metric("Support-Seeking Score", f"{support_score.mean():.2f}" if not support_score.empty else "N/A", border=True)
 
