@@ -27,21 +27,6 @@ st.image(
     caption="Internet Use and Mental Health Dashboard"
 )
 
-# Add the extended explanation
-st.write(
-    """
-    The aim of scientific visualization is not merely to present data attractively, but to **enhance comprehension and decision-making** through visual analytics.
-    Applications span across disciplines such as **climate science**, **medicine**, **engineering**, **data science**, and **environmental studies**.
-
-    In this course or module, students will learn to:
-    - Select relevant datasets for analysis and visualization.
-    - Apply various visualization techniques such as graphs, maps, and 3D models.
-    - Interpret visual outputs to support scientific conclusions and policy recommendations.
-   
-    By the end of this exercise, students should be able to produce **informative, accurate, and interactive visualizations** that effectively communicate scientific findings to both expert and non-expert audiences.
-    """
-)
-
 # --- LOAD DATA ---
 @st.cache_data
 def load_data():
