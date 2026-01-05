@@ -424,10 +424,31 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
-        col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
-        col3.metric("Most Common Social Media Usage", filtered_df['Social_Media_Use_Frequency'].mode()[0], border=True)
-        col4.metric("Avg. Study Hours / Week", f"{filtered_numeric['Study_Hours_Numeric'].mean():.1f}", border=True)
+
+        # Median social media hours (robust central tendency)
+        median_usage = filtered_numeric["Social_Media_Hours_Numeric"].median()
+
+        # High usage percentage (behaviour intensity)
+        high_usage_pct = (
+            filtered_df["Social_Media_Use_Frequency"]
+            .isin(["5 to 6 hours per day", "More than 6 hours per day"])
+            .mean() * 100
+        )
+
+        # Avg weekly study hours
+        avg_study_hours = filtered_numeric["Study_Hours_Numeric"].mean()
+
+        # Perceived time-wasting on social media (Agree + Strongly Agree)
+        time_waste_pct = (
+            filtered_df["Social_Media_Waste_Time"]
+            .isin(["Agree", "Strongly Agree"])
+            .mean() * 100
+        )
+
+        col1.metric("Median SM Hours / Day", f"{median_usage:.1f} hrs", help="Typical daily social media usage (median)")
+        col2.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using ≥5 hours/day")
+        col3.metric("Avg Study Hours / Week", f"{avg_study_hours:.1f}", help="Average academic study commitment")
+        col4.metric("Perceived Time Loss (%)", f"{time_waste_pct:.1f}%", help="Students who feel social media wastes their time")
         
         # Scientific Summary
         st.markdown("### Summary")
