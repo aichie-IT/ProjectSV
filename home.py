@@ -391,7 +391,6 @@ with tab1:
 
     # Summary box
     col1, col2, col3, col4 = st.columns(4)
-    
     valid_stress = filtered_numeric["Academic_Stress_Index"].dropna()
 
     col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
@@ -424,30 +423,14 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-
-        # Median social media hours (robust central tendency)
         median_usage = filtered_numeric["Social_Media_Hours_Numeric"].median()
-
-        # High usage percentage (behaviour intensity)
-        high_usage_pct = (
-            filtered_df["Social_Media_Use_Frequency"]
-            .isin(["5 to 6 hours per day", "More than 6 hours per day"])
-            .mean() * 100
-        )
-
-        # Avg weekly study hours
+        high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
         avg_study_hours = filtered_numeric["Study_Hours_Numeric"].mean()
+        time_waste_pct = (filtered_df["Social_Media_Waste_Time"].isin(["Agree", "Strongly Agree"]).mean() * 100)
 
-        # Perceived time-wasting on social media (Agree + Strongly Agree)
-        time_waste_pct = (
-            filtered_df["Social_Media_Waste_Time"]
-            .isin(["Agree", "Strongly Agree"])
-            .mean() * 100
-        )
-
-        col1.metric("Median SM Hours / Day", f"{median_usage:.1f} hrs", help="Typical daily social media usage (median)", border=True)
+        col1.metric("Median Social Media Hours/Day", f"{median_usage:.1f} hrs", help="Typical daily social media usage (median)", border=True)
         col2.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
-        col3.metric("Avg Study Hours / Week", f"{avg_study_hours:.1f}", help="Average academic study commitment", border=True)
+        col3.metric("Avg. Study Hours/Week", f"{avg_study_hours:.1f}", help="Average academic study commitment", border=True)
         col4.metric("Perceived Time Loss (%)", f"{time_waste_pct:.1f}%", help="Students who feel social media wastes their time", border=True)
         
         # Scientific Summary
@@ -585,21 +568,15 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        
         study_impact = filtered_numeric["Studies_Affected_By_Social_Media_Numeric"].dropna()
         academic_perf = filtered_numeric["General_Academic_Performance_Numeric"].dropna()
         study_hours = filtered_numeric["Study_Hours_Numeric"].dropna()
-
-        high_users_pct = (
-            filtered_df["Social_Media_Use_Frequency"]
-            .isin(["5 to 6 hours per day", "More than 6 hours per day"])
-            .mean() * 100
-        )
+        high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
 
         col1.metric("Study Impact (%)", f"{(study_impact.mean()/5*100):.1f}%" if not study_impact.empty else "N/A", help="Average perceived impact of social media on studies", border=True)
-        col2.metric("Avg Academic Performance", f"{academic_perf.mean():.2f}" if not academic_perf.empty else "N/A", help="Numeric scale: 1=Below Avg → 4=Excellent", border=True)
+        col2.metric("Avg. Academic Performance", f"{academic_perf.mean():.2f}" if not academic_perf.empty else "N/A", help="Numeric scale: 1=Below Avg → 4=Excellent", border=True)
         col3.metric("High Usage Students (%)", f"{high_users_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
-        col4.metric("Avg Weekly Study Hours", f"{study_hours.mean():.1f}" if not study_hours.empty else "N/A", help="Self-reported weekly study time", border=True)
+        col4.metric("Avg. Weekly Study Hours", f"{study_hours.mean():.1f}" if not study_hours.empty else "N/A", help="Self-reported weekly study time", border=True)
         
         # Scientific Summary
         st.markdown("### Summary")
@@ -713,10 +690,15 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Avg. Stress Level", f"{filtered_numeric['Assignments_Stress_Numeric'].mean():.2f}", border=True)
-        col2.metric("Sleep Affected (%)", f"{(filtered_numeric['Sleep_Affected_By_Social_Media_Numeric'].mean()/5*100):.1f}%", border=True)
-        col3.metric("Emotional Attachment", f"{filtered_numeric['Emotional_Connection_Social_Media_Numeric'].mean():.2f}", border=True)
-        col4.metric("Online Help Seeking (%)", f"{(filtered_numeric['Seek_Help_Online_When_Stress_Numeric'].mean()/5*100):.1f}%", border=True)
+        stress = filtered_numeric["Assignments_Stress_Numeric"].dropna()
+        sleep = filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"].dropna()
+        emotion = filtered_numeric["Emotional_Connection_Social_Media_Numeric"].dropna()
+        help_seek = filtered_numeric["Seek_Help_Online_When_Stress_Numeric"].dropna()
+
+        col1.metric("Avg. Stress Level", f"{stress.mean():.2f}" if not stress.empty else "N/A", border=True)
+        col2.metric("Sleep Affected (%)", f"{(sleep.mean()/5*100):.1f}%" if not sleep.empty else "N/A", border=True)
+        col3.metric("Emotional Attachment", f"{emotion.mean():.2f}" if not emotion.empty else "N/A", border=True)
+        col4.metric("Online Help Seeking (%)", f"{(help_seek.mean()/5*100):.1f}%" if not help_seek.empty else "N/A", border=True)
 
         # Scientific Summary
         st.markdown("### Summary")
@@ -808,15 +790,20 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("SM Hours ↔ Stress", f"{filtered_numeric[['Social_Media_Hours_Numeric', 'Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
-        col2.metric("Study Hours ↔ Stress", f"{filtered_numeric[['Study_Hours_Numeric','Assignments_Stress_Numeric']].corr().iloc[0,1]:.2f}", border=True)
+        corr_sm_stress = safe_corr(filtered_numeric, "Social_Media_Hours_Numeric", "Assignments_Stress_Numeric")
+        corr_study_stress = safe_corr(filtered_numeric, "Study_Hours_Numeric", "Assignments_Stress_Numeric")
         impact_gap = (
             filtered_numeric['Social_Media_Positive_Impact_on_Wellbeing_Numeric'].mean(skipna=True)
             -
             filtered_numeric['Social_Media_Negative_Impact_on_Wellbeing_Numeric'].mean(skipna=True)
         )
-        col3.metric("Wellbeing Impact Gap", f"{impact_gap:.2f}", border=True)
-        col4.metric("Support-Seeking Score", f"{filtered_df['Use_Online_Communities_for_Support'].map(likert_map).mean():.2f}", border=True)
+        support_score = filtered_numeric["Use_Online_Communities_for_Support_Numeric"].dropna()
+
+        col1.metric("Social Media Hours ↔ Stress", f"{corr_sm_stress:.2f}" if corr_sm_stress else "N/A", border=True)
+        col2.metric("Study Hours ↔ Stress", f"{corr_study_stress:.2f}" if corr_study_stress else "N/A", border=True)
+        col3.metric("Wellbeing Impact Gap", f"{impact_gap:.2f}", help="Positive = benefits outweigh harms", border=True)
+        col4.metric("Support-Seeking Score", f"{support_score.mean():.2f}" if not support_score.empty else "N/A", border=True)
+
         # Scientific Summary
         st.markdown("### Summary")
         st.info("""
