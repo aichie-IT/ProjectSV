@@ -167,29 +167,14 @@ LIKERT_COLS = [
     'Social_Media_Negative_Impact_on_Wellbeing'
 ]
 
-def clean_likert(series):
-    return (
-        series
-        .astype(str)
-        .str.split(" / ").str[0]
-        .str.strip()
-        .replace("nan", None)
-    )
-
-
-# Likert mapping
-likert_map = {
-    "Strongly Disagree": 1,
-    "Disagree": 2,
-    "Neutral": 3,
-    "Agree": 4,
-    "Strongly Agree": 5
-}
 
 # Numeric Likert Columns
 for col in LIKERT_COLS:
     if col in df_numeric.columns:
-        df_numeric[col + "_Numeric"] = clean_likert(df_numeric[col]).map(likert_map)
+        df_numeric[col + "_Numeric"] = pd.to_numeric(
+            df_numeric[col],
+            errors="coerce"
+        )
 
 # Frequency-scale columns (1–4)
 FREQ_COLS = [
