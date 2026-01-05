@@ -149,8 +149,6 @@ df_numeric = df.copy()
 # ============ INDIVIDUAL PART FILTERING AND MAPPING ============
 # ----------- AISHAH SAKINAH -----------
 
-Help me fix it through this code please
-
 # Likert-scale columns (1–5)
 LIKERT_COLS = [
     'Assignments_Stress',
