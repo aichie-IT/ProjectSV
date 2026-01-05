@@ -118,13 +118,13 @@ col1, col2, col3, col4 = st.columns(4)
 if not filtered_df.empty:
     col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
     col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
-    col3.metric("Avg. Positive Impact", f"{df_numeric['Social_Media_Positive_Impact_on_Wellbeing'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
-    col4.metric("Avg. Negative Impact", f"{df_numeric['Social_Media_Negative_Impact_on_Wellbeing'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
+    col3.metric("Avg. Academic Performance", f"{df['General_Academic_Performance'].mean():.1f}", help="PLO 3: Student Academic Performance", border=True)
+    col4.metric("Avg. Social Media Usage", f"{df_numeric['Social_Media_Use_Frequency'].mean():.1f}", help="PLO 4: Social Media Usage", border=True)
 else:
     col1.metric("Total Records", "0", help="No data available")
     col2.metric("Avg. Age", "N/A", help="No data available")
-    col3.metric("Avg. Positive Impact", "N/A", help="No data available")
-    col4.metric("Avg. Negative Impact", "N/A", help="No data available")
+    col3.metric("Avg. Academic Performance", "N/A", help="No data available")
+    col4.metric("Avg. Social Media Usage", "N/A", help="No data available")
 
 st.markdown("---")
 
