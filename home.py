@@ -585,12 +585,22 @@ with tab1:
 
         # Summary box
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Study Impact Reported (%)", f"{(filtered_df['Studies_Affected_By_Social_Media'].map(likert_map).mean()/5*100):.1f}%", border=True)
-        col2.metric("Avg. Academic Performance", f"{filtered_numeric['General_Academic_Performance_Numeric'].mean():.2f}", border=True)
-        high_users = filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100
-        col3.metric("High Social Media Users (%)", f"{high_users:.1f}%", border=True)
-        col4.metric("Avg. Weekly Study Hours", f"{filtered_numeric['Study_Hours_Numeric'].mean():.1f}", border=True)
+        
+        study_impact = filtered_numeric["Studies_Affected_By_Social_Media_Numeric"].dropna()
+        academic_perf = filtered_numeric["General_Academic_Performance_Numeric"].dropna()
+        study_hours = filtered_numeric["Study_Hours_Numeric"].dropna()
 
+        high_users_pct = (
+            filtered_df["Social_Media_Use_Frequency"]
+            .isin(["5 to 6 hours per day", "More than 6 hours per day"])
+            .mean() * 100
+        )
+
+        col1.metric("Study Impact (%)", f"{(study_impact.mean()/5*100):.1f}%" if not study_impact.empty else "N/A", help="Average perceived impact of social media on studies")
+        col2.metric("Avg Academic Performance", f"{academic_perf.mean():.2f}" if not academic_perf.empty else "N/A", help="Numeric scale: 1=Below Avg → 4=Excellent")
+        col3.metric("High Usage Students (%)", f"{high_users_pct:.1f}%", help="Students using ≥5 hours/day")
+        col4.metric("Avg Weekly Study Hours", f"{study_hours.mean():.1f}" if not study_hours.empty else "N/A", help="Self-reported weekly study time")
+        
         # Scientific Summary
         st.markdown("### Summary")
         st.info("""
