@@ -602,9 +602,10 @@ with tab1:
         col1, col2, col3 = st.columns(3)
 
         # Bar Chart
-        filtered_numeric = filtered_numeric.dropna(
+        academic_numeric = filtered_numeric.dropna(
             subset=["Academic_Stress_Index"]
         )
+
 
         usage_group_mean = (
             filtered_numeric
