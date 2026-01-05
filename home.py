@@ -450,17 +450,17 @@ with tab1:
         # Scientific Summary
         st.markdown("### Summary")
         st.info("""
-        The **median social media usage of 7.0 hours per day** indicates that social
+        The **median social media usage of 7 hours per day** shows that social
         media is heavily embedded in students’ daily routines, with usage skewed
-        towards prolonged engagement.
+        towards prolonged usage.
 
         Approximately **74.1% of students belong to the high-usage group**
         (5 hours or more per day), confirming that excessive internet exposure is
         common within the sample. In contrast, the **average study time is 6.2 hours
-        per week**, suggesting a comparatively lower allocation of time to academic
+        per week**, suggesting a relatively lower allocation of time to academic
         activities.
 
-        Interestingly, **none of the students explicitly perceived social media as a
+        In fact, **none of the students explicitly perceived social media as a
         waste of time (0.0%)**, which may reflect normalisation of high usage or a lack
         of awareness of its potential impact on productivity rather than an absence
         of actual time displacement.
@@ -603,12 +603,16 @@ with tab1:
         # Scientific Summary
         st.markdown("### Summary")
         st.info("""
-        This overview highlights general distributions in the dataset. Most riders wear helmets, 
-        and the average biking speed is moderate compared to the speed limits observed. 
-        The distribution of accident severity suggests that minor and moderate accidents dominate, 
-        implying that protective behaviors like helmet use and valid licensing may contribute 
-        to reducing severe outcomes. These insights establish a foundation for understanding 
-        how individual safety practices and environmental conditions interact.
+        The results show that social media has a noticeable influence on students’ academic activities. 
+        Approximately **{(study_impact.mean()/5*100):.1f}%** of students reported that their studies are affected by social media usage, 
+        showing that online engagement may interfere with academic focus and productivity.
+
+        The **average academic performance score of {academic_perf.mean():.2f}** suggests that students generally maintain 
+        moderate academic achievement despite high levels of social media use. Notably, **{high_users_pct:.1f}%** of students 
+        are classified as high social media users, spending at least five hours per day on these platforms.
+
+        In addition, students reported an **average weekly study time of {study_hours.mean():.1f} hours**, 
+        which may help explain the perceived academic impact when combined with heavy social media usage.
         """)
         st.markdown("---")
 
