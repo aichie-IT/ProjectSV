@@ -27,21 +27,6 @@ st.image(
     caption="Internet Use and Mental Health Dashboard"
 )
 
-# Add the extended explanation
-st.write(
-    """
-    The aim of scientific visualization is not merely to present data attractively, but to **enhance comprehension and decision-making** through visual analytics.
-    Applications span across disciplines such as **climate science**, **medicine**, **engineering**, **data science**, and **environmental studies**.
-
-    In this course or module, students will learn to:
-    - Select relevant datasets for analysis and visualization.
-    - Apply various visualization techniques such as graphs, maps, and 3D models.
-    - Interpret visual outputs to support scientific conclusions and policy recommendations.
-   
-    By the end of this exercise, students should be able to produce **informative, accurate, and interactive visualizations** that effectively communicate scientific findings to both expert and non-expert audiences.
-    """
-)
-
 # --- LOAD DATA ---
 @st.cache_data
 def load_data():
@@ -91,8 +76,11 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
-# ================= DATASET OVERVIEW =================
-st.header("📋 Dataset Overview")
+# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
+st.header("📊 Overall Social Media Usage (All Respondents)")
+
+# ------ DATASET OVERVIEW ------
+st.subheader("📋 Dataset Overview")
 
 st.markdown("""
 This section provides an **overall overview of the survey dataset** collected from UMK students.
@@ -107,24 +95,22 @@ with st.expander("🔍 View Dataset Preview"):
     st.dataframe(df.head(20), use_container_width=True)
 
 st.markdown("---")
-
-
-# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
-st.header("📊 Overall Social Media Usage (All Respondents)")
-
 # --- SUMMARY BOX ---
 col1, col2, col3, col4 = st.columns(4)
+
+top_academic = filtered_df['General_Academic_Performance'].mode()[0]
+top_media = filtered_df['Social_Media_Use_Frequency'].mode()[0]
 
 if not filtered_df.empty:
     col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
     col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
-    col3.metric("Avg. Positive Impact", f"{df['Social_Media_Positive_Impact_on_Wellbeing'].mean():.1f}", help="PLO 3: Positive Impact on Wellbeing", border=True)
-    col4.metric("Avg. Negative Impact", f"{df['Social_Media_Negative_Impact_on_Wellbeing'].mean():.1f}", help="PLO 4: Negative Impact on Wellbeing", border=True)
+    col3.metric("Academic Performance", top_academic, , help="PLO 2: Students Academic Performance", border=True)
+    col4.metric("Social Media Usage", top_media, , help="PLO 2: Social Media Use Frecuency", border=True)
 else:
     col1.metric("Total Records", "0", help="No data available")
     col2.metric("Avg. Age", "N/A", help="No data available")
-    col3.metric("Avg. Positive Impact", "N/A", help="No data available")
-    col4.metric("Avg. Negative Impact", "N/A", help="No data available")
+    col3.metric("Academic Performance", "N/A", help="No data available")
+    col4.metric("Social Media Usage", "N/A", help="No data available")
 
 st.markdown("---")
 
