@@ -113,7 +113,6 @@ with col1:
 The female students always have the majority over the male students in majority of the years.
 """)
 
-
     # VISUALIZATION 2 : Gender vs. Social Media Impact
     
     # METRIC 2: Negative Impact Percentage
@@ -130,7 +129,6 @@ The female students always have the majority over the male students in majority 
 This implies a change towards the independent living as students mature in their education.
 """)
 
-   
     # VISUALIZATION 3 : Gender vs. Difficulty Sleeping
     st.subheader("Gender vs. Difficulty Sleeping")
     
@@ -148,8 +146,6 @@ This implies a change towards the independent living as students mature in their
 This implies that the overall impact of social media on the wellbeing of female students is more high.
 """)
 
-
-with col2:
     # VISUALIZATION 4 : Year of Study vs Current Living Situation
     st.subheader("Heatmap: Year vs Living Situation")
     
