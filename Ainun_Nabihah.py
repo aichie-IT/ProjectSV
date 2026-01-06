@@ -29,7 +29,7 @@ except Exception as e:
 filtered_data = df.copy()
 
 
-# --- 4. INDIVIDUAL VISUALIZATIONS ( AINUN ) ---
+# --- 4. INDIVIDUAL VISUALIZATIONS ---
 # (Your existing columns and plotly charts follow here...)
 
 
