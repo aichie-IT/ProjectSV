@@ -91,7 +91,8 @@ filtered_data = df[['Gender', 'Year_of_Study', 'Current_Living_Situation',
                     'Difficulty_Sleeping_University_Pressure', 'Race', 
                     'Social_Media_Daily_Routine', 'Employment_Status']].dropna()
 
-  st.markdown("""
+#Summary text
+st.markdown("""
 **Summary:** The visualizations show clear demographic differences in student's mental health experiences. 
 Female students report greater effects from academic pressure and social media while higher-year students like to live more independently off-campus.
 Most respondents are full-time students, showing that academic demands are a key factor influencing student wellbeing.
