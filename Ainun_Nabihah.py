@@ -12,6 +12,8 @@ perceptions and experiences of mental health challenges.
 
 st.title("Exploring Internet Use and Suicidality in Mental Health Populations")
 
+# --- 1. DATA LOADING ---
+
 @st.cache_data
 def load_data():
     url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv"
@@ -25,23 +27,8 @@ except Exception as e:
     st.error(f"❌ Error loading data: {e}")
     st.stop()
 
-# Use df directly (no undefined filtered_data)
+# Use df directly 
 filtered_data = df.copy()
-
-    st.markdown("""
-**Summary:** The visualizations show clear demographic differences in student's mental health experiences. 
-Female students report greater effects from academic pressure and social media while higher-year students like to live more independently off-campus.
-Most respondents are full-time students, showing that academic demands are a key factor influencing student wellbeing.
-""")
-
-st.title("📊 Individual Visualizations : Ainun")
-
-# --- 1. DATA LOADING ---
-
-@st.cache_data
-def load_data():
-    # Load the uploaded CSV
-    df = pd.read_csv('Exploring Internet Use and Suicidality in Mental Health Populations.csv')
 
 # --- 2. DATA MAPPING ---
     
@@ -103,6 +90,12 @@ filtered_data = df[['Gender', 'Year_of_Study', 'Current_Living_Situation',
                     'Social_Media_Positive_Impact_on_Wellbeing', 
                     'Difficulty_Sleeping_University_Pressure', 'Race', 
                     'Social_Media_Daily_Routine', 'Employment_Status']].dropna()
+
+  st.markdown("""
+**Summary:** The visualizations show clear demographic differences in student's mental health experiences. 
+Female students report greater effects from academic pressure and social media while higher-year students like to live more independently off-campus.
+Most respondents are full-time students, showing that academic demands are a key factor influencing student wellbeing.
+""")
 
 # --- 5. INDIVIDUAL VISUALIZATIONS ---
 
