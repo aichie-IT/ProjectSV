@@ -2,13 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-st.set_page_config(
-    page_title="Scientific Visualization : Project Group",
-    layout="wide"
-)
-
-st.header("Scientific Visualization : Project Group", divider="gray")
-
 st.subheader("🎯 Objective Statement")
 st.write("""
 The purpose of this visualization is to identify and analyze the demographic 
@@ -42,10 +35,6 @@ Most respondents are full-time students, showing that academic demands are a key
 """)
 
 st.title("📊 Individual Visualizations : Ainun")
-
-import streamlit as st
-import pandas as pd
-import plotly.express as px
 
 # --- 1. DATA LOADING ---
 
