@@ -998,7 +998,7 @@ TOTAL_RESPONDENTS = len(df)
 
 st.subheader("📊 Summary Metrics")
 
-col1, col2, col3 = st.columns(4)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.metric("Total Respondents", TOTAL_RESPONDENTS)
