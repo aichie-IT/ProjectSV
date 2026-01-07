@@ -1021,7 +1021,7 @@ with left:
         x="Year_of_Study",
         color="Gender",
         barmode="group",
-        labels={"Year_of_Study":"Year of Study","count":"Number of Respondents"}
+        labels={"Year_of_Study":"Year of Study","Number of Respondents":"Number of Respondents"}
     )
     st.plotly_chart(fig1, use_container_width=True)
 
@@ -1037,7 +1037,7 @@ with left:
         x="Gender",
         color="Social_Media_Positive_Impact_on_Wellbeing",
         barmode="stack",
-        labels={"Social_Media_Positive_Impact_on_Wellbeing":"Perceived Positive Impact","count":"Number of Respondents"}
+        labels={"Social_Media_Positive_Impact_on_Wellbeing":"Perceived Positive Impact","Number of Respondents":"Number of Respondents"}
     )
     st.plotly_chart(fig2, use_container_width=True)
 
@@ -1055,7 +1055,7 @@ with left:
         x="Difficulty_Sleeping_University_Pressure",
         color="Gender",
         barmode="group",
-        labels={"Difficulty_Sleeping_University_Pressure":"Difficulty Sleeping","count":"Number of Respondents"}
+        labels={"Difficulty_Sleeping_University_Pressure":"Difficulty Sleeping","Number of Respondents":"Number of Respondents"}
     )
     st.plotly_chart(fig3, use_container_width=True)
 
@@ -1094,7 +1094,7 @@ with right:
         x="Social_Media_Daily_Routine",
         color="Race",
         barmode="group",
-        labels={"Social_Media_Daily_Routine":"Social Media Routine","count":"Number of Respondents"}
+        labels={"Social_Media_Daily_Routine":"Social Media Routine","Number of Respondents":"Number of Respondents"}
     )
     st.plotly_chart(fig5, use_container_width=True)
 
@@ -1123,7 +1123,7 @@ with right:
 # SUMMARY
 # ==================================================
 st.markdown("""
-### 📌 Summary
+### 📌 Observation
 
 The visualizations show clear demographic differences in student's mental health experiences. Female students report greater 
 effects from academic pressure and social media while higher-year students like to live more independently off-campus.
