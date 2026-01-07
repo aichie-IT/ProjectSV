@@ -19,7 +19,7 @@ st.subheader("🎯 Objective Statement")
 st.write("""
 The purpose of this visualization is to identify and analyze demographic 
 differences in mental health experiences among students, focusing on how 
-gender, race, and year of study influence students’ perceptions and experiences.
+gender, race and year of study influence student's perceptions and experience challenges.
 """)
 
 st.title("Exploring Internet Use and Suicidality in Mental Health Populations")
@@ -30,7 +30,7 @@ st.title("Exploring Internet Use and Suicidality in Mental Health Populations")
 @st.cache_data
 def load_data():
     df = pd.read_csv(
-        "Exploring Internet Use and Suicidality in Mental Health Populations.csv"
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv"
     )
 
     column_mapping = {
