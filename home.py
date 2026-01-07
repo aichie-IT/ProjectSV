@@ -978,15 +978,16 @@ with tab2:
 with tab3:
     st.subheader("Distribution of Numeric Variables")
     
+
+
 # ----------- AINUN -----------
 # ============ TAB 4: INDIVIDUAL VISUALIZATIONS ============
 with tab4:
     st.subheader("Demographic Differences with Mental Health Experiences")
-    st.subheader("🎯 Objective Statement")
 st.write("""
 The purpose of this visualization is to identify and analyze demographic 
 differences in mental health experiences among students, focusing on how 
-gender, race, and year of study influence students’ perceptions and experiences.
+gender, race and year of study influence student's perceptions and experience challenges.
 """)
 
 # ==================================================
@@ -1003,13 +1004,10 @@ with col1:
     st.metric("Total Respondents", TOTAL_RESPONDENTS)
 
 with col2:
-    st.metric("Filtered Respondents", len(filtered_data))
-
-with col3:
     majority_gender = filtered_data["Gender"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
     st.metric("Majority Gender", majority_gender)
 
-with col4:
+with col3:
     dominant_year = filtered_data["Year_of_Study"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
     st.metric("Dominant Year", dominant_year)
     
@@ -1023,7 +1021,7 @@ with left:
         x="Year_of_Study",
         color="Gender",
         barmode="group",
-        labels={"Year_of_Study":"Year of Study","count":"Number of Students"}
+        labels={"Year_of_Study":"Year of Study","count":"Number of Respondents"}
     )
     st.plotly_chart(fig1, use_container_width=True)
 
@@ -1039,7 +1037,7 @@ with left:
         x="Gender",
         color="Social_Media_Positive_Impact_on_Wellbeing",
         barmode="stack",
-        labels={"Social_Media_Positive_Impact_on_Wellbeing":"Perceived Positive Impact","count":"Number of Students"}
+        labels={"Social_Media_Positive_Impact_on_Wellbeing":"Perceived Positive Impact","count":"Number of Respondents"}
     )
     st.plotly_chart(fig2, use_container_width=True)
 
@@ -1057,7 +1055,7 @@ with left:
         x="Difficulty_Sleeping_University_Pressure",
         color="Gender",
         barmode="group",
-        labels={"Difficulty_Sleeping_University_Pressure":"Difficulty Sleeping","count":"Number of Students"}
+        labels={"Difficulty_Sleeping_University_Pressure":"Difficulty Sleeping","count":"Number of Respondents"}
     )
     st.plotly_chart(fig3, use_container_width=True)
 
@@ -1096,7 +1094,7 @@ with right:
         x="Social_Media_Daily_Routine",
         color="Race",
         barmode="group",
-        labels={"Social_Media_Daily_Routine":"Social Media Routine","count":"Number of Students"}
+        labels={"Social_Media_Daily_Routine":"Social Media Routine","count":"Number of Respondents"}
     )
     st.plotly_chart(fig5, use_container_width=True)
 
