@@ -1122,8 +1122,9 @@ with right:
 # ==================================================
 # SUMMARY
 # ==================================================
-st.markdown("""
-### 📌 Observation
+
+st.success("""
+    **Observation:** 
 
 The visualizations show clear demographic differences in student's mental health experiences. Female students report greater 
 effects from academic pressure and social media while higher-year students like to live more independently off-campus.
