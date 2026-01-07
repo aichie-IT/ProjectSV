@@ -271,7 +271,7 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
 # ----------- HANIS NABILA -----------
 # ----------- AINUN -----------
 
-# --- 3. DATA TRANSFORMATION  ---
+# --- DATA TRANSFORMATION FOR VISUALIZATIONS ---
 
 # Mapping Gender
 gender_map = {0: 'Female', 1: 'Male', 2: 'Other'}
@@ -305,7 +305,7 @@ df['Social_Media_Positive_Impact_on_Wellbeing_Num'] = df['Social_Media_Positive_
 race_map = {0: 'Malay', 1: 'Chinese', 2: 'Indian', 3: 'Other'}
 df['Race_Num'] = df['Race'].map({'Malay': 0, 'Chinese': 1, 'Indian': 2, 'Others': 3, 'Other': 3}).fillna(3)
 
-# --- 4. DATA FILTERING ---
+# --- DATA FILTERING FOR VISUALIZATIONS ---
 
 # Filtered data subset
 filtered_data = df[['Gender', 'Year_of_Study', 'Current_Living_Situation', 
@@ -984,8 +984,26 @@ with tab4:
     st.subheader("Demographic Differences with Mental Health Experiences")
 
 # ==================================================
-# VISUALIZATIONS WITH INTERPRETATION
+# SUMMARY METRIC BOXES
 # ==================================================
+st.subheader("📊 Summary Metrics")
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric("Total Respondents", TOTAL_RESPONDENTS)
+
+with col2:
+    st.metric("Filtered Respondents", len(filtered_data))
+
+with col3:
+    majority_gender = filtered_data["Gender"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
+    st.metric("Majority Gender", majority_gender)
+
+with col4:
+    dominant_year = filtered_data["Year_of_Study"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
+    st.metric("Dominant Year", dominant_year)
+    
 left, right = st.columns(2)
 
 with left:
@@ -1093,6 +1111,17 @@ with right:
     Most respondents are full-time students. Part-time employment is less common, 
     showing that academic commitments influence daily routines.
     """)
+
+# ==================================================
+# SUMMARY
+# ==================================================
+st.markdown("""
+### 📌 Summary
+
+The visualizations show clear demographic differences in student's mental health experiences. Female students report greater 
+effects from academic pressure and social media while higher-year students like to live more independently off-campus.
+Most respondents are full-time students, showing that academic demands are a key factor influencing student wellbeing.
+""")
    
 # --- FOOTER ---
 st.markdown("---")
