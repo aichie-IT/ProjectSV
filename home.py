@@ -996,8 +996,6 @@ gender, race and year of study influence student's perceptions and experience ch
 
 TOTAL_RESPONDENTS = len(df)
 
-("📊 Summary Metrics")
-
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -1010,6 +1008,15 @@ with col2:
 with col3:
     dominant_year = filtered_data["Year_of_Study"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
     st.metric("Dominant Year", dominant_year)
+
+("📊 Summary Metrics")
+
+st.success("""
+        **Summary:** The dataset is composed of 101 participants, which is an sample to see the significant trends in the mental health 
+        of students and their internet use. The survey is dominated by female who form majority of the respondents meaning that the female 
+        students are more represented in the survey. Regarding the level of study, Year 4 students are the majority group which implies that 
+        final-year students are the most represented and can have different academic and mental health issues as compared to the lower years.
+
     
 left, right = st.columns(2)
 
