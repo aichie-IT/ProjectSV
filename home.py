@@ -1024,6 +1024,7 @@ with left:
         labels={"Year_of_Study":"Year of Study","Number of Respondents":"Number of Respondents"}
     )
     st.plotly_chart(fig1, use_container_width=True)
+    
     st.success("""
         **Interpretation:** 
    The data shows that students in Year 1 are the most active. The female students always have the majority over the male students in majority of the years.
@@ -1039,7 +1040,8 @@ with left:
         labels={"Social_Media_Positive_Impact_on_Wellbeing":"Perceived Positive Impact","Number of Respondents":"Number of Respondents"}
     )
     st.plotly_chart(fig2, use_container_width=True)
-     st.success("""
+     
+    st.success("""
         **Interpretation:**  
    The data shows that the Year 1 students primarily stay in the campus but Year 3 and Year 4 students are mainly off-campus.
    This implies a change towards the independent living as students mature in their education.
@@ -1056,6 +1058,7 @@ with left:
         labels={"Difficulty_Sleeping_University_Pressure":"Difficulty Sleeping","Number of Respondents":"Number of Respondents"}
     )
     st.plotly_chart(fig3, use_container_width=True)
+    
     st.success("""
         **Interpretation:**  
     Female students report slightly higher difficulty sleeping due to university-related 
@@ -1077,7 +1080,8 @@ with right:
         labels={"x":"Living Situation","y":"Year of Study","color":"Count"}
     )
     st.plotly_chart(fig4, use_container_width=True)
-     st.success("""
+     
+    st.success("""
         **Interpretation:**  
     The data shows that Malay students also mention social media most commonly as a part of their day to lives particularly at higher levels of agreement.
     Some other racial groups demonstrate less and less consistent daily use of social media.
@@ -1093,6 +1097,7 @@ with right:
         labels={"Social_Media_Daily_Routine":"Social Media Routine","Number of Respondents":"Number of Respondents"}
     )
     st.plotly_chart(fig5, use_container_width=True)
+    
     st.success("""
         **Interpretation:**  
     Usage of social media as part of the daily routine varies slightly across races, 
@@ -1107,6 +1112,7 @@ with right:
         labels={"Employment_Status":"Employment Status"}
     )
     st.plotly_chart(fig6, use_container_width=True)
+    
     st.success("""
         **Interpretation:** 
     Most respondents are full-time students. Part-time employment is less common, 
