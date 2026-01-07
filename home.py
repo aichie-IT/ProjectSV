@@ -982,13 +982,17 @@ with tab3:
 # ============ TAB 4: INDIVIDUAL VISUALIZATIONS ============
 with tab4:
     st.subheader("Demographic Differences with Mental Health Experiences")
+    st.subheader("🎯 Objective Statement")
+st.write("""
+The purpose of this visualization is to identify and analyze demographic 
+differences in mental health experiences among students, focusing on how 
+gender, race, and year of study influence students’ perceptions and experiences.
+""")
 
 # ==================================================
 # SUMMARY METRIC BOXES
 # ==================================================
-# ==================================================
-# TOTAL RESPONDENTS (RAW DATA)
-# ==================================================
+
 TOTAL_RESPONDENTS = len(df)
 
 st.subheader("📊 Summary Metrics")
