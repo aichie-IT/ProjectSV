@@ -998,7 +998,7 @@ TOTAL_RESPONDENTS = len(df)
 
 st.subheader("📊 Summary Metrics")
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3 = st.columns(4)
 
 with col1:
     st.metric("Total Respondents", TOTAL_RESPONDENTS)
@@ -1011,17 +1011,12 @@ with col3:
     dominant_year = filtered_data["Year_of_Study"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
     st.metric("Dominant Year", dominant_year)
 
-with col4:
-    dominant_social_media = (
-        filtered_data["Social_Media_Daily_Routine"].mode(dropna=True)[0]
-        if not filtered_data.empty else "N/A"
-    )
-    st.metric("Common Social Media Routine", dominant_social_media)
+)
     
 left, right = st.columns(2)
 
 with left:
-    **("1️⃣ Gender Distribution Across Year of Study")**
+    ("1️⃣ Gender Distribution Across Year of Study")
 
     fig1 = px.histogram(
         filtered_data,
@@ -1037,7 +1032,7 @@ with left:
    The data shows that students in Year 1 are the most active. The female students always have the majority over the male students in majority of the years.
     """)
 
-    st.subheader("2️⃣ Gender vs Social Media Impact")
+    ("2️⃣ Gender vs Social Media Impact")
 
     fig2 = px.histogram(
         filtered_data,
@@ -1055,7 +1050,7 @@ with left:
 
     """)
 
-    st.subheader("3️⃣ Gender vs Difficulty Sleeping")
+    ("3️⃣ Gender vs Difficulty Sleeping")
 
     fig3 = px.histogram(
         filtered_data,
@@ -1073,7 +1068,7 @@ with left:
     """)
 
 with right:
-    st.subheader("4️⃣ Year of Study vs Living Situation")
+    ("4️⃣ Year of Study vs Living Situation")
 
     heatmap_data = pd.crosstab(
         filtered_data["Year_of_Study"],
@@ -1094,7 +1089,7 @@ with right:
     Some other racial groups demonstrate less and less consistent daily use of social media.
     """)
 
-    st.subheader("5️⃣ Race vs Social Media Routine")
+    ("5️⃣ Race vs Social Media Routine")
 
     fig5 = px.histogram(
         filtered_data,
@@ -1111,7 +1106,7 @@ with right:
     suggesting that cultural or social normal may influence online engagement.
     """)
 
-    st.subheader("6️⃣ Employment Status Distribution")
+    ("6️⃣ Employment Status Distribution")
 
     fig6 = px.pie(
         filtered_data,
