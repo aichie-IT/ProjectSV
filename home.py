@@ -1021,7 +1021,7 @@ with col4:
 left, right = st.columns(2)
 
 with left:
-    st.subheader("1️⃣ Gender Distribution Across Year of Study")
+    ("1️⃣ Gender Distribution Across Year of Study")
 
     fig1 = px.histogram(
         filtered_data,
