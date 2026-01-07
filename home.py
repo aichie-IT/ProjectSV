@@ -996,7 +996,7 @@ gender, race and year of study influence student's perceptions and experience ch
 
 TOTAL_RESPONDENTS = len(df)
 
-st.subheader("📊 Summary Metrics")
+("📊 Summary Metrics")
 
 col1, col2, col3 = st.columns(3)
 
