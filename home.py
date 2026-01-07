@@ -271,6 +271,40 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
 # ----------- HANIS NABILA -----------
 # ----------- AINUN -----------
 
+# ==================================================
+# DATA TRANSFORMATION
+# ==================================================
+df["Year_Num"] = df["Year_of_Study"].str.extract(r"(\d)").astype(float)
+
+# ==================================================
+# DATA FILTERING (USER CONTROLLED)
+# ==================================================
+st.sidebar.header("🔍 Data Filtering")
+
+gender_filter = st.sidebar.multiselect(
+    "Gender",
+    df["Gender"].dropna().unique(),
+    df["Gender"].dropna().unique()
+)
+
+year_filter = st.sidebar.multiselect(
+    "Year of Study",
+    df["Year_of_Study"].dropna().unique(),
+    df["Year_of_Study"].dropna().unique()
+)
+
+race_filter = st.sidebar.multiselect(
+    "Race",
+    df["Race"].dropna().unique(),
+    df["Race"].dropna().unique()
+)
+
+filtered_data = df[
+    (df["Gender"].isin(gender_filter)) &
+    (df["Year_of_Study"].isin(year_filter)) &
+    (df["Race"].isin(race_filter))
+]
+
 # ====== SIDEBAR ======
 with st.sidebar:
     st.title("Dashboard Controls")
@@ -942,4 +976,4 @@ with tab4:
    
 # --- FOOTER ---
 st.markdown("---")
-st.caption("© 2025 Motorbike Accident Dashboard | Designed with ❤️ using Streamlit & Plotly")
+st.caption("© 2025 Demographic Differences with Mental Health Experiences | Designed with ❤️ using Streamlit & Plotly")
