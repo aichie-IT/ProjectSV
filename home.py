@@ -939,8 +939,8 @@ with tab3:
 # ----------- AINUN -----------
 # ============ TAB 4: ADVANCED VISUALIZATIONS ============
 with tab4:
-    st.subheader("Distribution of Numeric Variables")
+    st.subheader("Demographic Differences with Mental Health Experiences")
    
 # --- FOOTER ---
 st.markdown("---")
-st.caption("© 2025 Demographic Differences with Mental Health Experiences | Designed with ❤️ using Streamlit & Plotly")
+st.caption("© 2025 Exploring Internet Use and Suicidality in Mental Health Populations | Designed with ❤️ using Streamlit & Plotly")
