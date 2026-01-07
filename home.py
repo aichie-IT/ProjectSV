@@ -1017,6 +1017,8 @@ st.success("""
         students are more represented in the survey. Regarding the level of study, Year 4 students are the majority group which implies that 
         final-year students are the most represented and can have different academic and mental health issues as compared to the lower years.
 
+        """)
+
     
 left, right = st.columns(2)
 
