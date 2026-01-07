@@ -986,6 +986,11 @@ with tab4:
 # ==================================================
 # SUMMARY METRIC BOXES
 # ==================================================
+# ==================================================
+# TOTAL RESPONDENTS (RAW DATA)
+# ==================================================
+TOTAL_RESPONDENTS = len(df)
+
 st.subheader("📊 Summary Metrics")
 
 col1, col2, col3, col4 = st.columns(4)
