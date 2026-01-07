@@ -1010,6 +1010,13 @@ with col2:
 with col3:
     dominant_year = filtered_data["Year_of_Study"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
     st.metric("Dominant Year", dominant_year)
+
+with col4:
+    dominant_social_media = (
+        filtered_data["Social_Media_Daily_Routine"].mode(dropna=True)[0]
+        if not filtered_data.empty else "N/A"
+    )
+    st.metric("Common Social Media Routine", dominant_social_media)
     
 left, right = st.columns(2)
 
