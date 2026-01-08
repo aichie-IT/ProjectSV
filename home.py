@@ -295,7 +295,7 @@ df['Employment_Status_Num'] = df['Employment_Status'].map({
     'Unemployed': 0
 }).fillna(2)
 
-# Mapping Impact
+# Mapping Social Media Impact
 impact_map = {1: 'Positive Impact', 0: 'Negative Impact', 2: 'No impact'}
 df['Social_Media_Positive_Impact_on_Wellbeing_Num'] = df['Social_Media_Positive_Impact_on_Wellbeing'].map({
     'Positive impact': 1, 'Negative impact': 0, 'No impact': 2
@@ -304,6 +304,26 @@ df['Social_Media_Positive_Impact_on_Wellbeing_Num'] = df['Social_Media_Positive_
 # Mapping Race
 race_map = {0: 'Malay', 1: 'Chinese', 2: 'Indian', 3: 'Other'}
 df['Race_Num'] = df['Race'].map({'Malay': 0, 'Chinese': 1, 'Indian': 2, 'Others': 3, 'Other': 3}).fillna(3)
+
+# --- NEW: Mapping Difficulty Sleeping Due to University Pressure to 5-point Likert ---
+sleep_map = {
+    'Strongly disagree': 1,
+    'Disagree': 2,
+    'Neutral': 3,
+    'Agree': 4,
+    'Strongly agree': 5
+}
+df['Difficulty_Sleeping_University_Pressure_Num'] = df['Difficulty_Sleeping_University_Pressure'].map(sleep_map).fillna(3)
+
+# --- NEW: Mapping Social Media Daily Routine to 5-point Likert ---
+routine_map = {
+    'Strongly disagree': 1,
+    'Disagree': 2,
+    'Neutral': 3,
+    'Agree': 4,
+    'Strongly agree': 5
+}
+df['Social_Media_Daily_Routine_Num'] = df['Social_Media_Daily_Routine'].map(routine_map).fillna(3)
 
 # --- DATA FILTERING FOR VISUALIZATIONS ---
 
