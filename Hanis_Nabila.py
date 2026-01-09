@@ -1,23 +1,30 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
+import plotly.express as px
 
-# =====================================================
-# PAGE TITLE
-# =====================================================
-st.title("📊 Social Media Impact on Mental Health")
-st.markdown("Exploring the relationship between internet use and student wellbeing.")
+st.title("🧠 Social Media Impact on Mental Health")
 
-# =====================================================
-# GET DATA FROM SESSION STATE
-# =====================================================
-if "df" not in st.session_state:
-    st.error("Dataset not found. Please load data from the main page first.")
-    st.stop()
+@st.cache_data
+def load_data():
+    url = "YOUR_CSV_URL"
+    return pd.read_csv(url)
 
-df = st.session_state["df"].copy()
+df = load_data()
+df.columns = df.columns.str.strip()
+
+# ================= SUMMARY BOX =================
+st.sidebar.markdown("### 📌 Summary")
+
+high_percentage = (
+    df[variable].astype(str).isin(['4', '5']).mean() * 100
+)
+
+st.sidebar.metric(
+    "Agree / High Level (%)",
+    f"{high_percentage:.1f}%"
+)
 
 # =====================================================
 # DATASET OVERVIEW
