@@ -998,13 +998,6 @@ with tab2:
 with tab3:
     st.header("📊 Numerical Analysis: Social Media Usage and Student Wellbeing")
 
-    st.markdown("""
-    This section presents a numerical and comparative analysis of how social media usage
-    relates to students’ academic stress, sleep quality, and perceived wellbeing.
-    The analysis uses filtered survey data and focuses on identifying patterns across
-    different levels of daily social media usage.
-    """)
-    
 
 
 # ----------- AINUN -----------
