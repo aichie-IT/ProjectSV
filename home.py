@@ -989,9 +989,39 @@ with tab1:
 
 # ----------- ILYA -----------
 
-# ============ TAB 2: ACCIDENT FACTORS ============
+# ============ TAB 2: ILYA ============
 with tab2:
-    st.subheader("Accident Severity by Categorical Factors")
+    st.subheader("Relationship Between Internet Usage and Mental Health Outcomes")
+
+    st.markdown(
+        """
+        This section presents five visualisations developed to examine the relationship 
+        between internet usage and mental health outcomes. Each visualisation highlights 
+        different aspects of how varying levels of internet use are associated with 
+        mental health indicators.
+        """
+    )
+
+    # --- Visualization 1 ---
+    st.markdown("### Visualization 1: Internet Usage vs Mental Health Score")
+    st.plotly_chart(fig1, use_container_width=True)
+
+    # --- Visualization 2 ---
+    st.markdown("### Visualization 2: Distribution of Mental Health Scores")
+    st.plotly_chart(fig2, use_container_width=True)
+
+    # --- Visualization 3 ---
+    st.markdown("### Visualization 3: Internet Usage Across Mental Health Factors")
+    st.plotly_chart(fig3, use_container_width=True)
+
+    # --- Visualization 4 ---
+    st.markdown("### Visualization 4: Comparison of Mental Health Outcomes by Usage Level")
+    st.plotly_chart(fig4, use_container_width=True)
+
+    # --- Visualization 5 ---
+    st.markdown("### Visualization 5: Trend Analysis of Internet Usage and Mental Health")
+    st.plotly_chart(fig5, use_container_width=True)
+
 
 # ----------- HANIS NABILA -----------
 # ================= TAB 3: HANIS NABILA =================
