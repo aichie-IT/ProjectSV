@@ -634,7 +634,7 @@ with tab1:
         time_waste_pct = (filtered_df["Social_Media_Waste_Time"].isin(["Agree", "Strongly Agree"]).mean() * 100)
 
         col1.metric("Median Social Media Hours/Day", f"{median_usage:.1f} hrs", help="Typical daily social media usage (median)", border=True)
-        col2.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
+        col2.metric("High Usage (%)", f"{high_usage_pct:.1f}%", help="Students using social media ≥5 hours/day", border=True)
         col3.metric("Avg. Study Hours/Week", f"{avg_study_hours:.1f}", help="Average academic study commitment", border=True)
         col4.metric("Perceived Time Loss (%)", f"{time_waste_pct:.1f}%", help="Students who feel social media wastes their time", border=True)
         
@@ -645,9 +645,16 @@ with tab1:
             usage_summary(
                 len(filtered_df),
                 filtered_numeric["Social_Media_Hours_Numeric"].median(),
-                (filtered_df["Social_Media_Use_Frequency"]
-                 .isin(["5 to 6 hours per day", "More than 6 hours per day"])
-                 .mean() * 100),
+                usage_series = filtered_df["Social_Media_Use_Frequency"].dropna()
+
+                if len(usage_series) > 0:
+                    high_usage_pct = (
+                        usage_series
+                        .isin(["5 to 6 hours per day", "More than 6 hours per day"])
+                        .mean() * 100
+                    )
+                else:
+                    high_usage_pct = 0,
                 filtered_numeric["Study_Hours_Numeric"].mean()
             )
         )
@@ -655,19 +662,18 @@ with tab1:
         st.markdown("---")
         
         # Bar Chart
-        freq_order = [
-            "Less than 1 hour per day",
-            "1 to 2 hours per day",
-            "3 to 4 hours per day",
-            "5 to 6 hours per day",
-            "More than 6 hours per day"
-        ]
+        freq_map = {
+            "Less than 1 hour per day": 1,
+            "1 to 2 hours per day": 2,
+            "3 to 4 hours per day": 3,
+            "5 to 6 hours per day": 4,
+            "More than 6 hours per day": 5
+        }
 
-        filtered_df["Social_Media_Use_Frequency"] = pd.Categorical(
-            filtered_df["Social_Media_Use_Frequency"],
-            categories=freq_order,
-            ordered=True
+        filtered_df["Social_Media_Freq_Num"] = (
+            filtered_df["Social_Media_Use_Frequency"].map(freq_map)
         )
+
 
         fig = px.bar(
             filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
@@ -680,12 +686,6 @@ with tab1:
         
         usage_counts = filtered_df["Social_Media_Use_Frequency"].value_counts()
         total_students = usage_counts.sum()
-        high_usage_pct = (
-            filtered_df["Social_Media_Use_Frequency"]
-            .isin(["5 to 6 hours per day", "More than 6 hours per day"])
-            .mean() * 100
-        )
-
         st.plotly_chart(fig, use_container_width=True)
 
         st.info(
@@ -804,7 +804,7 @@ with tab1:
 
         col1.metric("Study Impact (%)", f"{(study_impact.mean()/5*100):.1f}%" if not study_impact.empty else "N/A", help="Average perceived impact of social media on studies", border=True)
         col2.metric("Avg. Academic Performance", f"{academic_perf.mean():.2f}" if not academic_perf.empty else "N/A", help="Numeric scale: 1=Below Avg → 4=Excellent", border=True)
-        col3.metric("High Usage Students (%)", f"{high_users_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
+        col3.metric("High Usage (%)", f"{high_usage_pct:.1f}%", help="Students using social media ≥5 hours/day", border=True)
         col4.metric("Avg. Weekly Study Hours", f"{study_hours.mean():.1f}" if not study_hours.empty else "N/A", help="Self-reported weekly study time", border=True)
         
         # Scientific Summary
@@ -893,9 +893,6 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
-        sleep_pct = (
-            filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
-        ).mean() * 100
 
         st.info(
             f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
@@ -1005,12 +1002,9 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
-        sleep_pct = (
-            filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
-        ).mean() * 100
 
         st.info(
-            f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
+            f"Approximately {sleep:.1f}% of students agree or strongly agree that "
             f"social media negatively affects their sleep. This highlights sleep disturbance "
             f"as a key wellbeing concern linked to prolonged internet use."
         )
