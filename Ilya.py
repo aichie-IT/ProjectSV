@@ -100,5 +100,12 @@ for col in likert_cols:
 # Bar Chart 
 # =====================================================
 
+st.subheader("Average Mental Health Scores by Internet Usage Level")
+    fig, ax = plt.subplots(figsize=(12, 7))
+    sns.barplot(x='Internet_Usage_Category', y='Score', hue='Mental_Health_Factor', data=df_melted, errorbar=None, order=['Low', 'Moderate', 'High'], ax=ax)
+    ax.set_title('Average Mental Health Scores by Internet Usage Level')
+    ax.set_xlabel('Internet Usage Category')
+    ax.set_ylabel('Mean Score (Likert Scale: 1=Strongly Disagree, 5=Strongly Agree)')
+    ax.legend(title='Mental Health Factor', bbox_to_anchor=(1.05, 1), loc='upper left')
 
-
+st.pyplot(fig)
