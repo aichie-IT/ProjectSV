@@ -96,10 +96,39 @@ likert_cols = [
 for col in likert_cols:
     df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
 
+
+# Melt the DataFrame for easier plotting with seaborn
+df_melted = df_for_analysis.melt(
+    id_vars=['Internet_Usage_Category'],
+    value_vars=mental_health_cols,
+    var_name='Mental_Health_Factor',
+    value_name='Score'
+)
+
+# Map mental health factor names for better legend readability
+mental_health_factor_map = {
+    'Assignments_Stress': 'Stress from Assignments',
+    'Academic_Workload_Anxiety': 'Academic Workload Anxiety',
+    'Difficulty_Sleeping_University_Pressure': 'Difficulty Sleeping (Pressure)',
+    'Social_Media_Negative_Impact_on_Wellbeing': 'Negative Social Media Impact'
+}
+df_melted['Mental_Health_Factor'] = df_melted['Mental_Health_Factor'].map(mental_health_factor_map)
+
+# Debugging: Check the structure and columns of df_melted
+st.write("Columns in df_melted:", df_melted.columns)
+st.write("First few rows of df_melted:", df_melted.head())
+
+# Define the order for x-axis categories
+order = ['Low', 'Moderate', 'High']
+
+# Streamlit code for visualization
+st.title('Average Mental Health Scores by Internet Usage Level')
+
 # =====================================================
 # Bar Chart 
 # =====================================================
 
+# Create the grouped bar chart in Streamlit
 fig, ax = plt.subplots(figsize=(12, 7))
 sns.barplot(
     x='Internet_Usage_Category',
@@ -117,3 +146,4 @@ ax.legend(title='Mental Health Factor', bbox_to_anchor=(1.05, 1), loc='upper lef
 
 # Display the plot in Streamlit
 st.pyplot(fig)
+
