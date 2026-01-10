@@ -624,7 +624,10 @@ with tab2:
     academic_perf = filtered_numeric["General_Academic_Performance_Numeric"].dropna()
     study_hours = filtered_numeric["Study_Hours_Numeric"].dropna()
     high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
-
+    mean_stress = usage_group_mean["Academic_Stress_Index"].mean()
+    sleep_pct = (filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4).mean() * 100
+    corr_val = safe_corr(filtered_numeric, "Social_Media_Hours_Numeric", "Assignments_Stress_Numeric")
+    
     col1.metric("Study Impact (%)", f"{(study_impact.mean()/5*100):.1f}%" if not study_impact.empty else "N/A", help="Average perceived impact of social media on studies", border=True)
     col2.metric("Avg. Academic Performance", f"{academic_perf.mean():.2f}" if not academic_perf.empty else "N/A", help="Numeric scale: 1=Below Avg → 4=Excellent", border=True)
     col3.metric("High Usage Students (%)", f"{high_users_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
@@ -675,7 +678,6 @@ with tab2:
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    mean_stress = usage_group_mean["Academic_Stress_Index"].mean()
 
     st.info(
         f"The visualization shows variations in academic stress across different levels "
@@ -716,9 +718,6 @@ with tab2:
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    sleep_pct = (
-        filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
-    ).mean() * 100
 
     st.info(
         f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
@@ -738,11 +737,6 @@ with tab2:
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    corr_val = safe_corr(
-        filtered_numeric,
-        "Social_Media_Hours_Numeric",
-        "Assignments_Stress_Numeric"
-    )
 
     if corr_val is not None:
         strength = (
@@ -779,7 +773,8 @@ with tab3:
     sleep = filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"].dropna()
     emotion = filtered_numeric["Emotional_Connection_Social_Media_Numeric"].dropna()
     help_seek = filtered_numeric["Seek_Help_Online_When_Stress_Numeric"].dropna()
-
+    sleep_pct = (filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4).mean() * 100
+    
     col1.metric("Avg. Stress Level", f"{stress.mean():.2f}" if not stress.empty else "N/A", border=True)
     col2.metric("Sleep Affected (%)", f"{(sleep.mean()/5*100):.1f}%" if not sleep.empty else "N/A", border=True)
     col3.metric("Emotional Attachment", f"{emotion.mean():.2f}" if not emotion.empty else "N/A", border=True)
@@ -828,9 +823,6 @@ with tab3:
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    sleep_pct = (
-        filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
-    ).mean() * 100
 
     st.info(
         f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
