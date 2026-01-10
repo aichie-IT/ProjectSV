@@ -346,36 +346,35 @@ with st.sidebar:
     with st.expander("Filter Options", expanded=True):
         st.markdown("Select filters to refine your dashboard view:")
 
-        # --- Multi-select Filters ---
         # --- Gender ---
         gender_filter = st.multiselect(
             "Gender",
             options=sorted(df["Gender"].dropna().unique()),
-            default=sorted(df["Gender"].dropna().unique())
+            default=[]
         )
 
         # --- Year of Study ---
         year_filter = st.multiselect(
             "Year of Study",
             options=sorted(df["Year_of_Study"].dropna().unique()),
-            default=sorted(df["Year_of_Study"].dropna().unique())
+            default=[]
         )
 
         # --- Programme ---
         programme_filter = st.multiselect(
             "Programme of Study",
             options=sorted(df["Programme_of_Study"].dropna().unique()),
-            default=sorted(df["Programme_of_Study"].dropna().unique())
+            default=[]
         )
 
         # --- Social Media Usage ---
         sm_filter = st.multiselect(
             "Social Media Usage (Hours / Day)",
-            options=df["Social_Media_Use_Frequency"].cat.categories,
-            default=df["Social_Media_Use_Frequency"].cat.categories
+            options=list(df["Social_Media_Use_Frequency"].cat.categories),
+            default=[]
         )
 
-        # --- Age Filter ---
+        # --- Age Filter (KEEP THIS) ---
         min_age, max_age = st.slider(
             "Age Range",
             int(df["Age"].min()),
