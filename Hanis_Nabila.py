@@ -123,7 +123,7 @@ col3.metric(
 )
 
 col4.metric(
-    "Agree Negative Impact",
+    "Negative Impact of Social Media on Wellbeing",
     f"{(df['Social_Media_Negative_Impact_on_Wellbeing'].astype(str).isin(['4','5']).mean()*100):.1f}%"
 )
 
