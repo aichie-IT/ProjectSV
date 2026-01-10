@@ -1197,30 +1197,19 @@ with tab2:
         and various mental health factors like stress, anxiety, and the impact of social media.
     """)
 
-    st.subheader("Average Mental Health Scores by Internet Usage Level")
-
-    fig, ax = plt.subplots(figsize=(12, 7))
-
-    sns.barplot(
-        x='Internet_Usage_Category',
+    # Display Plotly grouped bar chart
+    st.subheader("Mental Health Scores by Internet Usage")
+    fig = px.bar(
+        df_grouped,
+        x='Daily_Internet_Usage_Hours',
         y='Score',
-        hue='Mental_Health_Factor',
-        data=df_melted,
-        order=order,
-        errorbar=None,
-        ax=ax
+        color='Mental_Health_Factor',
+        barmode='group',
+        labels={'Daily_Internet_Usage_Hours': 'Internet Usage (hours)', 'Score': 'Mental Health Score'},
+        title="Mental Health Scores by Internet Usage"
     )
 
-    ax.set_title("Average Mental Health Scores by Internet Usage Level")
-    ax.set_xlabel("Internet Usage Category")
-    ax.set_ylabel("Mean Score (Likert Scale: 1 = Strongly Disagree, 5 = Strongly Agree)")
-    ax.legend(
-    title="Mental Health Factor",
-    bbox_to_anchor=(1.05, 1),
-    loc='upper left'
-    )
-
-    st.pyplot(fig, use_container_width=True)
+    st.plotly_chart(fig)
 
     # --- Box Plot ---
     # Create the box plot for "Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep"
@@ -1321,53 +1310,56 @@ with tab2:
     )
 
     # Plot
-    st.title("Daily Internet Usage vs Mental Health Scores")
+    df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
 
-    # Option 1: Use Plotly for faceted line plots
-    fig_line = px.line(
-        df_melted_scatter,
-        x='Daily_Internet_Usage_Hours',
-        y='Score',
-        facet_col='Mental_Health_Factor',
-        facet_col_wrap=2,
-        markers=True,
-        title='Daily Internet Usage vs Mean Mental Health Scores',
-        labels={
-            'Daily_Internet_Usage_Hours': 'Daily Internet Usage (Hours per Day)',
-            'Score': 'Mean Mental Health Score'
-        }
-    )
+   # Create faceted line plots with markers
+   fig_line = px.line(
+       df_grouped_line,
+       x='Daily_Internet_Usage_Hours_Str',
+       y='Score',
+       facet_col='Mental_Health_Factor',
+       facet_col_wrap=2,
+       markers=True,
+       title='Daily Internet Usage vs Mean Mental Health Scores',
+       labels={
+           'Daily_Internet_Usage_Hours_Str': 'Daily Internet Usage (Hours per Day)',
+           'Score': 'Mean Mental Health Score'
+       }
+   )
 
-    # Fix layout
-    fig_line.update_layout(
-        template='plotly_white',
-        height=600
-    )
+   # Fix layout
+   fig_line.update_layout(
+       template='plotly_white',
+       height=600
+   )
 
-    # Make y-axis tick uniform
-    fig_line.update_yaxes(dtick=1)
+   # Make y-axis tick uniform
+   fig_line.update_yaxes(dtick=1)
 
-    # Show the plot in Streamlit
-    st.plotly_chart(fig_line, use_container_width=True)
+   # Show the plot in Streamlit
+   st.plotly_chart(fig_line, use_container_width=True)
 
-    g = sns.relplot(
-        x='Daily_Internet_Usage_Hours',
-        y='Score',
-        col='Mental_Health_Factor',
-        col_wrap=2,  # Wrap plots after 2 columns
-        data=df_melted_scatter,
-        kind='scatter',
-        height=4, aspect=1.2,
-        s=50, alpha=0.7  # Adjust point size and transparency
-    )
+   st.title("Daily Internet Usage vs Mental Health Scores")
 
-    g.set_axis_labels("Daily Internet Usage (Hours)", "Mental Health Score")
-    g.set_titles("{col_name}")
-    plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02)  # Adjust suptitle position
-    plt.tight_layout(rect=[0, 0, 1, 0.98])  # Adjust layout to prevent suptitle overlap
+   # Create the faceted scatter plots 
+   g = sns.relplot(
+       x='Daily_Internet_Usage_Hours',
+       y='Score',
+       col='Mental_Health_Factor',
+       col_wrap=2, # Wrap plots after 2 columns
+       data=df_melted_scatter,
+       kind='scatter',
+       height=4, aspect=1.2,
+       s=50, alpha=0.7 # Adjust point size and transparency
+   )
 
-    # Show the plot in Streamlit
-    st.pyplot(plt)
+   g.set_axis_labels("Daily Internet Usage (Hours)", "Mental Health Score")
+   g.set_titles("{col_name}")
+   plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02) # Adjust suptitle position
+   plt.tight_layout(rect=[0, 0, 1, 0.98]) # Adjust layout to prevent suptitle overlap
+
+   # Show the plot in Streamlit
+   st.pyplot(plt)
 
 
 # ----------- HANIS NABILA -----------
