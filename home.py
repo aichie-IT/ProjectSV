@@ -1310,7 +1310,7 @@ with tab2:
     )
 
     # Plot
-   st.title("Daily Internet Usage vs Mental Health Scores")
+    st.title("Daily Internet Usage vs Mental Health Scores")
 
     # Option 1: Use Plotly for faceted line plots
     fig_line = px.line(
