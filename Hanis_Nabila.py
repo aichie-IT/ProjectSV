@@ -128,6 +128,38 @@ col4.metric(
 
 st.markdown("---")
 
+#==========
+st.subheader("📌 Key Information-Seeking Indicators")
+
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric(
+    "Seek Info Online",
+    f"{(df['Mental_Health_Info_Through_Internet']
+        .astype(str).isin(['3','4']).mean()*100):.1f}%"
+)
+
+col2.metric(
+    "Online Help When Stressed",
+    f"{(df['Seek_Help_Online_When_Stress']
+        .astype(str).isin(['4','5']).mean()*100):.1f}%"
+)
+
+col3.metric(
+    "Online Communities",
+    f"{(df['Use_Online_Communities_for_Support']
+        .astype(str).isin(['4','5']).mean()*100):.1f}%"
+)
+
+col4.metric(
+    "High Assignment Stress",
+    f"{(df['Assignments_Stress']
+        .astype(str).isin(['4','5']).mean()*100):.1f}%"
+)
+
+st.markdown("---")
+
+
 # =====================================================
 # ASSIGNMENT STRESS DISTRIBUTION
 # =====================================================
