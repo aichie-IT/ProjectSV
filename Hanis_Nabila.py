@@ -151,8 +151,10 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
-A clear majority of students prefer seeking help online when experiencing stress,
-highlighting digital platforms as a dominant support channel.
+The donut chart shows that a huge majority of students, 72.3%, stay in the low or neutral zone. 
+Only 27.7% really prefer getting help online regarding this preference. It seems like some 
+people really find digital platforms to be their go-to for support.
+
 """)
 
 # =====================================================
@@ -174,8 +176,9 @@ st.pyplot(fig)
 
 st.success("""
 **Interpretation:**  
-Engagement with online support communities varies across genders, indicating
-different help-seeking behaviours among students.
+Female students consistently outnumber male students across almost all frequency categories, 
+most notably in the "Sometimes" category. "Often" category shows 15 female participants but 0 male participants.
+This shows that frequent engagement with online support communities is almost exclusively a female behavior in this dataset.
 """)
 
 # =====================================================
