@@ -229,45 +229,45 @@ fig_heatmap.update_xaxes(tickangle=45)
 st.plotly_chart(fig_heatmap, use_container_width=True)
 
     # --- Line Plot: Mental Health Scores vs Internet Usage ---
-        st.subheader("Daily Internet Usage vs Mean Mental Health Scores")
+st.subheader("Daily Internet Usage vs Mean Mental Health Scores")
 
-        # Prepare df_line
-        df_line = df_melted.copy()
-        df_line["Score"] = pd.to_numeric(df_line["Score"], errors="coerce")
-        df_line["Daily_Internet_Usage_Hours"] = pd.to_numeric(df_line["Daily_Internet_Usage_Hours"], errors="coerce")
-        df_line = df_line.dropna(subset=["Score", "Daily_Internet_Usage_Hours", "Mental_Health_Factor"])
+    # Prepare df_line
+    df_line = df_melted.copy()
+    df_line["Score"] = pd.to_numeric(df_line["Score"], errors="coerce")
+    df_line["Daily_Internet_Usage_Hours"] = pd.to_numeric(df_line["Daily_Internet_Usage_Hours"], errors="coerce")
+    df_line = df_line.dropna(subset=["Score", "Daily_Internet_Usage_Hours", "Mental_Health_Factor"])
 
-        # Group and calculate mean
-        df_grouped_line = (
-            df_line.groupby(["Daily_Internet_Usage_Hours", "Mental_Health_Factor"])["Score"]
-            .mean()
-            .reset_index()
-            .sort_values("Daily_Internet_Usage_Hours")
-        )
+    # Group and calculate mean
+    df_grouped_line = (
+        df_line.groupby(["Daily_Internet_Usage_Hours", "Mental_Health_Factor"])["Score"]
+        .mean()
+        .reset_index()
+        .sort_values("Daily_Internet_Usage_Hours")
+    )
 
-        # Convert hours to string for faceting
-        df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
+    # Convert hours to string for faceting
+    df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
 
         # --- Plotly Line Plot ---
-        fig_line = px.line(
-            df_grouped_line,
-            x='Daily_Internet_Usage_Hours_Str',
-            y='Score',
-            facet_col='Mental_Health_Factor',
-            facet_col_wrap=2,
-            markers=True,
-            title='Daily Internet Usage vs Mean Mental Health Scores',
-            labels={
-                'Daily_Internet_Usage_Hours_Str': 'Daily Internet Usage (Hours per Day)',
-                'Score': 'Mean Mental Health Score'
-            }
-        )
-        fig_line.update_layout(template='plotly_white', height=600)
-        fig_line.update_yaxes(dtick=1)
-        st.plotly_chart(fig_line, use_container_width=True)
+    fig_line = px.line(
+        df_grouped_line,
+        x='Daily_Internet_Usage_Hours_Str',
+        y='Score',
+        facet_col='Mental_Health_Factor',
+        facet_col_wrap=2,
+        markers=True,
+        title='Daily Internet Usage vs Mean Mental Health Scores',
+        labels={
+            'Daily_Internet_Usage_Hours_Str': 'Daily Internet Usage (Hours per Day)',
+            'Score': 'Mean Mental Health Score'
+        }
+    )
+    fig_line.update_layout(template='plotly_white', height=600)
+    fig_line.update_yaxes(dtick=1)
+    st.plotly_chart(fig_line, use_container_width=True)
 
         # --- Seaborn Scatter Plots ---
-    st.subheader("Scatter Plots: Daily Internet Usage vs Mental Health Scores")
+st.subheader("Scatter Plots: Daily Internet Usage vs Mental Health Scores")
 
     # Create a new figure to avoid Streamlit re-use errors
     plt.figure(figsize=(12, 8))
