@@ -624,7 +624,6 @@ with tab2:
     academic_perf = filtered_numeric["General_Academic_Performance_Numeric"].dropna()
     study_hours = filtered_numeric["Study_Hours_Numeric"].dropna()
     high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
-    mean_stress = usage_group_mean["Academic_Stress_Index"].mean()
     sleep_pct = (filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4).mean() * 100
     corr_val = safe_corr(filtered_numeric, "Social_Media_Hours_Numeric", "Assignments_Stress_Numeric")
     
@@ -678,6 +677,7 @@ with tab2:
     )
 
     st.plotly_chart(fig, use_container_width=True)
+    mean_stress = usage_group_mean["Academic_Stress_Index"].mean()
 
     st.info(
         f"The visualization shows variations in academic stress across different levels "
