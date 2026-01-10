@@ -653,8 +653,6 @@ with tab1:
         )
 
         st.markdown("---")
-
-        col1, col2, col3, col4 = st.columns(4)
         
         # Bar Chart
         freq_order = [
@@ -672,7 +670,7 @@ with tab1:
         )
 
         fig = px.bar(
-            df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+            filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
             title="Distribution of Daily Social Media Usage",
             labels={"value": "Number of Students", "index": "Hours per Day"},
             color_discrete_sequence=px.colors.qualitative.Set2
@@ -823,8 +821,6 @@ with tab1:
 
 
         st.markdown("---")
-
-        col1, col2, col3 = st.columns(3)
 
         # Bar Chart
         academic_numeric = filtered_numeric.dropna(
@@ -980,7 +976,6 @@ with tab1:
 
         st.markdown("---")
 
-        col1, col2 = st.columns(2)
 
         # Radar / Polar Chart
         st.subheader("Mental Health Impact Profile")
@@ -1100,8 +1095,6 @@ with tab1:
 
         st.markdown("---")
 
-        col1, col2 = st.columns(2)
-
         # Heatmap
         corr = df_numeric[
             [
@@ -1136,14 +1129,14 @@ with tab1:
                 "weak" if abs(corr_val) < 0.3 else
                 "moderate" if abs(corr_val) < 0.6 else
                 "strong"
-        )
+            )
 
-        st.info(
-            f"A {strength} positive correlation (r = {corr_val:.2f}) is observed between "
-            f"daily social media usage and academic stress. This suggests an association "
-            f"between increased online engagement and higher stress levels, though the "
-            f"relationship does not imply direct causation."
-        )
+            st.info(
+                f"A {strength} positive correlation (r = {corr_val:.2f}) is observed between "
+                f"daily social media usage and academic stress. This suggests an association "
+                f"between increased online engagement and higher stress levels, though the "
+                f"relationship does not imply direct causation."
+            )
         else:
             st.info("Insufficient data to compute correlation under current filters.")
 
