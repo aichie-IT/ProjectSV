@@ -2,9 +2,13 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-# Load data from URL
-url = 'https://raw.githubusercontent.com/aichie-IT/ProjectSV/refs/heads/main/exploring_internet_use.csv'
-df = pd.read_csv(url)
+# --- LOAD DATA ---
+@st.cache_data
+def load_data():
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv"
+    return pd.read_csv(url)
+
+df = load_data()
 
 # Re-apply short label mapping to 'Social_Media_Use_Frequency'
 short_label_map_for_df = {
