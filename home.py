@@ -1289,19 +1289,44 @@ with tab2:
 
     st.plotly_chart(fig_heatmap, use_container_width=True)
 
-    # --- Line Plot ---
-    df_grouped_line = df_melted.groupby(['Daily_Internet_Usage_Hours', 'Mental_Health_Factor'])['Score'].mean().reset_index()
+    # --- Line Plot: Mental Health Scores vs Internet Usage ---
 
+    df_line = df_melted.copy()
+
+    # Convert to numeric (important for line plot)
+    df_line["Score"] = pd.to_numeric(df_line["Score"], errors="coerce")
+    df_line["Daily_Internet_Usage_Hours"] = pd.to_numeric(df_line["Daily_Internet_Usage_Hours"], errors="coerce")
+
+    # Remove rows with missing values
+    df_line = df_line.dropna(subset=["Score", "Daily_Internet_Usage_Hours", "Mental_Health_Factor"])
+
+    # Group and calculate mean
+    df_grouped_line = (
+        df_line
+        .groupby(["Daily_Internet_Usage_Hours", "Mental_Health_Factor"])["Score"]
+        .mean()
+        .reset_index()
+        .sort_values("Daily_Internet_Usage_Hours")
+    )
+
+    # Plot
     fig_line = px.line(
         df_grouped_line,
-        x='Daily_Internet_Usage_Hours',
-        y='Score',
-        color='Mental_Health_Factor',
-        line_shape='linear',
+        x="Daily_Internet_Usage_Hours",
+        y="Score",
+        color="Mental_Health_Factor",
+        markers=True,
         title="Mental Health Scores vs Internet Usage"
     )
 
-    st.plotly_chart(fig_line)
+    fig_line.update_layout(
+        xaxis_title="Internet Usage (Hours per Day)",
+        yaxis_title="Average Mental Health Score",
+        template="plotly_white"
+    )
+
+    st.plotly_chart(fig_line, use_container_width=True)
+
 
 
 # ----------- HANIS NABILA -----------
