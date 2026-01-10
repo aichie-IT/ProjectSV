@@ -221,16 +221,20 @@ def waterfall_summary(df, col, value_col):
     """
     if df.empty:
         return "No data available."
-    
-    total_change = df[value_col].sum()
-    max_step = df[value_col].idxmax()
-    min_step = df[value_col].idxmin()
+    if col not in df.columns or value_col not in df.columns:
+        return f"Columns '{col}' or '{value_col}' not found in the dataframe."
+
+    # Group by category and sum values
+    grouped = df.groupby(col)[value_col].sum()
+    total_change = grouped.sum()
+    max_step = grouped.idxmax()
+    min_step = grouped.idxmin()
     
     return (
-        f"The waterfall chart shows incremental changes in {value_col} across '{col}'. "
+        f"The waterfall chart shows incremental changes in '{value_col}' across '{col}'. "
         f"The total net change is {total_change:.2f}. "
-        f"The largest positive change is at index {max_step}, "
-        f"while the largest negative change is at index {min_step}."
+        f"The largest positive change is in '{max_step}', "
+        f"while the largest negative change is in '{min_step}'."
     )
 
 
@@ -1101,7 +1105,8 @@ with tab4:
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    st.info(waterfall_summary(filtered_df, 'Category', 'Value'))
+    st.info(waterfall_summary(filtered_numeric, col='Gender', value_col='Academic_Stress_Index'))
+
          
        
     st.markdown("#### 💬 Key Insights")
