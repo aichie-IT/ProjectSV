@@ -53,74 +53,78 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
-# Fix encoding issues
-df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
+# Continue dropping irrelevant columns
+df = df.drop(columns=cols_to_drop, errors="ignore")
 
-# Drop Irrelevant Columns
-cols_to_drop = [
-    "Timestamp",
-    "Type_of_Online_Content_Affects",
-    "Universities_Support_Actions"
-]
-
-# --- MAP SOCIAL MEDIA USAGE LABELS ---
-short_label_map = {
-    "Less than 1 hour per day": "< 1 hr",
-    "1 to 2 hours per day": "1–2 hrs",
-    "3 to 4 hours per day": "3–4 hrs",
-    "5 to 6 hours per day": "5–6 hrs",
-    "More than 6 hours per day": "> 6 hrs"
+# -----------------------------
+# Likert mapping (KEEP VARIABLES)
+# -----------------------------
+likert_numeric_map = {
+    '1': 1,
+    '2': 2,
+    '3': 3,
+    '4': 4,
+    '5': 5
 }
-df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].map(short_label_map)
 
-# --- INTERNET USAGE CATEGORY ---
-internet_usage_categories = {
-    "< 1 hr": "Low",
-    "1–2 hrs": "Low",
-    "3–4 hrs": "Moderate",
-    "5–6 hrs": "High",
-    "> 6 hrs": "High"
-}
-df["Internet_Usage_Category"] = df["Social_Media_Use_Frequency"].map(
-    internet_usage_categories
+# --- Process X-axis: Internet use before sleep (Yes / No) ---
+df['Sleep_Affected_By_Social_Media_Numeric_Str'] = df['Sleep_Affected_By_Social_Media'].astype(str)
+
+def map_sleep_impact_to_binary(response_str):
+    try:
+        response_int = int(response_str)
+        if response_int >= 4:
+            return 'Yes'
+        elif response_int <= 3:
+            return 'No'
+    except ValueError:
+        return None
+
+df['Internet_Use_Affects_Sleep'] = df['Sleep_Affected_By_Social_Media_Numeric_Str'].apply(
+    map_sleep_impact_to_binary
 )
 
-# --- MENTAL HEALTH VARIABLES ---
-mental_health_cols = [
-    "Assignments_Stress",
-    "Academic_Workload_Anxiety",
-    "Difficulty_Sleeping_University_Pressure",
-    "Social_Media_Negative_Impact_on_Wellbeing"
-]
-
-# Convert Likert responses to numeric
-for col in mental_health_cols:
-    df[col] = pd.to_numeric(df[col], errors="coerce")
-
-# --- MELT DATA ---
-df_melted = df.melt(
-    id_vars="Internet_Usage_Category",
-    value_vars=mental_health_cols,
-    var_name="Mental_Health_Factor",
-    value_name="Score"
+# --- Process Y-axis: Mental health score ---
+df['Difficulty_Sleeping_University_Pressure_Numeric_Str'] = (
+    df['Difficulty_Sleeping_University_Pressure'].astype(str)
+)
+df['Difficulty_Sleeping_University_Pressure_Score'] = (
+    df['Difficulty_Sleeping_University_Pressure_Numeric_Str']
+    .map(likert_numeric_map)
 )
 
-# Rename for readability
-factor_map = {
-    "Assignments_Stress": "Stress from Assignments",
-    "Academic_Workload_Anxiety": "Academic Workload Anxiety",
-    "Difficulty_Sleeping_University_Pressure": "Difficulty Sleeping (Pressure)",
-    "Social_Media_Negative_Impact_on_Wellbeing": "Negative Social Media Impact"
-}
-df_melted["Mental_Health_Factor"] = df_melted["Mental_Health_Factor"].map(factor_map)
+# Drop invalid rows
+df_plot = df.dropna(
+    subset=[
+        'Internet_Use_Affects_Sleep',
+        'Difficulty_Sleeping_University_Pressure_Score'
+    ]
+).copy()
 
-# Category order
-order = ["Low", "Moderate", "High"]
-df_melted["Internet_Usage_Category"] = pd.Categorical(
-    df_melted["Internet_Usage_Category"],
-    categories=order,
-    ordered=True
+# -----------------------------
+# STREAMLIT + PLOTLY BOXPLOT
+# -----------------------------
+st.subheader("Difficulty Sleeping vs Social Media Affecting Sleep")
+
+fig = px.box(
+    df_plot,
+    x='Internet_Use_Affects_Sleep',
+    y='Difficulty_Sleeping_University_Pressure_Score',
+    category_orders={'Internet_Use_Affects_Sleep': ['No', 'Yes']},
+    labels={
+        'Internet_Use_Affects_Sleep': 'Social Media Affects Sleep',
+        'Difficulty_Sleeping_University_Pressure_Score':
+        'Difficulty Sleeping Score (1–5)'
+    }
 )
+
+fig.update_layout(
+    yaxis=dict(dtick=1),
+    template='plotly_white'
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
 
 # --- PLOT ---
 fig = px.bar(
