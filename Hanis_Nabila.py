@@ -66,6 +66,36 @@ cols_to_drop = [
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
 
+likert_numeric_map = {
+    '1': 1,
+    '2': 2,
+    '3': 3,
+    '4': 4,
+    '5': 5
+}
+
+columns_to_keep = [
+    'Gender',
+    'Find_Mental_Health_Info_Online',
+    'Seek_Help_Online_When_Stress',
+    'Use_Online_Communities_for_Support',
+    'Assignments_Stress',
+    'Follow_Motivational_Mental_Health_Content',
+    'Mental_Health_Info_Through_Internet'
+]
+
+likert_cols = [
+    'Find_Mental_Health_Info_Online',
+    'Seek_Help_Online_When_Stress',
+    'Use_Online_Communities_for_Support',
+    'Assignments_Stress',
+    'Follow_Motivational_Mental_Health_Content',
+    'Mental_Health_Info_Through_Internet'
+]
+
+for col in likert_cols:
+    df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
+
 # =====================================================
 # DATASET OVERVIEW
 # =====================================================
