@@ -15,6 +15,25 @@ def safe_corr(df, col_x, col_y):
         return None
     return temp.corr().iloc[0, 1]
 
+def generate_scientific_summary(n, usage, stress, pos, neg):
+    if n == 0:
+        return "No data available under the current filter selection."
+
+    impact_statement = (
+        "negative wellbeing perceptions outweigh positive perceptions"
+        if neg > pos else
+        "positive wellbeing perceptions outweigh negative perceptions"
+    )
+
+    return (
+        f"Based on the currently selected subgroup (n = {n}), students spend an "
+        f"average of {usage:.1f} hours per day on social media. "
+        f"The mean academic stress index is {stress:.2f}, indicating a moderate "
+        f"level of perceived academic pressure. Notably, {impact_statement}, "
+        f"suggesting that internet use is closely interrelated with students’ "
+        f"mental wellbeing within this subgroup."
+    )
+
 
 # --- MAIN TITLE ---
 st.title(" Student Mental Health Monitoring Insights Dashboard")
@@ -466,6 +485,15 @@ with st.sidebar:
             (filtered_df["Age"] <= max_age)
         ]
         filtered_numeric = filtered_numeric.loc[filtered_df.index]
+        
+        # ===== REAL-TIME SUMMARY CALCULATIONS =====
+        sample_size = len(filtered_df)
+
+        avg_usage = filtered_numeric["Social_Media_Hours_Numeric"].mean()
+        avg_stress = filtered_numeric["Academic_Stress_Index"].mean()
+        avg_positive = filtered_numeric["Social_Media_Positive_Impact_on_Wellbeing_Numeric"].mean()
+        avg_negative = filtered_numeric["Social_Media_Negative_Impact_on_Wellbeing_Numeric"].mean()
+
 
     # --- Reset and Download Buttons ---
     col1, col2 = st.columns(2)
