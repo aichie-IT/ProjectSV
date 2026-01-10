@@ -293,5 +293,5 @@ st.subheader("Scatter Plots: Daily Internet Usage vs Mental Health Scores")
     plt.tight_layout(rect=[0, 0, 1, 0.95])
 
     # Render the plot in Streamlit
-    st.pyplot(g.fig)  # Use g.fig instead of plt
+st.pyplot(g.fig)  # Use g.fig instead of plt
    
