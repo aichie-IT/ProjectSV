@@ -51,7 +51,7 @@ df = df.rename(columns={
     "Do you think universities should provide more online mental health resources? / Adakah anda fikir universiti harus menyediakan lebih banyak sumber kesihatan mental dalam talian?": "Do you think universities should provide more online mental health resources?",
     "What type of online content affects you the most (positive or negative)? / Apakah jenis kandungan dalam talian yang paling mempengaruhi anda (positif atau negatif)?": "Type_of_Online_Content_Affects",
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
-})
+    })
 # ==============================
 # DATA CLEANING
 # ==============================
@@ -184,9 +184,9 @@ for col in likert_cols:
         barmode='group',
         labels={'Daily_Internet_Usage_Hours': 'Internet Usage (hours)', 'Score': 'Mental Health Score'},
         title="Mental Health Scores by Internet Usage"
-    )
+        )
 
-    st.plotly_chart(fig)
+        st.plotly_chart(fig)
 
     # --- Box Plot ---
     # Create the box plot for "Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep"
@@ -304,7 +304,7 @@ for col in likert_cols:
     fig_line.update_yaxes(dtick=1)
     st.plotly_chart(fig_line, use_container_width=True)
 
-    # --- Seaborn Scatter Plots ---
+    # --- Scatter Plots ---
     st.subheader("Scatter Plots: Daily Internet Usage vs Mental Health Scores")
 
     # Create a new figure to avoid Streamlit re-use errors
