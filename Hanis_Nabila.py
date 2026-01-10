@@ -245,10 +245,10 @@ st.subheader("Assignment Stress vs Online Help Preference")
 
 stress_map = {'1':'Low','2':'Moderate','3':'Neutral','4':'High','5':'Very High'}
 
-df['Stress_Cat'] = df['Assignments_Stress'].astype(str).map(stress_map)
+df['Stress'] = df['Assignments_Stress'].astype(str).map(stress_map)
 
 stress_help_table = pd.crosstab(
-    df['Stress_Cat'],
+    df['Stress'],
     df['Seek_Help_Online_When_Stress']
 )
 
