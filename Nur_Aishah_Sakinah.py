@@ -229,8 +229,9 @@ def waterfall_summary(df, col, value_col):
     return (
         f"The waterfall chart shows incremental changes in {value_col} across '{col}'. "
         f"The total net change is {total_change:.2f}. "
-        f"The largest positive change is at
-
+        f"The largest positive change is at index {max_step}, "
+        f"while the largest negative change is at index {min_step}."
+    )
 
 
 # --- PAGE CONFIG ---
