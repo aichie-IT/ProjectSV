@@ -1310,22 +1310,30 @@ with tab2:
     )
 
     # Plot
-    fig_line = px.line(
-        df_grouped_line,
-        x="Daily_Internet_Usage_Hours",
-        y="Score",
-        color="Mental_Health_Factor",
-        markers=True,
-        title="Mental Health Scores vs Internet Usage"
-    )
+df_grouped_line = df_grouped_line.sort_values("Daily_Internet_Usage_Hours")
 
-    fig_line.update_layout(
-        xaxis_title="Internet Usage (Hours per Day)",
-        yaxis_title="Average Mental Health Score",
-        template="plotly_white"
-    )
+# Plotly faceted line plot (equivalent to sns.relplot with col)
+fig_line = px.line(
+    df_grouped_line,
+    x="Daily_Internet_Usage_Hours",
+    y="Score",
+    facet_col="Mental_Health_Factor",
+    facet_col_wrap=2,   # same as seaborn col_wrap=2
+    markers=True,
+    title="Daily Internet Usage vs Mean Mental Health Scores"
+)
 
-    st.plotly_chart(fig_line, use_container_width=True)
+# Layout adjustments (equivalent to seaborn formatting)
+fig_line.update_layout(
+    xaxis_title="Daily Internet Usage (Hours)",
+    yaxis_title="Mean Mental Health Score",
+    template="plotly_white"
+)
+
+# Make y-axis ticks cleaner (Likert scale)
+fig_line.update_yaxes(dtick=1)
+
+st.plotly_chart(fig_line, use_container_width=True)
 
 
 
