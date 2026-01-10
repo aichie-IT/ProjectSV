@@ -266,32 +266,32 @@ st.subheader("Daily Internet Usage vs Mean Mental Health Scores")
     fig_line.update_yaxes(dtick=1)
     st.plotly_chart(fig_line, use_container_width=True)
 
-        # --- Seaborn Scatter Plots ---
+       # --- Seaborn Scatter Plots ---
 st.subheader("Scatter Plots: Daily Internet Usage vs Mental Health Scores")
 
-    # Create a new figure to avoid Streamlit re-use errors
-    plt.figure(figsize=(12, 8))
+# Create a new figure to avoid Streamlit re-use errors
+plt.figure(figsize=(12, 8))
 
-    g = sns.relplot(
-        x='Daily_Internet_Usage_Hours',
-        y='Score',
-        col='Mental_Health_Factor',
-        col_wrap=2,
-        data=df_line,  # Use cleaned df_line
-        kind='scatter',
-        height=4,
-        aspect=1.2,
-        s=50,
-        alpha=0.7
-    )
+g = sns.relplot(
+    x='Daily_Internet_Usage_Hours',
+    y='Score',
+    col='Mental_Health_Factor',
+    col_wrap=2,
+    data=df_line,  # Use cleaned df_line
+    kind='scatter',
+    height=4,
+    aspect=1.2,
+    s=50,
+    alpha=0.7
+)
 
-    g.set_axis_labels("Daily Internet Usage (Hours)", "Mental Health Score")
-    g.set_titles("{col_name}")
+g.set_axis_labels("Daily Internet Usage (Hours)", "Mental Health Score")
+g.set_titles("{col_name}")
 
-    # Adjust layout and title
-    plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02)
-    plt.tight_layout(rect=[0, 0, 1, 0.95])
+# Adjust layout and title
+plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02)
+plt.tight_layout(rect=[0, 0, 1, 0.95])
 
-    # Render the plot in Streamlit
-st.pyplot(g.fig)  # Use g.fig instead of plt
-   
+# Render the plot in Streamlit
+st.pyplot(g.fig)  # Correct indentation here
+
