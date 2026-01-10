@@ -75,8 +75,8 @@ filtered_data = df[
 # ==================================================
 # TABS (FIXED)
 # ==================================================
-tab1, tab2, tab3, tab4 = st.tabs(
-    ["Overview", "Social Media", "Mental Health", "Demographic Analysis"]
+tab4 = st.tab(
+    ["Demographic Analysis"]
 )
 
 # ==================================================
