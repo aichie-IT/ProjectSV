@@ -127,7 +127,8 @@ for col in likert_columns:
 # ==============================
 
 processed_df = df.copy()
-   st.title("Relationship Between Internet Usage and Mental Health Outcomes")
+
+    st.title("Relationship Between Internet Usage and Mental Health Outcomes")
 
     # Display a brief explanation of the project
     st.write("""
@@ -294,6 +295,4 @@ processed_df = df.copy()
 
     # Render the plot in Streamlit
     st.pyplot(g.fig)  # Use g.fig instead of plt
-
-
    
