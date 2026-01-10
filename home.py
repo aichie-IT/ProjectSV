@@ -1197,19 +1197,19 @@ with tab2:
         and various mental health factors like stress, anxiety, and the impact of social media.
     """)
 
-  st.subheader("Average Mental Health Scores by Internet Usage Level")
+      st.subheader("Average Mental Health Scores by Internet Usage Level")
 
-fig, ax = plt.subplots(figsize=(12, 7))
+    fig, ax = plt.subplots(figsize=(12, 7))
 
-sns.barplot(
-    x='Internet_Usage_Category',
-    y='Score',
-    hue='Mental_Health_Factor',
-    data=df_melted,
-    order=order,
-    errorbar=None,
-    ax=ax
-)
+    sns.barplot(
+        x='Internet_Usage_Category',
+        y='Score',
+        hue='Mental_Health_Factor',
+        data=df_melted,
+        order=order,
+        errorbar=None,
+        ax=ax
+    )
 
 ax.set_title("Average Mental Health Scores by Internet Usage Level")
 ax.set_xlabel("Internet Usage Category")
