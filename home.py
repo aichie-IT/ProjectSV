@@ -1352,8 +1352,7 @@ with tab3:
 
 # ============ TAB 4: INDIVIDUAL VISUALIZATIONS ============
 with tab4:
-    st.title("Demographic Differences with Mental Health Experiences")
-
+    st.subheader("Demographic Differences with Mental Health Experiences")
     st.write("""
     The purpose of this visualization is to identify and analyze demographic 
     differences in mental health experiences among students, focusing on how 
@@ -1361,8 +1360,9 @@ with tab4:
     """)
 
     # ==================================================
-    # SUMMARY METRICS
+    # SUMMARY METRIC BOXES
     # ==================================================
+
     TOTAL_RESPONDENTS = len(df)
 
     col1, col2, col3 = st.columns(3)
@@ -1371,28 +1371,23 @@ with tab4:
         st.metric("Total Respondents", TOTAL_RESPONDENTS)
 
     with col2:
-        st.metric(
-        "Majority Gender",
-        filtered_data["Gender"].mode()[0]
-    )
+        majority_gender = filtered_data["Gender"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
+        st.metric("Majority Gender", majority_gender)
 
     with col3:
-        st.metric(
-        "Dominant Year of Study",
-        filtered_data["Year_of_Study"].mode()[0]
-    )
+        dominant_year = filtered_data["Year_of_Study"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
+        st.metric("Dominant Year", dominant_year)
+
+    ("📊 Summary Metrics")
 
     st.success("""
-    **Summary:**  
-    The dataset is composed of 101 participants, which is an sample to see the significant trends in the mental health 
+    **Summary:** The dataset is composed of 101 participants, which is an sample to see the significant trends in the mental health 
     of students and their internet use. The survey is dominated by female who form majority of the respondents meaning that the female 
     students are more represented in the survey. Regarding the level of study, Year 4 students are the majority group which implies that 
     final-year students are the most represented and can have different academic and mental health issues as compared to the lower years.
     """)
-    # ==================================================
-    # VISUALIZATIONS
-    # ==================================================
 
+    
     left, right = st.columns(2)
 
     with left:
@@ -1427,6 +1422,7 @@ with tab4:
         **Interpretation:**  
         The data shows that the Year 1 students primarily stay in the campus but Year 3 and Year 4 students are mainly off-campus.
         This implies a change towards the independent living as students mature in their education.
+
         """)
 
         ("3️⃣ Gender vs Difficulty Sleeping")
@@ -1446,8 +1442,8 @@ with tab4:
         pressure. Sleep disturbances may be linked to academic stress and social factors.
         """)
 
-        with right:
-            ("4️⃣ Year of Study vs Living Situation")
+    with right:
+        ("4️⃣ Year of Study vs Living Situation")
 
         heatmap_data = pd.crosstab(
             filtered_data["Year_of_Study"],
@@ -1501,15 +1497,17 @@ with tab4:
         """)
 
         # ==================================================
-        # OBSERVATION
+        # SUMMARY
         # ==================================================
 
         st.success("""
         **Observation:** 
+
         The visualizations show clear demographic differences in student's mental health experiences. Female students report greater 
         effects from academic pressure and social media while higher-year students like to live more independently off-campus.
         Most respondents are full-time students, showing that academic demands are a key factor influencing student wellbeing.
         """)
+   
 
    
 # --- FOOTER ---
