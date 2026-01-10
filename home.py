@@ -560,20 +560,19 @@ with tab1:
     col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
 
     # Scientific Summary
-    st.markdown("### Summary")
-    st.info("""
-    A total of **27 students** were analysed, with an average age of **22.7 years**, reflecting
-    a typical undergraduate population.
+    # ===== REAL-TIME SCIENTIFIC SUMMARY =====
+    st.markdown("### 🧠 Real-Time Scientific Summary")
 
-    The **average Academic Stress Index of 2.98** shows a moderate level of academic-related
-    stress, suggesting that many students experience noticeable pressure from coursework,
-    assignments, and academic workload.
+    st.info(
+        generate_scientific_summary(
+            sample_size,
+            avg_usage,
+            avg_stress,
+            avg_positive,
+            avg_negative
+        )
+    )
 
-    While, **74.1% of students fall into the high social media usage category**
-    (5 hours or more per day), highlighting the strong integration of social media into
-    students’ daily routines. This high internet usage provides a critical context for examining its potential influence on academic stress and mental
-    well-being.
-    """)
     st.markdown("---")
 
     # --- TAB LAYOUT ---
