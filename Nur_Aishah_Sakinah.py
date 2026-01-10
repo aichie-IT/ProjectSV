@@ -769,11 +769,12 @@ with tab1:
     )
        
     st.markdown("#### 💬 Observation")
-    st.info(
-        "Overall patterns observed in this section suggest that internet usage behaviour "
-        "varies across student groups and is meaningfully associated with academic and "
-        "wellbeing indicators. These observations motivate further correlation and "
-        "multivariate analysis in subsequent sections."
+    st.success(
+        "Students exhibit varying social media usage patterns. The majority use social media "
+        "moderately (1–4 hours/day), while a notable subgroup spends 5+ hours daily. "
+        "High-usage students report higher perceptions of time wasted online, and their "
+        "average study hours tend to be lower, highlighting a potential trade-off between "
+        "online engagement and academic commitment."
     )
     
     
@@ -895,11 +896,12 @@ with tab2:
 
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
-    st.success("""
-    The majority of accidents are classified as minor. Helmet usage is generally high,
-    which correlates with lower accident severity. Riders with valid licenses also
-    exhibit safer driving trends, suggesting that training and enforcement play key roles.
-    """)
+    st.success(
+        "Higher social media usage is modestly associated with increased academic stress. "
+        "Despite this, most students maintain moderate to good academic performance. "
+        "High-usage students (≥5 hours/day) may require support to manage stress, "
+        "and study habits appear to moderate the impact of social media on academic outcomes."
+    )
 
 # ============ TAB 3: WELLBEING ANALYSIS ============
 with tab3:
@@ -1007,11 +1009,12 @@ with tab3:
        
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
-    st.success("""
-    The majority of accidents are classified as minor. Helmet usage is generally high,
-    which correlates with lower accident severity. Riders with valid licenses also
-    exhibit safer driving trends, suggesting that training and enforcement play key roles.
-    """)
+    st.success(
+        "Mental wellbeing patterns show moderate average stress levels across students. "
+        "A substantial proportion report sleep disturbances linked to social media use. "
+        "Emotional attachment to social media is noticeable, and many students seek online support "
+        "during stressful periods, highlighting the importance of accessible mental health resources."
+    )
 
 # ============ TAB 4: CORRELATION & INSIGHTS ============
 with tab4:
@@ -1113,11 +1116,12 @@ with tab4:
        
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
-    st.success("""
-    The majority of accidents are classified as minor. Helmet usage is generally high,
-    which correlates with lower accident severity. Riders with valid licenses also
-    exhibit safer driving trends, suggesting that training and enforcement play key roles.
-    """)
+    st.success(
+        "Correlation analysis reveals weak-to-moderate associations between social media usage, "
+        "study hours, and academic stress. Positive wellbeing impacts slightly outweigh negative ones, "
+        "and students who use online communities for support show higher engagement with coping strategies. "
+        "These insights highlight areas for intervention and targeted support for high-usage or stressed students."
+    )
 
 # --- FOOTER ---
 st.markdown("---")
