@@ -1258,13 +1258,36 @@ with tab2:
 
     correlation_matrix = df_heatmap[numerical_cols].dropna().corr()
 
-    fig_heatmap = px.imshow(
-        correlation_matrix,
-        labels=dict(x="Variables", y="Variables", color="Correlation"),
-        title="Correlation Heatmap"
+    # Short names for better display
+    short_names = {
+        "Age": "Age",
+        "Social_Media_Hours_Numeric": "SM Hours",
+        "Study_Hours_Numeric": "Study Hours",
+        "Assignments_Stress_Numeric": "Assignment Stress",
+        "Academic_Workload_Anxiety_Numeric": "Workload Anxiety",
+        "Difficulty_Sleeping_University_Pressure_Numeric": "Sleep Difficulty",
+        "Sleep_Affected_By_Social_Media_Numeric": "Sleep Affected",
+        "Studies_Affected_By_Social_Media_Numeric": "Study Affected",
+        "Social_Media_Positive_Impact_on_Wellbeing_Numeric": "Positive Impact",
+        "Social_Media_Negative_Impact_on_Wellbeing_Numeric": "Negative Impact",
+        "Emotional_Connection_Social_Media_Numeric": "Emotional Attachment"
+    }
+
+    correlation_matrix_renamed = correlation_matrix.rename(
+        index=short_names, columns=short_names
     )
 
-    st.plotly_chart(fig_heatmap)
+    fig_heatmap = px.imshow(
+        correlation_matrix_renamed,
+        labels=dict(x="Variables", y="Variables", color="Correlation"),
+        title="Correlation Heatmap",
+        width=900,
+        height=800
+    )
+
+    fig_heatmap.update_xaxes(tickangle=45)
+
+    st.plotly_chart(fig_heatmap, use_container_width=True)
 
     # --- Line Plot ---
     df_grouped_line = df_melted.groupby(['Daily_Internet_Usage_Hours', 'Mental_Health_Factor'])['Score'].mean().reset_index()
