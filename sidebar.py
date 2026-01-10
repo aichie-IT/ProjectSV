@@ -13,7 +13,7 @@ ainun = st.Page("Ainun.py", title="Riding Behavior Insights", icon=":material/pe
 # Sidebar Navigation
 pg = st.navigation({
     "Menu": [home],
-    "Motor Accident Severity Analysis": [
+    "Students Wellbeings Analysis": [
         internetUsage,
         ilya,
         hanis,
