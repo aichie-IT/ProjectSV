@@ -670,7 +670,7 @@ with tab1:
         )
 
         fig = px.bar(
-            df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+            filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
             title="Distribution of Daily Social Media Usage",
             labels={"value": "Number of Students", "index": "Hours per Day"},
             color_discrete_sequence=px.colors.qualitative.Set2
@@ -723,6 +723,18 @@ with tab1:
 
 
         # Box Plot
+        freq_map = {
+            "Less than 1 hour per day": 1,
+            "1 to 2 hours per day": 2,
+            "3 to 4 hours per day": 3,
+            "5 to 6 hours per day": 4,
+            "More than 6 hours per day": 5
+        }
+
+        filtered_df["Social_Media_Freq_Num"] = (
+            filtered_df["Social_Media_Use_Frequency"].map(freq_map)
+        )
+        
         fig = px.box(
             filtered_df,
             x="Gender",
