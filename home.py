@@ -1131,12 +1131,12 @@ with tab1:
                 "strong"
             )
 
-        st.info(
-            f"A {strength} positive correlation (r = {corr_val:.2f}) is observed between "
-            f"daily social media usage and academic stress. This suggests an association "
-            f"between increased online engagement and higher stress levels, though the "
-            f"relationship does not imply direct causation."
-        )
+            st.info(
+                f"A {strength} positive correlation (r = {corr_val:.2f}) is observed between "
+                f"daily social media usage and academic stress. This suggests an association "
+                f"between increased online engagement and higher stress levels, though the "
+                f"relationship does not imply direct causation."
+            )
         else:
             st.info("Insufficient data to compute correlation under current filters.")
 
