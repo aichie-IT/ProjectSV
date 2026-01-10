@@ -893,6 +893,9 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
+        sleep_pct = (
+            filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
+        ).mean() * 100
 
         st.info(
             f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
@@ -1002,9 +1005,12 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
+        sleep_pct = (
+            filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
+        ).mean() * 100
 
         st.info(
-            f"Approximately {sleep:.1f}% of students agree or strongly agree that "
+            f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
             f"social media negatively affects their sleep. This highlights sleep disturbance "
             f"as a key wellbeing concern linked to prolonged internet use."
         )
