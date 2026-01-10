@@ -1,7 +1,7 @@
 import pandas as pd
-import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
+import plotly.express as px
 import streamlit as st
 
 # --- LOAD DATA ---
@@ -15,7 +15,7 @@ df = load_data()
 ## Clean Column Names
 df.columns = df.columns.str.strip()
 
-# Rename Columns
+# Rename Columns (your renaming logic stays the same)
 df = df.rename(columns={
     "Age / Umur:": "Age",
     "Gender / Jantina:": "Gender",
@@ -62,19 +62,10 @@ cols_to_drop = [
     "Type_of_Online_Content_Affects",
     "Universities_Support_Actions"
 ]
-
 df = df.drop(columns=cols_to_drop, errors="ignore")
-df_numeric = df.copy()
 
-# Likert scale mapping
-likert_numeric_map = {
-    '1': 1,
-    '2': 2,
-    '3': 3,
-    '4': 4,
-    '5': 5
-}
-
+# Transforming the Likert scale responses
+likert_numeric_map = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5}
 likert_cols = [
     'Find_Mental_Health_Info_Online',
     'Seek_Help_Online_When_Stress',
@@ -88,7 +79,7 @@ for col in likert_cols:
     df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
 
 # --- Streamlit Tabs ---
-tab = st.selectbox("Select Tab", ["General Visualizations", "Detailed Analysis"])
+tab = st.selectbox("Choose Tab", ["General Visualizations", "Detailed Analysis"])
 
 # General Visualizations Tab
 if tab == "General Visualizations":
@@ -104,12 +95,14 @@ if tab == "General Visualizations":
     
     st.markdown("---")
 
+    # Online Mental Health Information
     st.subheader("Seeking Mental Health Information Online")
     fig = px.histogram(df, x="Mental_Health_Info_Through_Internet", title="Frequency of Seeking Mental Health Information Online")
     st.plotly_chart(fig)
 
     st.success("**Interpretation:** A large proportion of students frequently seek mental health information through online platforms.")
 
+    # Online Help When Stressed
     st.subheader("🆘 Preference for Online Help During Stress")
     fig = px.histogram(df, x="Seek_Help_Online_When_Stress", title="Preference for Seeking Help Online When Stressed")
     st.plotly_chart(fig)
@@ -124,7 +117,7 @@ if tab == "Detailed Analysis":
     # --- Grouped Bar Chart ---
     st.subheader("Average Mental Health Scores by Internet Usage Level")
     fig, ax = plt.subplots(figsize=(12, 7))
-    sns.barplot(x='Internet_Usage_Category', y='Score', hue='Mental_Health_Factor', data=df_melted, errorbar=None, order=['Low', 'Moderate', 'High'], ax=ax)
+    sns.barplot(x='Internet_Usage_Category', y='Score', hue='Mental_Health_Factor', data=df, errorbar=None, order=['Low', 'Moderate', 'High'], ax=ax)
     ax.set_title('Average Mental Health Scores by Internet Usage Level')
     ax.set_xlabel('Internet Usage Category')
     ax.set_ylabel('Mean Score (Likert Scale: 1=Strongly Disagree, 5=Strongly Agree)')
@@ -134,10 +127,11 @@ if tab == "Detailed Analysis":
     # --- Box Plot ---
     st.subheader("Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep")
     fig, ax = plt.subplots(figsize=(8, 6))
-    sns.boxplot(x='Internet_Use_Affects_Sleep', y='Difficulty_Sleeping_University_Pressure_Score', data=df_plot, palette='magma', order=['No', 'Yes'], ax=ax)
+    sns.boxplot(x='Internet_Use_Affects_Sleep', y='Difficulty_Sleeping_University_Pressure_Score', data=df, palette='magma', order=['No', 'Yes'], ax=ax)
     ax.set_title('Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep')
     ax.set_xlabel('Social Media Affects Sleep (Yes/No)')
     ax.set_ylabel('Difficulty Sleeping Score (1=Strongly Disagree, 5=Strongly Agree)')
     ax.grid(axis='y', linestyle='--', alpha=0.7)
     st.pyplot(fig)
+
 
