@@ -1192,12 +1192,12 @@ with tab2:
 
     # Display a brief explanation of the project
     st.write("""
-        This app explores the relationship between internet usage and mental health outcomes
-        among UMK students, with visualizations showing correlations between internet usage
-        and various mental health factors like stress, anxiety, and the impact of social media.
+    This app explores the relationship between internet usage and mental health outcomes
+    among UMK students, with visualizations showing correlations between internet usage
+    and various mental health factors like stress, anxiety, and the impact of social media.
     """)
 
-    # Display Plotly grouped bar chart
+    # --- Grouped Bar Chart ---
     st.subheader("Mental Health Scores by Internet Usage")
     fig = px.bar(
         df_grouped,
@@ -1208,26 +1208,25 @@ with tab2:
         labels={'Daily_Internet_Usage_Hours': 'Internet Usage (hours)', 'Score': 'Mental Health Score'},
         title="Mental Health Scores by Internet Usage"
     )
-
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
     # --- Box Plot ---
-    # Create the box plot for "Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep"
-    df_new = df.copy() # Re-load original dataset
+    st.subheader("Difficulty Sleeping Due to University Pressure vs Social Media Affecting Sleep")
+
+    df_new = df.copy()
     df_new['Sleep_Affected_By_Social_Media_Numeric_Str'] = df_new['Sleep_Affected_By_Social_Media'].astype(str)
 
     def map_sleep_impact_to_binary(response_str):
         try:
             response_int = int(response_str)
-            if response_int >= 4: # Assuming 4 (Agree) and 5 (Strongly Agree) mean 'Yes'
+            if response_int >= 4:
                 return 'Yes'
-            elif response_int <= 3: # Assuming 1 (Strongly Disagree), 2 (Disagree), 3 (Neutral) mean 'No'
+            elif response_int <= 3:
                 return 'No'
-        except ValueError: # Handle cases where conversion to int fails (e.g., non-numeric data)
+        except ValueError:
             return None
 
     df_new['Internet_Use_Affects_Sleep'] = df_new['Sleep_Affected_By_Social_Media_Numeric_Str'].apply(map_sleep_impact_to_binary)
-
     df_new['Difficulty_Sleeping_University_Pressure_Score'] = pd.to_numeric(
         df_new['Difficulty_Sleeping_University_Pressure'],
         errors='coerce'
@@ -1246,11 +1245,11 @@ with tab2:
         labels={'Difficulty_Sleeping_University_Pressure_Score': 'Difficulty Sleeping Score'},
         title='Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep'
     )
-
-    st.plotly_chart(fig_box)
+    st.plotly_chart(fig_box, use_container_width=True)
 
     # --- Heatmap ---
-    # Create correlation heatmap
+    st.subheader("Correlation Heatmap of Numeric Variables")
+
     df_heatmap = df_numeric.copy()
 
     numerical_cols = ['Age', 'Social_Media_Hours_Numeric', 'Study_Hours_Numeric'] + \
@@ -1258,7 +1257,6 @@ with tab2:
 
     correlation_matrix = df_heatmap[numerical_cols].dropna().corr()
 
-    # Short names for better display
     short_names = {
         "Age": "Age",
         "Social_Media_Hours_Numeric": "SM Hours",
@@ -1273,9 +1271,7 @@ with tab2:
         "Emotional_Connection_Social_Media_Numeric": "Emotional Attachment"
     }
 
-    correlation_matrix_renamed = correlation_matrix.rename(
-        index=short_names, columns=short_names
-    )
+    correlation_matrix_renamed = correlation_matrix.rename(index=short_names, columns=short_names)
 
     fig_heatmap = px.imshow(
         correlation_matrix_renamed,
@@ -1284,83 +1280,60 @@ with tab2:
         width=900,
         height=800
     )
-
     fig_heatmap.update_xaxes(tickangle=45)
-
     st.plotly_chart(fig_heatmap, use_container_width=True)
 
     # --- Line Plot: Mental Health Scores vs Internet Usage ---
+    st.subheader("Daily Internet Usage vs Mean Mental Health Scores")
 
     df_line = df_melted.copy()
-
-    # Convert to numeric (important for line plot)
     df_line["Score"] = pd.to_numeric(df_line["Score"], errors="coerce")
     df_line["Daily_Internet_Usage_Hours"] = pd.to_numeric(df_line["Daily_Internet_Usage_Hours"], errors="coerce")
-
-    # Remove rows with missing values
     df_line = df_line.dropna(subset=["Score", "Daily_Internet_Usage_Hours", "Mental_Health_Factor"])
 
-    # Group and calculate mean
     df_grouped_line = (
-        df_line
-        .groupby(["Daily_Internet_Usage_Hours", "Mental_Health_Factor"])["Score"]
+        df_line.groupby(["Daily_Internet_Usage_Hours", "Mental_Health_Factor"])["Score"]
         .mean()
         .reset_index()
         .sort_values("Daily_Internet_Usage_Hours")
     )
 
-    # Plot
     df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
 
-   # Create faceted line plots with markers
-   fig_line = px.line(
-       df_grouped_line,
-       x='Daily_Internet_Usage_Hours_Str',
-       y='Score',
-       facet_col='Mental_Health_Factor',
-       facet_col_wrap=2,
-       markers=True,
-       title='Daily Internet Usage vs Mean Mental Health Scores',
-       labels={
-           'Daily_Internet_Usage_Hours_Str': 'Daily Internet Usage (Hours per Day)',
-           'Score': 'Mean Mental Health Score'
-       }
-   )
+    fig_line = px.line(
+        df_grouped_line,
+        x='Daily_Internet_Usage_Hours_Str',
+        y='Score',
+        facet_col='Mental_Health_Factor',
+        facet_col_wrap=2,
+        markers=True,
+        title='Daily Internet Usage vs Mean Mental Health Scores',
+        labels={
+            'Daily_Internet_Usage_Hours_Str': 'Daily Internet Usage (Hours per Day)',
+            'Score': 'Mean Mental Health Score'
+        }
+    )
+    fig_line.update_layout(template='plotly_white', height=600)
+    fig_line.update_yaxes(dtick=1)
+    st.plotly_chart(fig_line, use_container_width=True)
 
-   # Fix layout
-   fig_line.update_layout(
-       template='plotly_white',
-       height=600
-   )
-
-   # Make y-axis tick uniform
-   fig_line.update_yaxes(dtick=1)
-
-   # Show the plot in Streamlit
-   st.plotly_chart(fig_line, use_container_width=True)
-
-   st.title("Daily Internet Usage vs Mental Health Scores")
-
-   # Create the faceted scatter plots 
-   g = sns.relplot(
-       x='Daily_Internet_Usage_Hours',
-       y='Score',
-       col='Mental_Health_Factor',
-       col_wrap=2, # Wrap plots after 2 columns
-       data=df_melted_scatter,
-       kind='scatter',
-       height=4, aspect=1.2,
-       s=50, alpha=0.7 # Adjust point size and transparency
-   )
-
-   g.set_axis_labels("Daily Internet Usage (Hours)", "Mental Health Score")
-   g.set_titles("{col_name}")
-   plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02) # Adjust suptitle position
-   plt.tight_layout(rect=[0, 0, 1, 0.98]) # Adjust layout to prevent suptitle overlap
-
-   # Show the plot in Streamlit
-   st.pyplot(plt)
-
+    # --- Scatter Plots with Seaborn ---
+    st.subheader("Scatter Plots: Daily Internet Usage vs Mental Health Scores")
+    g = sns.relplot(
+        x='Daily_Internet_Usage_Hours',
+        y='Score',
+        col='Mental_Health_Factor',
+        col_wrap=2,
+        data=df_melted_scatter,
+        kind='scatter',
+        height=4, aspect=1.2,
+        s=50, alpha=0.7
+    )
+    g.set_axis_labels("Daily Internet Usage (Hours)", "Mental Health Score")
+    g.set_titles("{col_name}")
+    plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02)
+    plt.tight_layout(rect=[0, 0, 1, 0.98])
+    st.pyplot(plt)
 
 # ----------- HANIS NABILA -----------
 # ================= TAB 3: HANIS NABILA =================
