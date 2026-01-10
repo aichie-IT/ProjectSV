@@ -96,4 +96,9 @@ likert_cols = [
 for col in likert_cols:
     df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
 
+# =====================================================
+# Bar Chart 
+# =====================================================
+
+
 
