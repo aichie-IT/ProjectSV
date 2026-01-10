@@ -201,8 +201,9 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
-Students who strongly prefer online help tend to exhibit higher median assignment
-stress levels, suggesting that academic pressure drives digital help-seeking behaviour.
+The box plot shows that students who really want online help (Level 5) also have some of 
+the highest stress levels, reaching up to level 5 on the stress scale. Meanwhile, those who 
+do not need care for online help (Level 1) usually have lower stress. 
 """)
 
 # =====================================================
@@ -219,8 +220,11 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
-A large proportion of students frequently seek mental health information through online
-platforms, highlighting the internet as a primary source of support.
+This chart shows that shows that "Sometimes" is the most common frequency, with a count of 50. 
+This is followed by "Rarely" (20) and "Often" (17). Notably, only a small fraction of the 
+group "Always" (8) or "Never" (6) seeks out this information.
+This indicates that while most students use the internet for mental health information, 
+they do so sporadically rather than as a constant habit.
 """)
 
 # =====================================================
@@ -237,8 +241,10 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
-Many students show a strong preference for online help during stressful situations,
-suggesting digital support is often favoured over face-to-face options.
+The distribution is somewhat bell-shaped but leans toward the middle. The highest 
+count is at Level 3 (35 students), indicating a moderate preference. This suggests 
+that while students are open to online help when stressed, many maintain a neutral 
+or cautious.
 """)
 
 # =====================================================
