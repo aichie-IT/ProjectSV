@@ -1,8 +1,8 @@
+import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
-import streamlit as st
 
 # --- LOAD DATA ---
 @st.cache_data
@@ -12,10 +12,10 @@ def load_data():
 
 df = load_data()
 
-## Clean Column Names
+# Clean Column Names
 df.columns = df.columns.str.strip()
 
-# Rename Columns (your renaming logic stays the same)
+# Rename Columns
 df = df.rename(columns={
     "Age / Umur:": "Age",
     "Gender / Jantina:": "Gender",
@@ -62,10 +62,28 @@ cols_to_drop = [
     "Type_of_Online_Content_Affects",
     "Universities_Support_Actions"
 ]
-df = df.drop(columns=cols_to_drop, errors="ignore")
 
-# Transforming the Likert scale responses
-likert_numeric_map = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5}
+df = df.drop(columns=cols_to_drop, errors="ignore")
+df_numeric = df.copy()
+
+likert_numeric_map = {
+    '1': 1,
+    '2': 2,
+    '3': 3,
+    '4': 4,
+    '5': 5
+}
+
+columns_to_keep = [
+    'Gender',
+    'Find_Mental_Health_Info_Online',
+    'Seek_Help_Online_When_Stress',
+    'Use_Online_Communities_for_Support',
+    'Assignments_Stress',
+    'Follow_Motivational_Mental_Health_Content',
+    'Mental_Health_Info_Through_Internet'
+]
+
 likert_cols = [
     'Find_Mental_Health_Info_Online',
     'Seek_Help_Online_When_Stress',
@@ -77,39 +95,5 @@ likert_cols = [
 
 for col in likert_cols:
     df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
-
-
-    # --- Grouped Bar Chart ---
-    # Create the grouped bar chart
-st.subheader("Average Mental Health Scores by Internet Usage Level")
-fig, ax = plt.subplots(figsize=(12, 7))
-
-sns.barplot(
-    x='Internet_Usage_Category',
-    y='Score',
-    hue='Mental_Health_Factor',
-    data=df_melted,
-    errorbar=None,  # Display mean
-    order=order,
-    ax=ax
-)
-
-ax.set_title('Average Mental Health Scores by Internet Usage Level')
-ax.set_xlabel('Internet Usage Category')
-ax.set_ylabel('Mean Score (Likert Scale: 1=Strongly Disagree, 5=Strongly Agree)')
-ax.legend(title='Mental Health Factor', bbox_to_anchor=(1.05, 1), loc='upper left')
-
-# Display the plot in Streamlit
-st.pyplot(fig)
-
-    # --- Box Plot ---
-    st.subheader("Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep")
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.boxplot(x='Internet_Use_Affects_Sleep', y='Difficulty_Sleeping_University_Pressure_Score', data=df, palette='magma', order=['No', 'Yes'], ax=ax)
-    ax.set_title('Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep')
-    ax.set_xlabel('Social Media Affects Sleep (Yes/No)')
-    ax.set_ylabel('Difficulty Sleeping Score (1=Strongly Disagree, 5=Strongly Agree)')
-    ax.grid(axis='y', linestyle='--', alpha=0.7)
-    st.pyplot(fig)
 
 
