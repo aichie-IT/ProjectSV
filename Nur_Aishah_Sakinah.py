@@ -151,6 +151,87 @@ def radar_summary(values, labels):
         f"mental health outcomes."
     )
 
+def bar_chart_summary(df, col):
+    if df.empty:
+        return "No data available."
+    counts = df[col].value_counts(normalize=True) * 100
+    max_cat = counts.idxmax()
+    min_cat = counts.idxmin()
+    return (
+        f"The bar chart shows the distribution of {col}. "
+        f"Most respondents belong to '{max_cat}' ({counts[max_cat]:.1f}%), "
+        f"while the least is '{min_cat}' ({counts[min_cat]:.1f}%). "
+        f"This suggests a skewed distribution in {col} among the respondents."
+    )
+
+def box_plot_summary(df, col):
+    if df.empty:
+        return "No data available."
+    median = df[col].median()
+    q1 = df[col].quantile(0.25)
+    q3 = df[col].quantile(0.75)
+    outliers = df[col][(df[col] < q1 - 1.5*(q3-q1)) | (df[col] > q3 + 1.5*(q3-q1))]
+    return (
+        f"The box plot for {col} shows a median of {median:.2f}, "
+        f"with the interquartile range between {q1:.2f} and {q3:.2f}. "
+        f"There are {len(outliers)} outlier(s), indicating occasional extreme responses."
+    )
+
+def scatter_plot_summary(df, x_col, y_col):
+    if df.empty:
+        return "No data available."
+    corr = df[[x_col, y_col]].corr().iloc[0,1]
+    direction = "positive" if corr > 0 else "negative"
+    strength = "weak" if abs(corr)<0.3 else "moderate" if abs(corr)<0.6 else "strong"
+    return (
+        f"The scatter plot shows the relationship between {x_col} and {y_col}. "
+        f"The correlation is {corr:.2f}, indicating a {strength} {direction} relationship. "
+        f"Clusters or trends may suggest patterns worth investigating."
+    )
+def parallel_chart_summary(df, cols):
+    if df.empty:
+        return "No data available."
+    means = df[cols].mean()
+    highest = means.idxmax()
+    lowest = means.idxmin()
+    return (
+        f"The parallel coordinates plot visualizes trends across {', '.join(cols)}. "
+        f"On average, '{highest}' has the highest values ({means[highest]:.2f}) "
+        f"while '{lowest}' has the lowest ({means[lowest]:.2f}), "
+        f"indicating which attributes dominate overall patterns."
+    )
+
+def heatmap_summary(df, cols):
+    if df.empty:
+        return "No data available."
+    corr = df[cols].corr()
+    max_pair = corr.unstack().sort_values(ascending=False).drop_duplicates().iloc[1] # skip 1=diagonal 1.0
+    max_cols = corr.unstack().sort_values(ascending=False).drop_duplicates().index[1]
+    return (
+        f"The heatmap shows correlations among {', '.join(cols)}. "
+        f"The strongest relationship is between '{max_cols[0]}' and '{max_cols[1]}' "
+        f"with a correlation of {max_pair:.2f}, indicating a notable positive association."
+    )
+
+def waterfall_summary(df, col, value_col):
+    """
+    df: dataframe containing the waterfall data
+    col: categorical column for steps (e.g., categories)
+    value_col: numeric column for the amounts
+    """
+    if df.empty:
+        return "No data available."
+    
+    total_change = df[value_col].sum()
+    max_step = df[value_col].idxmax()
+    min_step = df[value_col].idxmin()
+    
+    return (
+        f"The waterfall chart shows incremental changes in {value_col} across '{col}'. "
+        f"The total net change is {total_change:.2f}. "
+        f"The largest positive change is at
+
+
 
 # --- PAGE CONFIG ---
 st.set_page_config(
@@ -762,12 +843,7 @@ with tab2:
     st.plotly_chart(fig, use_container_width=True)
     mean_stress = usage_group_mean["Academic_Stress_Index"].mean()
 
-    st.info(
-        f"The visualization shows variations in academic stress across different levels "
-        f"of social media usage. The average stress index across usage groups is "
-        f"{mean_stress:.2f}, suggesting that increased internet exposure may be associated "
-        f"with elevated academic stress, although the pattern is not uniform across all groups."
-    )
+    st.info(bar_chart_summary(filtered_df, "Social_Media_Use_Frequency"))
 
         
     # Box Plot
@@ -780,9 +856,7 @@ with tab2:
         color_discrete_sequence=px.colors.qualitative.Set3
     )
     st.plotly_chart(fig, use_container_width=True)
-    st.success("""
-    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-    """)
+    st.info(box_plot_summary(filtered_numeric, "General_Academic_Performance_Numeric"))
 
     # Box Plot
     fig = px.box(
@@ -802,11 +876,7 @@ with tab2:
 
     st.plotly_chart(fig, use_container_width=True)
 
-    st.info(
-        f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
-        f"social media negatively affects their sleep. This highlights sleep disturbance "
-        f"as a key wellbeing concern linked to prolonged internet use."
-    )
+    st.info(box_plot_summary(filtered_numeric, "Sleep_Affected_By_Social_Media_Numeric"))
 
     # Scatter Plot
     fig = px.scatter(
@@ -821,21 +891,7 @@ with tab2:
 
     st.plotly_chart(fig, use_container_width=True)
 
-    if corr_val is not None:
-        strength = (
-            "weak" if abs(corr_val) < 0.3 else
-            "moderate" if abs(corr_val) < 0.6 else
-            "strong"
-        )
-
-        st.info(
-            f"A {strength} positive correlation (r = {corr_val:.2f}) is observed between "
-            f"daily social media usage and academic stress. This suggests an association "
-            f"between increased online engagement and higher stress levels, though the "
-            f"relationship does not imply direct causation."
-        )
-    else:
-        st.info("Insufficient data to compute correlation under current filters.")
+    st.info(scatter_plot_summary(filtered_numeric, "Age", "Studies_Affected_By_Social_Media_Numeric"))
 
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
@@ -946,11 +1002,7 @@ with tab3:
         filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
     ).mean() * 100
 
-    st.info(
-        f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
-        f"social media negatively affects their sleep. This highlights sleep disturbance "
-        f"as a key wellbeing concern linked to prolonged internet use."
-    )
+    st.info(parallel_chart_summary(filtered_numeric, cols_parallel))
 
        
     # --- Observation Section (Fixed Indentation) ---
@@ -1020,27 +1072,7 @@ with tab4:
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    corr_val = safe_corr(
-        filtered_numeric,
-        "Social_Media_Hours_Numeric",
-        "Assignments_Stress_Numeric"
-    )
-
-    if corr_val is not None:
-        strength = (
-            "weak" if abs(corr_val) < 0.3 else
-            "moderate" if abs(corr_val) < 0.6 else
-            "strong"
-        )
-
-        st.info(
-            f"A {strength} positive correlation (r = {corr_val:.2f}) is observed between "
-            f"daily social media usage and academic stress. This suggests an association "
-            f"between increased online engagement and higher stress levels, though the "
-            f"relationship does not imply direct causation."
-        )
-    else:
-        st.info("Insufficient data to compute correlation under current filters.")
+    st.info(heatmap_summary(filtered_numeric, cols_parallel))
 
     # Waterfall Chart
     mean_vals = df_numeric[
@@ -1076,6 +1108,7 @@ with tab4:
     )
 
     st.plotly_chart(fig, use_container_width=True)
+    st.info(waterfall_summary(filtered_df, 'Category', 'Value'))
          
        
     # --- Observation Section (Fixed Indentation) ---
