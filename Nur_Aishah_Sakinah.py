@@ -465,15 +465,18 @@ with tab1:
     st.markdown("Understand how much and how often students use the internet/social media.")
 
     # Summary box
-    col1, col2, col3, col4 = st.columns(4)
+    freq_order = df["Social_Media_Use_Frequency"].cat.categories
     median_usage = filtered_numeric["Social_Media_Hours_Numeric"].median()
     high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
     avg_study_hours = filtered_numeric["Study_Hours_Numeric"].mean()
     time_waste_pct = (filtered_df["Social_Media_Waste_Time"].isin(["Agree", "Strongly Agree"]).mean() * 100)
+    usage_counts = (filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order, fill_value=0))
+    total_students = usage_counts.sum()
 
-    col1.metric("Median Social Media Hours/Day", f"{median_usage:.1f} hrs", help="Typical daily social media usage (median)", border=True)
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Median Social Media Hours/Day", f"{median_usage:.1f} hrs" if pd.notna(median_usage) else "N/A", help="Typical daily social media usage (median)", border=True)
     col2.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
-    col3.metric("Avg. Study Hours/Week", f"{avg_study_hours:.1f}", help="Average academic study commitment", border=True)
+    col3.metric("Avg. Study Hours/Week", f"{avg_study_hours:.1f}" if pd.notna(median_usage) else "N/A", help="Average academic study commitment", border=True)
     col4.metric("Perceived Time Loss (%)", f"{time_waste_pct:.1f}%", help="Students who feel social media wastes their time", border=True)
         
     # Scientific Summary
@@ -493,44 +496,26 @@ with tab1:
     st.markdown("---")
         
     # Bar Chart
-    freq_order = [
-        "Less than 1 hour per day",
-        "1 to 2 hours per day",
-        "3 to 4 hours per day",
-        "5 to 6 hours per day",
-        "More than 6 hours per day"
-    ]
-
-    filtered_df["Social_Media_Use_Frequency"] = pd.Categorical(
-        filtered_df["Social_Media_Use_Frequency"],
-        categories=freq_order,
-        ordered=True
-    )
-
     fig = px.bar(
-        filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+        x=usage_counts.index,
+        y=usage_counts.values,
         title="Distribution of Daily Social Media Usage",
-        labels={"value": "Number of Students", "index": "Hours per Day"},
+        labels={
+            "x": "Hours per Day",
+            "y": "Number of Students"
+        },
         color_discrete_sequence=px.colors.qualitative.Set2
     )
 
     fig.update_layout(xaxis_tickangle=-30)
-        
-    usage_counts = filtered_df["Social_Media_Use_Frequency"].value_counts()
-    total_students = usage_counts.sum()
-    high_usage_pct = (
-        filtered_df["Social_Media_Use_Frequency"]
-        .isin(["5 to 6 hours per day", "More than 6 hours per day"])
-        .mean() * 100
-    )
-
     st.plotly_chart(fig, use_container_width=True)
 
     st.info(
         f"Among the selected respondents (n = {total_students}), "
         f"{high_usage_pct:.1f}% report high social media usage of five hours or more per day. "
-        f"This indicates that prolonged internet engagement is common and forms an important "
-        f"context for analysing its relationship with academic stress and mental wellbeing."
+        f"The full distribution indicates varying levels of engagement, with all usage "
+        f"categories retained even when specific groups are filtered. This provides a "
+        f"reliable population-level overview for subsequent academic and wellbeing analysis."
     )
 
     st.markdown("---")
