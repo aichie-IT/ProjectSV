@@ -1,5 +1,7 @@
 import pandas as pd
 import plotly.express as px
+import seaborn as sns
+import matplotlib.pyplot as plt
 import streamlit as st
 
 # --- LOAD DATA ---
@@ -64,6 +66,7 @@ cols_to_drop = [
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
 
+# Likert scale mapping
 likert_numeric_map = {
     '1': 1,
     '2': 2,
@@ -71,16 +74,6 @@ likert_numeric_map = {
     '4': 4,
     '5': 5
 }
-
-columns_to_keep = [
-    'Gender',
-    'Find_Mental_Health_Info_Online',
-    'Seek_Help_Online_When_Stress',
-    'Use_Online_Communities_for_Support',
-    'Assignments_Stress',
-    'Follow_Motivational_Mental_Health_Content',
-    'Mental_Health_Info_Through_Internet'
-]
 
 likert_cols = [
     'Find_Mental_Health_Info_Online',
@@ -94,55 +87,57 @@ likert_cols = [
 for col in likert_cols:
     df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
 
-st.title("Relationship Between Internet Usage and Mental Health Outcomes")
+# --- Streamlit Tabs ---
+tab = st.selectbox("Select Tab", ["General Visualizations", "Detailed Analysis"])
 
-# Display a brief explanation of the project
-st.write("""Analyzing how different patterns of internet use,
-such as daily usage duration, frequency, and usage before sleep, are associated with indicators of 
-mental health, including stress, anxiety, and depression, among UMK students. 
-""")
+# General Visualizations Tab
+if tab == "General Visualizations":
+    st.title("General Visualizations")
 
-# --- Grouped Bar Chart ---
-st.subheader("Average Mental Health Scores by Internet Usage Level")
-fig, ax = plt.subplots(figsize=(12, 7))
+    st.subheader("📌 Key Indicators")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Find Info Online", f"{(df['Find_Mental_Health_Info_Online'].astype(str).isin(['4','5']).mean()*100):.1f}%")
+    col2.metric("Seek Help Online When Stressed", f"{(df['Seek_Help_Online_When_Stress'].astype(str).isin(['4','5']).mean()*100):.1f}%")
+    col3.metric("Use Online Communities", f"{(df['Use_Online_Communities_for_Support'].astype(str).isin(['4','5']).mean()*100):.1f}%")
+    col4.metric("Follow Motivational Content", f"{(df['Follow_Motivational_Mental_Health_Content'].astype(str).isin(['4','5']).mean()*100):.1f}%")
+    
+    st.markdown("---")
 
-sns.barplot(
-    x='Internet_Usage_Category',
-    y='Score',
-    hue='Mental_Health_Factor',
-    data=df_melted,
-    errorbar=None,  # Display mean
-    order=['Low', 'Moderate', 'High'],
-    ax=ax
-)
+    st.subheader("Seeking Mental Health Information Online")
+    fig = px.histogram(df, x="Mental_Health_Info_Through_Internet", title="Frequency of Seeking Mental Health Information Online")
+    st.plotly_chart(fig)
 
-ax.set_title('Average Mental Health Scores by Internet Usage Level')
-ax.set_xlabel('Internet Usage Category')
-ax.set_ylabel('Mean Score (Likert Scale: 1=Strongly Disagree, 5=Strongly Agree)')
-ax.legend(title='Mental Health Factor', bbox_to_anchor=(1.05, 1), loc='upper left')
+    st.success("**Interpretation:** A large proportion of students frequently seek mental health information through online platforms.")
 
-# Display the plot
-st.pyplot(fig)
+    st.subheader("🆘 Preference for Online Help During Stress")
+    fig = px.histogram(df, x="Seek_Help_Online_When_Stress", title="Preference for Seeking Help Online When Stressed")
+    st.plotly_chart(fig)
 
-# Create the box plot
-st.subheader("Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep")
+    st.success("**Interpretation:** Many students show a strong preference for online help during stressful situations.")
 
-fig, ax = plt.subplots(figsize=(8, 6))
+# Detailed Analysis Tab
+if tab == "Detailed Analysis":
+    st.title("Detailed Analysis")
+    st.write("""Analyzing how different patterns of internet use, such as daily usage duration, frequency, and usage before sleep, are associated with indicators of mental health, including stress, anxiety, and depression, among UMK students.""")
 
-sns.boxplot(
-    x='Internet_Use_Affects_Sleep',
-    y='Difficulty_Sleeping_University_Pressure_Score',
-    data=df_plot,
-    palette='magma',
-    order=['No', 'Yes'],  # Ensure 'No' comes before 'Yes' on the x-axis
-    ax=ax
-)
+    # --- Grouped Bar Chart ---
+    st.subheader("Average Mental Health Scores by Internet Usage Level")
+    fig, ax = plt.subplots(figsize=(12, 7))
+    sns.barplot(x='Internet_Usage_Category', y='Score', hue='Mental_Health_Factor', data=df_melted, errorbar=None, order=['Low', 'Moderate', 'High'], ax=ax)
+    ax.set_title('Average Mental Health Scores by Internet Usage Level')
+    ax.set_xlabel('Internet Usage Category')
+    ax.set_ylabel('Mean Score (Likert Scale: 1=Strongly Disagree, 5=Strongly Agree)')
+    ax.legend(title='Mental Health Factor', bbox_to_anchor=(1.05, 1), loc='upper left')
+    st.pyplot(fig)
 
-ax.set_title('Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep')
-ax.set_xlabel('Social Media Affects Sleep (Yes/No)')
-ax.set_ylabel('Difficulty Sleeping Score (1=Strongly Disagree, 5=Strongly Agree)')
-ax.grid(axis='y', linestyle='--', alpha=0.7)
-
-# Display the plot
-st.pyplot(fig)
+    # --- Box Plot ---
+    st.subheader("Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep")
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.boxplot(x='Internet_Use_Affects_Sleep', y='Difficulty_Sleeping_University_Pressure_Score', data=df_plot, palette='magma', order=['No', 'Yes'], ax=ax)
+    ax.set_title('Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep')
+    ax.set_xlabel('Social Media Affects Sleep (Yes/No)')
+    ax.set_ylabel('Difficulty Sleeping Score (1=Strongly Disagree, 5=Strongly Agree)')
+    ax.grid(axis='y', linestyle='--', alpha=0.7)
+    st.pyplot(fig)
 
