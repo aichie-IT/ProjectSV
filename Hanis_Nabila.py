@@ -66,6 +66,18 @@ cols_to_drop = [
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
 
+# ========
+st.sidebar.markdown("### 📌 Goal 8 Summary")
+
+high_online_info = (
+    df['Mental_Health_Info_Through_Internet']
+    .astype(str).isin(['3', '4']).mean() * 100
+)
+
+st.sidebar.metric(
+    "Frequent Online Info Seeking (%)",
+    f"{high_online_info:.1f}%"
+)
 # =====================================================
 # DATASET OVERVIEW
 # =====================================================
