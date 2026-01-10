@@ -1310,8 +1310,7 @@ with tab2:
     )
 
     # Plot
-   # Convert x-axis to string to treat as discrete categories
-df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
+   df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
 
 # Create faceted line plots with markers
 fig_line = px.line(
@@ -1337,9 +1336,8 @@ fig_line.update_layout(
 # Make y-axis tick uniform
 fig_line.update_yaxes(dtick=1)
 
-# Show in Streamlit
+# Show the plot in Streamlit
 st.plotly_chart(fig_line, use_container_width=True)
-
 
 
 # ----------- HANIS NABILA -----------
