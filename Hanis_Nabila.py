@@ -97,40 +97,6 @@ for col in likert_cols:
     df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
 
 # =====================================================
-# DATASET OVERVIEW
-# =====================================================
-st.subheader("📌 Key Indicators")
-
-col1, col2, col3, col4 = st.columns(4)
-
-col1.metric(
-    "Find Info Online",
-    f"{(df['Find_Mental_Health_Info_Online']
-        .astype(str).isin(['4','5']).mean()*100):.1f}%"
-)
-
-col2.metric(
-    "Seek Help Online When Stressed",
-    f"{(df['Seek_Help_Online_When_Stress']
-        .astype(str).isin(['4','5']).mean()*100):.1f}%"
-)
-
-col3.metric(
-    "Use Online Communities",
-    f"{(df['Use_Online_Communities_for_Support']
-        .astype(str).isin(['4','5']).mean()*100):.1f}%"
-)
-
-col4.metric(
-    "Follow Motivational Content",
-    f"{(df['Follow_Motivational_Mental_Health_Content']
-        .astype(str).isin(['4','5']).mean()*100):.1f}%"
-)
-
-st.markdown("---")
-
-
-# =====================================================
 # SUMMARY BOX
 # =====================================================
 st.subheader("📌 Key Mental Health Indicators")
@@ -250,35 +216,4 @@ online platforms.
 # =====================================================
 # STRESS vs ONLINE COMMUNITIES
 # =====================================================
-st.subheader("📈 Cumulative Adoption of Online Mental Health Information")
 
-cum_data = (
-    df['Mental_Health_Info_Through_Internet']
-    .astype(int)
-    .value_counts()
-    .sort_index()
-    .cumsum()
-)
-
-cum_df = pd.DataFrame({
-    'Level': cum_data.index,
-    'Cumulative Percentage': (cum_data / cum_data.max()) * 100
-})
-
-fig = px.line(
-    cum_df,
-    x='Level',
-    y='Cumulative Percentage',
-    markers=True,
-    title="Cumulative Engagement with Online Mental Health Information"
-)
-
-fig.update_yaxes(range=[0, 100])
-
-st.plotly_chart(fig, use_container_width=True)
-
-st.success("""
-**Interpretation:**  
-Most students have already engaged with online mental health information by mid-to-high
-levels, indicating widespread adoption of digital mental health resources.
-""")
