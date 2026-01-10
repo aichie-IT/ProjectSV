@@ -1228,10 +1228,15 @@ with tab2:
 
     df_new['Internet_Use_Affects_Sleep'] = df_new['Sleep_Affected_By_Social_Media_Numeric_Str'].apply(map_sleep_impact_to_binary)
 
-    df_new['Difficulty_Sleeping_University_Pressure_Numeric_Str'] = df_new['Difficulty_Sleeping_University_Pressure'].astype(str)
-    df_new['Difficulty_Sleeping_University_Pressure_Score'] = df_new['Difficulty_Sleeping_University_Pressure_Numeric_Str'].map(likert_numeric_map)
+    df_new['Difficulty_Sleeping_University_Pressure_Score'] = pd.to_numeric(
+        df_new['Difficulty_Sleeping_University_Pressure'],
+        errors='coerce'
+    )
 
-    df_plot = df_new.dropna(subset=['Internet_Use_Affects_Sleep', 'Difficulty_Sleeping_University_Pressure_Score']).copy()
+    df_plot = df_new.dropna(subset=[
+        'Internet_Use_Affects_Sleep',
+        'Difficulty_Sleeping_University_Pressure_Score'
+    ]).copy()
 
     fig_box = px.box(
         df_plot,
