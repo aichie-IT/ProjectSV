@@ -34,6 +34,49 @@ def generate_scientific_summary(n, usage, stress, pos, neg):
         f"mental wellbeing within this subgroup."
     )
 
+def usage_summary(n, median_usage, high_usage_pct, study_hours):
+    if n == 0:
+        return "No data available for the selected filters."
+    return (
+        f"For the selected subgroup (n = {n}), the median social media usage "
+        f"is {median_usage:.1f} hours per day. Approximately {high_usage_pct:.1f}% "
+        f"of students are classified as high-usage users (≥5 hours/day). "
+        f"Meanwhile, the average weekly study time is {study_hours:.1f} hours, "
+        f"highlighting a potential imbalance between online engagement and academic commitment."
+    )
+
+
+def academic_summary(impact_pct, perf, high_users, study_hours):
+    return (
+        f"Approximately {impact_pct:.1f}% of students reported that social media "
+        f"affects their academic studies. Despite this, the average academic "
+        f"performance score is {perf:.2f}, suggesting moderate academic resilience. "
+        f"Notably, {high_users:.1f}% of students belong to the high-usage group, "
+        f"which may contribute to the perceived academic impact alongside an "
+        f"average weekly study duration of {study_hours:.1f} hours."
+    )
+
+
+def wellbeing_summary(stress, sleep_pct, emotion, help_pct):
+    return (
+        f"The mental wellbeing analysis indicates a moderate average stress level "
+        f"of {stress:.2f}. Approximately {sleep_pct:.1f}% of students reported "
+        f"sleep disturbances linked to social media use. The emotional attachment "
+        f"score of {emotion:.2f} reflects a noticeable emotional connection to online platforms, "
+        f"while {help_pct:.1f}% of students seek online support during stressful periods."
+    )
+
+
+def correlation_summary(r_sm_stress, r_study_stress):
+    return (
+        f"The correlation analysis reveals a weak association between social media "
+        f"usage duration and academic stress (r = {r_sm_stress:.2f}). Similarly, "
+        f"study hours show a weak correlation with stress levels (r = {r_study_stress:.2f}), "
+        f"suggesting that both digital engagement and academic workload contribute "
+        f"incrementally to students’ stress experiences."
+    )
+
+
 
 # --- MAIN TITLE ---
 st.title(" Student Mental Health Monitoring Insights Dashboard")
@@ -561,7 +604,7 @@ with tab1:
 
     # Scientific Summary
     # ===== REAL-TIME SCIENTIFIC SUMMARY =====
-    st.markdown("### 🧠 Real-Time Scientific Summary")
+    st.markdown("### Real-Time Scientific Summary")
 
     st.info(
         generate_scientific_summary(
@@ -596,23 +639,19 @@ with tab1:
         col4.metric("Perceived Time Loss (%)", f"{time_waste_pct:.1f}%", help="Students who feel social media wastes their time", border=True)
         
         # Scientific Summary
-        st.markdown("### Summary")
-        st.info("""
-        The **median social media usage of 7 hours per day** shows that social
-        media is heavily embedded in students’ daily routines, with usage skewed
-        towards prolonged usage.
+        st.markdown("### Real-Time Usage Summary")
 
-        Approximately **74.1% of students belong to the high-usage group**
-        (5 hours or more per day), confirming that excessive internet exposure is
-        common within the sample. In contrast, the **average study time is 6.2 hours
-        per week**, suggesting a relatively lower allocation of time to academic
-        activities.
+        st.info(
+            usage_summary(
+                len(filtered_df),
+                filtered_numeric["Social_Media_Hours_Numeric"].median(),
+                (filtered_df["Social_Media_Use_Frequency"]
+                 .isin(["5 to 6 hours per day", "More than 6 hours per day"])
+                 .mean() * 100),
+                filtered_numeric["Study_Hours_Numeric"].mean()
+            )
+        )
 
-        In fact, **none of the students explicitly perceived social media as a
-        waste of time (0.0%)**, which may reflect normalisation of high usage or a lack
-        of awareness of its potential impact on productivity rather than an absence
-        of actual time displacement.
-        """)
         st.markdown("---")
 
         col1, col2, col3, col4 = st.columns(4)
@@ -749,19 +788,18 @@ with tab1:
         col4.metric("Avg. Weekly Study Hours", f"{study_hours.mean():.1f}" if not study_hours.empty else "N/A", help="Self-reported weekly study time", border=True)
         
         # Scientific Summary
-        st.markdown("### Summary")
-        st.info("""
-        The results show that social media has a noticeable influence on students’ academic activities. 
-        Approximately **{(study_impact.mean()/5*100):.1f}%** of students reported that their studies are affected by social media usage, 
-        showing that online engagement may interfere with academic focus and productivity.
+        st.markdown("### Real-Time Academic Impact Summary")
 
-        The **average academic performance score of {academic_perf.mean():.2f}** suggests that students generally maintain 
-        moderate academic achievement despite high levels of social media use. Notably, **{high_users_pct:.1f}%** of students 
-        are classified as high social media users, spending at least five hours per day on these platforms.
+        st.info(
+            academic_summary(
+                (study_impact.mean()/5*100),
+                academic_perf.mean(),
+                high_users_pct,
+                study_hours.mean()
+            )
+        )
 
-        In addition, students reported an **average weekly study time of {study_hours.mean():.1f} hours**, 
-        which may help explain the perceived academic impact when combined with heavy social media usage.
-        """)
+
         st.markdown("---")
 
         col1, col2, col3 = st.columns(3)
@@ -876,18 +914,17 @@ with tab1:
         col4.metric("Online Help Seeking (%)", f"{(help_seek.mean()/5*100):.1f}%" if not help_seek.empty else "N/A", border=True)
 
         # Scientific Summary
-        st.markdown("### Summary")
-        st.info("""
-        The wellbeing analysis indicates a **moderate average stress level of {stress.mean():.2f}**, 
-        suggesting that academic and online demands contribute noticeably to students’ daily stress.
+        st.markdown("### Real-Time Wellbeing Summary")
 
-        Approximately **{(sleep.mean()/5*100):.1f}%** of students reported that their sleep patterns are affected by social media use, 
-        highlighting the potential impact of excessive screen time on rest and recovery. 
-        The **emotional attachment score of {emotion.mean():.2f}** reflects a moderate emotional connection to social media platforms.
+        st.info(
+            wellbeing_summary(
+                stress.mean(),
+                (sleep.mean()/5*100),
+                emotion.mean(),
+                (help_seek.mean()/5*100)
+            )
+        )
 
-        Furthermore, **{(help_seek.mean()/5*100):.1f}%** of students indicated that they seek help or emotional support online during stressful periods, 
-        suggesting that digital platforms play a significant role in students’ coping and support-seeking behaviours.
-        """)
         st.markdown("---")
 
         col1, col2 = st.columns(2)
@@ -983,20 +1020,18 @@ with tab1:
         col4.metric("Support-Seeking Score", f"{support_score.mean():.2f}" if not support_score.empty else "N/A", border=True)
 
         # Scientific Summary
-        st.markdown("### Summary")
-        st.info("""
-        The correlation analysis shows a **weak positive relationship (r = {corr_sm_stress:.2f})** between daily social media usage and academic stress, 
-        showing that increased time spent online is associated with slightly higher stress levels.
+        st.markdown("### 🧠 Real-Time Correlation Summary")
 
-        Similarly, **study hours exhibit a weak positive correlation with stress (r = {corr_study_stress:.2f})**, 
-        suggesting that higher academic workload may contribute to increased stress rather than reducing it.
+        if corr_sm_stress is not None and corr_study_stress is not None:
+            st.info(
+                correlation_summary(
+                    corr_sm_stress,
+                    corr_study_stress
+                )
+            )
+        else:
+            st.info("Insufficient data to compute correlations under the current filter selection.")
 
-        The **wellbeing impact gap of {impact_gap:.2f}** indicates that perceived positive effects of social media slightly outweigh negative effects, 
-        implying a balanced but cautious role of social media in students’ wellbeing.
-
-        Lastly, the **support-seeking score of {support_score.mean():.2f}** reflects a moderate tendency for students to use online communities 
-        as a source of emotional or mental health support during stressful periods.
-        """)
         st.markdown("---")
 
         col1, col2 = st.columns(2)
