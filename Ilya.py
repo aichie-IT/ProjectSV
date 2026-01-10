@@ -143,3 +143,76 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
+st.subheader("Difficulty Sleeping by Social Media Affecting Sleep")
+
+# --- Likert numeric mapping ---
+likert_numeric_map = {
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5
+}
+
+# --- PROCESS X-AXIS: Internet use affects sleep (Yes / No) ---
+df_new["Sleep_Affected_By_Social_Media_Numeric_Str"] = (
+    df_new["Sleep_Affected_By_Social_Media"].astype(str)
+)
+
+def map_sleep_impact_to_binary(response_str):
+    try:
+        response_int = int(response_str)
+        if response_int >= 4:
+            return "Yes"
+        elif response_int <= 3:
+            return "No"
+    except ValueError:
+        return None
+
+df_new["Internet_Use_Affects_Sleep"] = (
+    df_new["Sleep_Affected_By_Social_Media_Numeric_Str"]
+    .apply(map_sleep_impact_to_binary)
+)
+
+# --- PROCESS Y-AXIS: Difficulty sleeping score ---
+df_new["Difficulty_Sleeping_University_Pressure_Score"] = (
+    df_new["Difficulty_Sleeping_University_Pressure"]
+    .astype(str)
+    .map(likert_numeric_map)
+)
+
+# --- CLEAN DATA FOR PLOTTING ---
+df_plot = df_new.dropna(
+    subset=[
+        "Internet_Use_Affects_Sleep",
+        "Difficulty_Sleeping_University_Pressure_Score"
+    ]
+).copy()
+
+# Ensure correct order
+df_plot["Internet_Use_Affects_Sleep"] = pd.Categorical(
+    df_plot["Internet_Use_Affects_Sleep"],
+    categories=["No", "Yes"],
+    ordered=True
+)
+
+# --- PLOTLY BOX PLOT ---
+fig = px.box(
+    df_plot,
+    x="Internet_Use_Affects_Sleep",
+    y="Difficulty_Sleeping_University_Pressure_Score",
+    category_orders={"Internet_Use_Affects_Sleep": ["No", "Yes"]},
+    labels={
+        "Internet_Use_Affects_Sleep": "Social Media Affects Sleep",
+        "Difficulty_Sleeping_University_Pressure_Score":
+            "Difficulty Sleeping Score (1–5)"
+    }
+)
+
+fig.update_layout(
+    height=500,
+    showlegend=False
+)
+
+st.plotly_chart(fig, use_container_width=True)
