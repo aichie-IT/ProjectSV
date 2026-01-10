@@ -1360,7 +1360,7 @@ with tab2:
 # ----------- HANIS NABILA -----------
 # ================= TAB 3: HANIS NABILA =================
 with tab3:
-    st.header("📊 (Hanis Nabila)")
+    st.header("Analyze Mental Health Information-Seeking Behavior")
 
     # =====================================================
 #   Online Help Preference (High vs Low)
