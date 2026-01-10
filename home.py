@@ -268,6 +268,65 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
 )
 
 # ----------- ILYA -----------
+# Re-apply short label mapping to 'Social_Media_Use_Frequency'
+short_label_map_for_df = {
+    "Less than 1 hour per day": "< 1 hr",
+    "1 to 2 hours per day": "1–2 hrs",
+    "3 to 4 hours per day": "3–4 hrs",
+    "5 to 6 hours per day": "5–6 hrs",
+    "More than 6 hours per day": "> 6 hrs"
+}
+df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].map(short_label_map_for_df)
+
+# Create df_for_analysis by dropping the 'Platforms_Most_Often_Used' column
+df_for_analysis = df.drop(columns=['Platforms_Most_Often_Used']).copy()
+
+# Define numerical mapping for Social Media Use Frequency
+social_media_hours_map = {
+    "< 1 hr": 0.5,
+    "1–2 hrs": 1.5,
+    "3–4 hrs": 3.5,
+    "5–6 hrs": 5.5,
+    "> 6 hrs": 7
+}
+df_for_analysis["Daily_Internet_Usage_Hours"] = df_for_analysis["Social_Media_Use_Frequency"].map(social_media_hours_map)
+
+# Define mental health related columns and convert them to numeric
+mental_health_cols = [
+    'Assignments_Stress',
+    'Academic_Workload_Anxiety',
+    'Difficulty_Sleeping_University_Pressure',
+    'Social_Media_Negative_Impact_on_Wellbeing'
+]
+
+for col in mental_health_cols:
+    df_for_analysis[col] = pd.to_numeric(df_for_analysis[col])
+
+# Map mental health factor names for better legend readability
+mental_health_factor_map = {
+    'Assignments_Stress': 'Stress from Assignments',
+    'Academic_Workload_Anxiety': 'Academic Workload Anxiety',
+    'Difficulty_Sleeping_University_Pressure': 'Difficulty Sleeping (Pressure)',
+    'Social_Media_Negative_Impact_on_Wellbeing': 'Negative Social Media Impact'
+}
+
+df_for_analysis['Mental_Health_Factor'] = df_for_analysis[mental_health_cols].apply(
+    lambda row: mental_health_factor_map.get(row.name), axis=1
+)
+
+# Melt the DataFrame for easier plotting with Plotly
+df_melted = df_for_analysis.melt(
+    id_vars=['Daily_Internet_Usage_Hours'],
+    value_vars=mental_health_cols,
+    var_name='Mental_Health_Factor',
+    value_name='Score'
+)
+
+df_melted['Mental_Health_Factor'] = df_melted['Mental_Health_Factor'].map(mental_health_factor_map)
+
+# Group by internet usage and mental health factor, then calculate the mean score
+df_grouped = df_melted.groupby(['Daily_Internet_Usage_Hours', 'Mental_Health_Factor'])['Score'].mean().reset_index()
+
 # ----------- HANIS NABILA -----------
 # ----------- AINUN -----------
 
@@ -989,67 +1048,8 @@ with tab1:
 # ----------- ILYA -----------
 
 # ============ TAB 2: ILYA ============
-# Re-apply short label mapping to 'Social_Media_Use_Frequency'
-short_label_map_for_df = {
-    "Less than 1 hour per day": "< 1 hr",
-    "1 to 2 hours per day": "1–2 hrs",
-    "3 to 4 hours per day": "3–4 hrs",
-    "5 to 6 hours per day": "5–6 hrs",
-    "More than 6 hours per day": "> 6 hrs"
-}
-df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].map(short_label_map_for_df)
-
-# Create df_for_analysis by dropping the 'Platforms_Most_Often_Used' column
-df_for_analysis = df.drop(columns=['Platforms_Most_Often_Used']).copy()
-
-# Define numerical mapping for Social Media Use Frequency
-social_media_hours_map = {
-    "< 1 hr": 0.5,
-    "1–2 hrs": 1.5,
-    "3–4 hrs": 3.5,
-    "5–6 hrs": 5.5,
-    "> 6 hrs": 7
-}
-df_for_analysis["Daily_Internet_Usage_Hours"] = df_for_analysis["Social_Media_Use_Frequency"].map(social_media_hours_map)
-
-# Define mental health related columns and convert them to numeric
-mental_health_cols = [
-    'Assignments_Stress',
-    'Academic_Workload_Anxiety',
-    'Difficulty_Sleeping_University_Pressure',
-    'Social_Media_Negative_Impact_on_Wellbeing'
-]
-
-for col in mental_health_cols:
-    df_for_analysis[col] = pd.to_numeric(df_for_analysis[col])
-
-# Map mental health factor names for better legend readability
-mental_health_factor_map = {
-    'Assignments_Stress': 'Stress from Assignments',
-    'Academic_Workload_Anxiety': 'Academic Workload Anxiety',
-    'Difficulty_Sleeping_University_Pressure': 'Difficulty Sleeping (Pressure)',
-    'Social_Media_Negative_Impact_on_Wellbeing': 'Negative Social Media Impact'
-}
-
-df_for_analysis['Mental_Health_Factor'] = df_for_analysis[mental_health_cols].apply(
-    lambda row: mental_health_factor_map.get(row.name), axis=1
-)
-
-# Melt the DataFrame for easier plotting with Plotly
-df_melted = df_for_analysis.melt(
-    id_vars=['Daily_Internet_Usage_Hours'],
-    value_vars=mental_health_cols,
-    var_name='Mental_Health_Factor',
-    value_name='Score'
-)
-
-df_melted['Mental_Health_Factor'] = df_melted['Mental_Health_Factor'].map(mental_health_factor_map)
-
-# Group by internet usage and mental health factor, then calculate the mean score
-df_grouped = df_melted.groupby(['Daily_Internet_Usage_Hours', 'Mental_Health_Factor'])['Score'].mean().reset_index()
-
-# Streamlit Page Title
-st.title("Mental Health and Internet Usage Analysis Among UMK Students")
+with tab2:
+    st.title("Relationship Between Internet Usage and Mental Health Outcomes")
 
 # Display a brief explanation of the project
 st.write("""
