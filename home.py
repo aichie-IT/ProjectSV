@@ -989,7 +989,7 @@ with tab1:
 # ----------- ILYA -----------
 
 # ============ TAB 2: ILYA ============
-
+with tab2:
 # Re-apply short label mapping to 'Social_Media_Use_Frequency'
 short_label_map_for_df = {
     "Less than 1 hour per day": "< 1 hr",
