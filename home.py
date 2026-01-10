@@ -1355,19 +1355,19 @@ with tab4:
     # ==================================================
     # SUMMARY METRIC BOXES
     # ==================================================
-    TOTAL_RESPONDENTS = len(filtered_df)
+    TOTAL_RESPONDENTS = len(filtered_data)
 
     col1, col2, col3 = st.columns(3)
     with col1:
         st.metric("Total Respondents", TOTAL_RESPONDENTS)
 
     with col2:
-        majority_gender = filtered_df["Gender"].mode(dropna=True)
+        majority_gender = filtered_data["Gender"].mode(dropna=True)
         majority_gender = majority_gender[0] if not majority_gender.empty else "N/A"
         st.metric("Majority Gender", majority_gender)
 
     with col3:
-        dominant_year = filtered_df["Year_of_Study"].mode(dropna=True)
+        dominant_year = filtered_data["Year_of_Study"].mode(dropna=True)
         dominant_year = dominant_year[0] if not dominant_year.empty else "N/A"
         st.metric("Dominant Year", dominant_year)
 
@@ -1387,7 +1387,7 @@ with tab4:
         # 1️⃣ Gender Distribution Across Year of Study
         st.write("1️⃣ Gender Distribution Across Year of Study")
         fig1 = px.histogram(
-            filtered_df,
+            filtered_data,
             x="Year_of_Study",
             color="Gender",
             barmode="group",
@@ -1399,7 +1399,7 @@ with tab4:
         # 2️⃣ Gender vs Social Media Positive Impact
         st.write("2️⃣ Gender vs Social Media Positive Impact")
         fig2 = px.histogram(
-            filtered_df,
+            filtered_data,
             x="Gender",
             color="Social_Media_Positive_Impact_on_Wellbeing",
             barmode="stack",
@@ -1411,7 +1411,7 @@ with tab4:
         # 3️⃣ Gender vs Difficulty Sleeping
         st.write("3️⃣ Gender vs Difficulty Sleeping")
         fig3 = px.histogram(
-            filtered_df,
+            filtered_data,
             x="Difficulty_Sleeping_University_Pressure",
             color="Gender",
             barmode="group",
@@ -1424,8 +1424,8 @@ with tab4:
         # 4️⃣ Year of Study vs Living Situation
         st.write("4️⃣ Year of Study vs Living Situation")
         heatmap_data = pd.crosstab(
-            filtered_df["Year_of_Study"],
-            filtered_df["Current_Living_Situation"]
+            filtered_data["Year_of_Study"],
+            filtered_data["Current_Living_Situation"]
         )
         fig4 = px.imshow(
             heatmap_data,
@@ -1439,7 +1439,7 @@ with tab4:
         # 5️⃣ Race vs Social Media Routine
         st.write("5️⃣ Race vs Social Media Routine")
         fig5 = px.histogram(
-            filtered_df,
+            filtered_data,
             x="Social_Media_Daily_Routine",
             color="Race",
             barmode="group",
@@ -1451,7 +1451,7 @@ with tab4:
         # 6️⃣ Employment Status Distribution
         st.write("6️⃣ Employment Status Distribution")
         fig6 = px.pie(
-            filtered_df,
+            filtered_data,
             names="Employment_Status",
             labels={"Employment_Status": "Employment Status"}
         )
