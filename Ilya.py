@@ -264,7 +264,7 @@ st.subheader("Daily Internet Usage vs Mean Mental Health Scores")
     )
     fig_line.update_layout(template='plotly_white', height=600)
     fig_line.update_yaxes(dtick=1)
-    st.plotly_chart(fig_line, use_container_width=True)
+st.plotly_chart(fig_line, use_container_width=True)
 
 # --- Seaborn Scatter Plots ---
 st.subheader("Scatter Plots: Daily Internet Usage vs Mental Health Scores")
