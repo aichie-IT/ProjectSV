@@ -1197,7 +1197,7 @@ with tab2:
         and various mental health factors like stress, anxiety, and the impact of social media.
     """)
 
-      st.subheader("Average Mental Health Scores by Internet Usage Level")
+          st.subheader("Average Mental Health Scores by Internet Usage Level")
 
     fig, ax = plt.subplots(figsize=(12, 7))
 
