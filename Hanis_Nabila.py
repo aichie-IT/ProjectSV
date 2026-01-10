@@ -128,9 +128,37 @@ col4.metric(
 st.markdown("---")
 
 # =====================================================
-#   ONLINE INFO SEEKING
+#   Online Help Preference (High vs Low)
 # =====================================================
-st.subheader("Assignment Stress and Online Help Preference")
+st.subheader("🥧 Preference for Online Help (High vs Low)")
+
+df['Online_Help_Level'] = df['Seek_Help_Online_When_Stress'].astype(str).apply(
+    lambda x: 'High (Agree)' if x in ['4','5'] else 'Low / Neutral'
+)
+
+pie_data = df['Online_Help_Level'].value_counts().reset_index()
+pie_data.columns = ['Preference', 'Count']
+
+fig = px.pie(
+    pie_data,
+    names='Preference',
+    values='Count',
+    hole=0.45,
+    title="Overall Preference for Seeking Help Online"
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+st.success("""
+**Interpretation:**  
+A clear majority of students prefer seeking help online when experiencing stress,
+highlighting digital platforms as a dominant support channel.
+""")
+
+# =====================================================
+#   Assignment Stress vs Online Help
+# =====================================================
+st.subheader("Assignment Stress vs Online Help Preference")
 
 fig = px.box(
     df,
