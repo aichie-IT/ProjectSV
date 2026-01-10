@@ -548,13 +548,13 @@ with tab1:
         )
 
         fig = px.bar(
-            filtered_df,
-            x="Social_Media_Use_Frequency",
+            df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
             title="Distribution of Daily Social Media Usage",
-            labels={"Social_Media_Use_Frequency": "Hours per Day"},
+            labels={"value": "Number of Students", "index": "Hours per Day"},
             color_discrete_sequence=px.colors.qualitative.Set2
         )
 
+        fig.update_layout(xaxis_tickangle=-30)
         st.plotly_chart(fig, use_container_width=True)
         st.success("""
         **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
