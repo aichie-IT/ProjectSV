@@ -137,6 +137,65 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
+# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
+st.header("Overall Social Media Usage (All Respondents)")
+
+# ------ DATASET OVERVIEW ------
+st.subheader("📋 Dataset Overview")
+
+st.markdown("""
+This section provides an **overall overview of the survey dataset** collected from UMK students.
+It allows users to understand the **structure, size, and completeness** of the data before any
+filtering or visualization is applied.
+""")
+
+# --- SUMMARY BOX ---
+col1, col2, col3, col4 = st.columns(4)
+
+top_academic = df['General_Academic_Performance'].mode()[0]
+top_media = df['Social_Media_Use_Frequency'].mode()[0]
+
+if not df.empty:
+    col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
+    col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
+    col3.metric("Academic Performance", top_academic, help="PLO 3: Students Academic Performance", border=True)
+    col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Use Frecuency", border=True)
+else:
+    col1.metric("Total Records", "0", help="No data available")
+    col2.metric("Avg. Age", "N/A", help="No data available")
+    col3.metric("Academic Performance", "N/A", help="No data available")
+    col4.metric("Social Media Usage", "N/A", help="No data available")
+
+# --- Dataset Preview ---
+with st.expander("View Dataset Preview"):
+    st.dataframe(df.head(20), use_container_width=True)
+
+st.markdown("---")
+
+overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
+
+fig_overall = px.bar(
+    x=overall_counts.index,
+    y=overall_counts.values,
+    labels={
+        "x": "Hours per Day",
+        "y": "Number of Students"
+    },
+    title="Overall Distribution of Daily Social Media Usage",
+    color=overall_counts.index,
+    color_discrete_sequence=px.colors.qualitative.Set2
+)
+
+fig_overall.update_layout(xaxis_tickangle=-30)
+st.plotly_chart(fig_overall, use_container_width=True)
+
+st.info(
+    "This chart represents the **entire respondent population** without any filters applied. "
+    "It serves as a baseline for comparison with filtered subgroup analyses."
+)
+
+st.markdown("---")
+
 # Fix encoding issues
 df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
 
@@ -150,7 +209,7 @@ cols_to_drop = [
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
 
-# ================= SCALE DEFINITIONS =================
+# ============ INDIVIDUAL PART FILTERING AND MAPPING ============
 
 # Likert-scale columns (1–5)
 LIKERT_COLS = [
@@ -170,27 +229,14 @@ LIKERT_COLS = [
     'Social_Media_Negative_Impact_on_Wellbeing'
 ]
 
-# Likert mapping
-likert_map = {
-    "Strongly Disagree": 1,
-    "Disagree": 2,
-    "Neutral": 3,
-    "Agree": 4,
-    "Strongly Agree": 5
-}
 
 # Numeric Likert Columns
 for col in LIKERT_COLS:
     if col in df_numeric.columns:
-        df_numeric[col + "_Numeric"] = (
-            df_numeric[col]
-            .astype(str)
-            .str.split(" / ").str[0]
-            .str.strip()
-            .replace("nan", None)
-            .map(likert_map)
+        df_numeric[col + "_Numeric"] = pd.to_numeric(
+            df_numeric[col],
+            errors="coerce"
         )
-
 
 # Frequency-scale columns (1–4)
 FREQ_COLS = [
@@ -252,25 +298,6 @@ df_numeric["General_Academic_Performance_Numeric"] = (
     .map(academic_map)
 )
 
-mental_cols = [
-    "Assignments_Stress",
-    "Academic_Workload_Anxiety",
-    "Difficulty_Sleeping_University_Pressure",
-    "Sleep_Affected_By_Social_Media",
-    "Studies_Affected_By_Social_Media"
-]
-
-# Likert (1–5)
-for col in mental_cols:
-    if col in df_numeric.columns:
-        df_numeric[col + "_Numeric"] = (
-            df_numeric[col]
-            .astype(str)
-            .str.split(" / ").str[0]
-            .map(likert_map)
-        )
-
-
 # Academic Stress Index
 df_numeric["Academic_Stress_Index"] = df_numeric[
     [
@@ -292,7 +319,6 @@ df["Social_Media_Use_Frequency"] = pd.Categorical(
     ],
     ordered=True
 )
-
 
 # ====== SIDEBAR ======
 with st.sidebar:
