@@ -62,52 +62,25 @@ cols_to_drop = [
 
 df = df.drop(columns=cols_to_drop, errors="ignore")
 
-# Visualization: Pie Chart for Online Help Preference
-df['Online_Help_Level'] = df['Seek_Help_Online_When_Stress'].astype(str).apply(
-    lambda x: 'High (Agree)' if x in ['4','5'] else 'Low / Neutral'
-)
-
-pie_data = df['Online_Help_Level'].value_counts().reset_index()
-pie_data.columns = ['Preference', 'Count']
-
-fig = px.pie(
-    pie_data,
-    names='Preference',
-    values='Count',
-    hole=0.45,
-    title="Overall Preference for Seeking Help Online"
-)
-
-# Display Plotly Pie Chart in Streamlit
-st.plotly_chart(fig, use_container_width=True)
-
-# Success Message
-st.success("""
-**Interpretation:**  
-A clear majority of students prefer seeking help online when experiencing stress,
-highlighting digital platforms as a dominant support channel.
-""")
 fig = px.bar(
     df_melted,
-    x='Internet_Usage_Category',
-    y='Score',
-    color='Mental_Health_Factor',
-    barmode='group',  # This creates grouped bars
-    title='Average Mental Health Scores by Internet Usage Level',
-    labels={'Score': 'Mean Score (Likert Scale: 1=Strongly Disagree, 5=Strongly Agree)', 'Internet_Usage_Category': 'Internet Usage Category'},
-    category_orders={'Internet_Usage_Category': order},  # Ensuring the correct order of categories
+    x="Internet_Usage_Category",
+    y="Score",
+    color="Mental_Health_Factor",
+    barmode="group",
+    category_orders={"Internet_Usage_Category": order},
+    labels={
+        "Score": "Mean Score (Likert Scale: 1–5)",
+        "Internet_Usage_Category": "Internet Usage Category",
+        "Mental_Health_Factor": "Mental Health Factor"
+    }
 )
 
-# Customize the layout
 fig.update_layout(
-    xaxis_title='Internet Usage Category',
-    yaxis_title='Mean Score (Likert Scale: 1=Strongly Disagree, 5=Strongly Agree)',
-    legend_title='Mental Health Factor',
-    legend=dict(title='Mental Health Factor', x=1.05, y=1),
-    margin=dict(l=60, r=100, t=80, b=60)  # Add space for legend
+    legend_title_text="Mental Health Factor",
+    height=600
 )
 
-# Display the Plotly chart in Streamlit
 st.plotly_chart(fig, use_container_width=True)
 
 
