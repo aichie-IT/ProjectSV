@@ -1252,7 +1252,7 @@ with tab2:
     # --- Heatmap ---
     # Create correlation heatmap
     numerical_cols = ['Age', 'Social_Media_Hours_Numeric', 'Study_Hours_Numeric'] + \
-                     [col for col in likert_cols if col in df_heatmap.columns and df_heatmap[col].dtype != 'object']
+                     [col for col in LIKERT_COLS if col in df_heatmap.columns and df_heatmap[col].dtype != 'object']
 
     correlation_matrix = df_heatmap[numerical_cols].dropna().corr()
 
