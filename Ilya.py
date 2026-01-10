@@ -101,5 +101,5 @@ for col in likert_cols:
 # =====================================================
 
 st.subheader("Average Mental Health Scores by Internet Usage Level")
-   
+  fig_plotly = px.bar(df_for_analysis, x='Internet_Usage_Category', y='Score', color='Mental_Health_Factor', title="Mental Health Scores by Internet Usage Level") 
 st.pyplot(fig)
