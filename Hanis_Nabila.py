@@ -220,22 +220,35 @@ online platforms.
 # =====================================================
 # STRESS vs ONLINE COMMUNITIES
 # =====================================================
-st.subheader("🤝 Assignment Stress vs Online Community Usage")
+st.subheader("📈 Cumulative Adoption of Online Mental Health Information")
 
-stress_community_table = pd.crosstab(
-    df['Stress_Cat'],
-    df['Use_Online_Communities_for_Support']
+cum_data = (
+    df['Mental_Health_Info_Through_Internet']
+    .astype(int)
+    .value_counts()
+    .sort_index()
+    .cumsum()
 )
 
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.heatmap(stress_community_table, annot=True, fmt="d", cmap="YlGnBu", ax=ax)
-ax.set_title("Assignment Stress vs Online Community Support")
-ax.set_xlabel("Online Community Usage Level")
-ax.set_ylabel("Assignment Stress Level")
-st.pyplot(fig)
+cum_df = pd.DataFrame({
+    'Level': cum_data.index,
+    'Cumulative Percentage': (cum_data / cum_data.max()) * 100
+})
+
+fig = px.line(
+    cum_df,
+    x='Level',
+    y='Cumulative Percentage',
+    markers=True,
+    title="Cumulative Engagement with Online Mental Health Information"
+)
+
+fig.update_yaxes(range=[0, 100])
+
+st.plotly_chart(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
-Higher stress levels correspond with increased reliance on online communities,
-emphasising their role as informal mental health support systems.
+Most students have already engaged with online mental health information by mid-to-high
+levels, indicating widespread adoption of digital mental health resources.
 """)
