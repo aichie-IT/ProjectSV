@@ -1,9 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
-
-import streamlit as st
-import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
@@ -69,6 +65,7 @@ cols_to_drop = [
 
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
+
 
 # ----------- TAB 4: AINUN -----------
 
