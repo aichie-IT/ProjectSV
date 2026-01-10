@@ -78,51 +78,29 @@ likert_cols = [
 for col in likert_cols:
     df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
 
-# --- Streamlit Tabs ---
-tab = st.selectbox("Choose Tab", ["General Visualizations", "Detailed Analysis"])
-
-# General Visualizations Tab
-if tab == "General Visualizations":
-    st.title("General Visualizations")
-
-    st.subheader("📌 Key Indicators")
-    
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Find Info Online", f"{(df['Find_Mental_Health_Info_Online'].astype(str).isin(['4','5']).mean()*100):.1f}%")
-    col2.metric("Seek Help Online When Stressed", f"{(df['Seek_Help_Online_When_Stress'].astype(str).isin(['4','5']).mean()*100):.1f}%")
-    col3.metric("Use Online Communities", f"{(df['Use_Online_Communities_for_Support'].astype(str).isin(['4','5']).mean()*100):.1f}%")
-    col4.metric("Follow Motivational Content", f"{(df['Follow_Motivational_Mental_Health_Content'].astype(str).isin(['4','5']).mean()*100):.1f}%")
-    
-    st.markdown("---")
-
-    # Online Mental Health Information
-    st.subheader("Seeking Mental Health Information Online")
-    fig = px.histogram(df, x="Mental_Health_Info_Through_Internet", title="Frequency of Seeking Mental Health Information Online")
-    st.plotly_chart(fig)
-
-    st.success("**Interpretation:** A large proportion of students frequently seek mental health information through online platforms.")
-
-    # Online Help When Stressed
-    st.subheader("🆘 Preference for Online Help During Stress")
-    fig = px.histogram(df, x="Seek_Help_Online_When_Stress", title="Preference for Seeking Help Online When Stressed")
-    st.plotly_chart(fig)
-
-    st.success("**Interpretation:** Many students show a strong preference for online help during stressful situations.")
-
-# Detailed Analysis Tab
-if tab == "Detailed Analysis":
-    st.title("Detailed Analysis")
-    st.write("""Analyzing how different patterns of internet use, such as daily usage duration, frequency, and usage before sleep, are associated with indicators of mental health, including stress, anxiety, and depression, among UMK students.""")
 
     # --- Grouped Bar Chart ---
-    st.subheader("Average Mental Health Scores by Internet Usage Level")
-    fig, ax = plt.subplots(figsize=(12, 7))
-    sns.barplot(x='Internet_Usage_Category', y='Score', hue='Mental_Health_Factor', data=df, errorbar=None, order=['Low', 'Moderate', 'High'], ax=ax)
-    ax.set_title('Average Mental Health Scores by Internet Usage Level')
-    ax.set_xlabel('Internet Usage Category')
-    ax.set_ylabel('Mean Score (Likert Scale: 1=Strongly Disagree, 5=Strongly Agree)')
-    ax.legend(title='Mental Health Factor', bbox_to_anchor=(1.05, 1), loc='upper left')
-    st.pyplot(fig)
+    # Create the grouped bar chart
+st.subheader("Average Mental Health Scores by Internet Usage Level")
+fig, ax = plt.subplots(figsize=(12, 7))
+
+sns.barplot(
+    x='Internet_Usage_Category',
+    y='Score',
+    hue='Mental_Health_Factor',
+    data=df_melted,
+    errorbar=None,  # Display mean
+    order=order,
+    ax=ax
+)
+
+ax.set_title('Average Mental Health Scores by Internet Usage Level')
+ax.set_xlabel('Internet Usage Category')
+ax.set_ylabel('Mean Score (Likert Scale: 1=Strongly Disagree, 5=Strongly Agree)')
+ax.legend(title='Mental Health Factor', bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# Display the plot in Streamlit
+st.pyplot(fig)
 
     # --- Box Plot ---
     st.subheader("Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep")
