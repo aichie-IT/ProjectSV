@@ -7,15 +7,13 @@ st.set_page_config(layout="wide")
 st.title("Internet Usage and Mental Health Outcomes")
 st.caption("Interactive visualization adapted from Colab analysis")
 
-# Upload CSV
-uploaded_file = st.file_uploader("Upload Google Form CSV", type="csv")
+# --- LOAD DATA ---
+@st.cache_data
+def load_data():
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv"
+    return pd.read_csv(url)
 
-if uploaded_file is None:
-    st.warning("Please upload the dataset to continue.")
-    st.stop()
-
-# Load data
-df = pd.read_csv(uploaded_file, encoding="latin-1")
+df = load_data()
 
 st.success("Dataset loaded successfully")
 
