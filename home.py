@@ -1050,7 +1050,18 @@ df_melted['Mental_Health_Factor'] = df_melted['Mental_Health_Factor'].map(mental
 # Group by internet usage and mental health factor, then calculate the mean score
 df_grouped = df_melted.groupby(['Daily_Internet_Usage_Hours', 'Mental_Health_Factor'])['Score'].mean().reset_index()
 
-# Create Plotly grouped bar chart
+# Streamlit Page Title
+st.title("Mental Health and Internet Usage Analysis Among UMK Students")
+
+# Display a brief explanation of the project
+st.write("""
+    This app explores the relationship between internet usage and mental health outcomes
+    among UMK students, with visualizations showing correlations between internet usage
+    and various mental health factors like stress, anxiety, and the impact of social media.
+""")
+
+# Display Plotly grouped bar chart
+st.subheader("Mental Health Scores by Internet Usage")
 fig = px.bar(
     df_grouped,
     x='Daily_Internet_Usage_Hours',
@@ -1061,7 +1072,6 @@ fig = px.bar(
     title="Mental Health Scores by Internet Usage"
 )
 
-# Display Plotly chart in Streamlit
 st.plotly_chart(fig)
 
 # --- Box Plot ---
