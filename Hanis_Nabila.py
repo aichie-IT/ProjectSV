@@ -130,6 +130,30 @@ st.markdown("---")
 # =====================================================
 #   ONLINE INFO SEEKING
 # =====================================================
+st.subheader("Assignment Stress and Online Help Preference")
+
+fig = px.box(
+    df,
+    x="Seek_Help_Online_When_Stress",
+    y="Assignments_Stress",
+    title="Assignment Stress Levels Across Online Help Preference",
+    labels={
+        "Seek_Help_Online_When_Stress": "Online Help Preference Level",
+        "Assignments_Stress": "Assignment Stress Level"
+    }
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+st.success("""
+**Interpretation:**  
+Students who strongly prefer online help tend to exhibit higher median assignment
+stress levels, suggesting that academic pressure drives digital help-seeking behaviour.
+""")
+
+# =====================================================
+#   ONLINE INFO SEEKING
+# =====================================================
 st.subheader("Seeking Mental Health Information Online")
 
 fig = px.histogram(
