@@ -1197,19 +1197,30 @@ with tab2:
         and various mental health factors like stress, anxiety, and the impact of social media.
     """)
 
-    # Display Plotly grouped bar chart
-    st.subheader("Mental Health Scores by Internet Usage")
-    fig = px.bar(
-        df_grouped,
-        x='Daily_Internet_Usage_Hours',
-        y='Score',
-        color='Mental_Health_Factor',
-        barmode='group',
-        labels={'Daily_Internet_Usage_Hours': 'Internet Usage (hours)', 'Score': 'Mental Health Score'},
-        title="Mental Health Scores by Internet Usage"
-    )
+  st.subheader("Average Mental Health Scores by Internet Usage Level")
 
-    st.plotly_chart(fig)
+fig, ax = plt.subplots(figsize=(12, 7))
+
+sns.barplot(
+    x='Internet_Usage_Category',
+    y='Score',
+    hue='Mental_Health_Factor',
+    data=df_melted,
+    order=order,
+    errorbar=None,
+    ax=ax
+)
+
+ax.set_title("Average Mental Health Scores by Internet Usage Level")
+ax.set_xlabel("Internet Usage Category")
+ax.set_ylabel("Mean Score (Likert Scale: 1 = Strongly Disagree, 5 = Strongly Agree)")
+ax.legend(
+    title="Mental Health Factor",
+    bbox_to_anchor=(1.05, 1),
+    loc='upper left'
+)
+
+st.pyplot(fig, use_container_width=True)
 
     # --- Box Plot ---
     # Create the box plot for "Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep"
