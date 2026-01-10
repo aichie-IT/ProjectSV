@@ -1251,6 +1251,8 @@ with tab2:
 
     # --- Heatmap ---
     # Create correlation heatmap
+    df_heatmap = df_numeric.copy()
+
     numerical_cols = ['Age', 'Social_Media_Hours_Numeric', 'Study_Hours_Numeric'] + \
                      [col for col in LIKERT_COLS if col in df_heatmap.columns and df_heatmap[col].dtype != 'object']
 
