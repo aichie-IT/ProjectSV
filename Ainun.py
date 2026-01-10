@@ -2,7 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-st.subheader("Demographic Differences with Mental Health Experiences")
+# ----------- TAB 4: AINUN -----------
+
+# ============ TAB 4: INDIVIDUAL VISUALIZATIONS ============
+with tab4:
+    st.subheader("Demographic Differences with Mental Health Experiences")
 st.write("""
 The purpose of this visualization is to identify and analyze demographic 
 differences in mental health experiences among students, focusing on how 
