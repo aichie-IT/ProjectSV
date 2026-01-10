@@ -106,20 +106,20 @@ st.subheader("📌 Key Mental Health Indicators")
 col1, col2, col3, col4 = st.columns(4)
 
 col1.metric(
-    "High Usage (>5 hrs/day)",
-    f"{(df['Social_Media_Use_Frequency']
-        .isin(['5 to 6 hours per day','More than 6 hours per day'])
-        .mean()*100):.1f}%"
-)
-
-col2.metric(
-    "Often / Always Assignment Stress",
+    "Often/Always Stress with assignment",
     f"{(df['Assignments_Stress'].astype(str).isin(['4','5']).mean()*100):.1f}%"
 )
 
-col3.metric(
+col2.metric(
     "Sleep Frequently Affected",
     f"{(df['Sleep_Affected_By_Social_Media'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+)
+
+col3.metric(
+    "High Usage of Social Media (>5 hrs/day)",
+    f"{(df['Social_Media_Use_Frequency']
+        .isin(['5 to 6 hours per day','More than 6 hours per day'])
+        .mean()*100):.1f}%"
 )
 
 col4.metric(
