@@ -1290,7 +1290,9 @@ with tab2:
     st.plotly_chart(fig_heatmap, use_container_width=True)
 
     # --- Line Plot: Mental Health Scores vs Internet Usage ---
+    st.subheader("Daily Internet Usage vs Mean Mental Health Scores")
 
+    # Prepare df_line
     df_line = df_melted.copy()
     df_line["Score"] = pd.to_numeric(df_line["Score"], errors="coerce")
     df_line["Daily_Internet_Usage_Hours"] = pd.to_numeric(df_line["Daily_Internet_Usage_Hours"], errors="coerce")
@@ -1298,65 +1300,61 @@ with tab2:
 
     # Group and calculate mean
     df_grouped_line = (
-        df_line
-        .groupby(["Daily_Internet_Usage_Hours", "Mental_Health_Factor"])["Score"]
+        df_line.groupby(["Daily_Internet_Usage_Hours", "Mental_Health_Factor"])["Score"]
         .mean()
         .reset_index()
         .sort_values("Daily_Internet_Usage_Hours")
     )
 
-    # Plot
+    # Convert hours to string for faceting
     df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
 
-   # Create faceted line plots with markers
-   fig_line = px.line(
-       df_grouped_line,
-       x='Daily_Internet_Usage_Hours_Str',
-       y='Score',
-       facet_col='Mental_Health_Factor',
-       facet_col_wrap=2,
-       markers=True,
-       title='Daily Internet Usage vs Mean Mental Health Scores',
-       labels={
-           'Daily_Internet_Usage_Hours_Str': 'Daily Internet Usage (Hours per Day)',
-           'Score': 'Mean Mental Health Score'
-       }
-   )
+    # --- Plotly Line Plot ---
+    fig_line = px.line(
+        df_grouped_line,
+        x='Daily_Internet_Usage_Hours_Str',
+        y='Score',
+        facet_col='Mental_Health_Factor',
+        facet_col_wrap=2,
+        markers=True,
+        title='Daily Internet Usage vs Mean Mental Health Scores',
+        labels={
+            'Daily_Internet_Usage_Hours_Str': 'Daily Internet Usage (Hours per Day)',
+            'Score': 'Mean Mental Health Score'
+        }
+    )
+    fig_line.update_layout(template='plotly_white', height=600)
+    fig_line.update_yaxes(dtick=1)
+    st.plotly_chart(fig_line, use_container_width=True)
 
-   # Fix layout
-   fig_line.update_layout(
-       template='plotly_white',
-       height=600
-   )
+    # --- Seaborn Scatter Plots ---
+    st.subheader("Scatter Plots: Daily Internet Usage vs Mental Health Scores")
 
-   # Make y-axis tick uniform
-   fig_line.update_yaxes(dtick=1)
+    # Create a new figure to avoid Streamlit re-use errors
+    plt.figure(figsize=(12, 8))
 
-   # Show the plot in Streamlit
-   st.plotly_chart(fig_line, use_container_width=True)
+    g = sns.relplot(
+        x='Daily_Internet_Usage_Hours',
+        y='Score',
+        col='Mental_Health_Factor',
+        col_wrap=2,
+        data=df_line,  # Use cleaned df_line
+        kind='scatter',
+        height=4,
+        aspect=1.2,
+        s=50,
+        alpha=0.7
+    )
 
-   st.title("Daily Internet Usage vs Mental Health Scores")
+    g.set_axis_labels("Daily Internet Usage (Hours)", "Mental Health Score")
+    g.set_titles("{col_name}")
 
-   # Create the faceted scatter plots 
-   g = sns.relplot(
-       x='Daily_Internet_Usage_Hours',
-       y='Score',
-       col='Mental_Health_Factor',
-       col_wrap=2,
-       data=df_line,  # <-- use df_line
-       kind='scatter',
-       height=4, aspect=1.2,
-       s=50, alpha=0.7
-   )
+    # Adjust layout and title
+    plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02)
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
 
-
-   g.set_axis_labels("Daily Internet Usage (Hours)", "Mental Health Score")
-   g.set_titles("{col_name}")
-   plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02) # Adjust suptitle position
-   plt.tight_layout(rect=[0, 0, 1, 0.98]) # Adjust layout to prevent suptitle overlap
-
-   # Show the plot in Streamlit
-   st.pyplot(plt)
+    # Render the plot in Streamlit
+    st.pyplot(g.fig)  # Use g.fig instead of plt
 
 
 # ----------- HANIS NABILA -----------
