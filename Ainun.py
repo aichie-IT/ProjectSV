@@ -66,6 +66,53 @@ cols_to_drop = [
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
 
+# ==================================================
+# LIKERT SCALE MAPPING (1–5)
+# ==================================================
+likert_map = {
+    "Strongly disagree": 1,
+    "Disagree": 2,
+    "Neutral": 3,
+    "Agree": 4,
+    "Strongly agree": 5
+}
+
+df["Difficulty_Sleeping_University_Pressure_Num"] = df[
+    "Difficulty_Sleeping_University_Pressure"
+].map(likert_map).fillna(3)
+
+df["Social_Media_Daily_Routine_Num"] = df[
+    "Social_Media_Daily_Routine"
+].map(likert_map).fillna(3)
+
+# ==================================================
+# FILTER DATA
+# ==================================================
+filtered_data = df[
+    [
+        "Gender",
+        "Year_of_Study",
+        "Race",
+        "Employment_Status",
+        "Current_Living_Situation",
+        "Difficulty_Sleeping_University_Pressure",
+        "Social_Media_Daily_Routine",
+        "Social_Media_Positive_Impact_on_Wellbeing",
+    ]
+].dropna()
+
+# ==================================================
+# TAB 4 CONTENT (FIXED ERROR HERE)
+# ==================================================
+with tab4:
+
+    st.subheader("Demographic Differences with Mental Health Experiences")
+
+    st.write("""
+    This section analyzes demographic differences in mental health experiences among students,
+    focusing on gender, race, year of study, and employment status.
+    """)
+
 # --- DATA TRANSFORMATION FOR VISUALIZATIONS ---
 
 # Mapping Gender
