@@ -1344,12 +1344,6 @@ with tab3:
 ----------- TAB 4: AINUN -----------
 
 # ============ TAB 4: INDIVIDUAL VISUALIZATIONS ============
-
-filtered_data = df.copy()
-
-# Create the tab (or adjust if using st.tabs elsewhere)
-tab4 = st.tabs(["Individual Visualizations"])[0]
-
 with tab4:
     st.subheader("Demographic Differences with Mental Health Experiences")
     st.write("""
