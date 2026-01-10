@@ -731,7 +731,7 @@ with tab1:
             "More than 6 hours per day": 5
         }
 
-        filtered_df["Social_Media_Freq_Num"] = (
+        filtered_df["Social_Media_Use_Frequency"] = (
             filtered_df["Social_Media_Use_Frequency"].map(freq_map)
         )
         
