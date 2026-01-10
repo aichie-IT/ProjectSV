@@ -580,7 +580,7 @@ CONTINUOUS_SCALE = "RdYlBu_r"
 
 
 # --- TAB LAYOUT ---
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "Ilya", "Hanis", "Ainun"])
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Internet Use vs. Mental Health", "Ilya", "Help-Seeking Behavior", "Ainun"])
 
 # ============ INDIVIDUAL PART VISUALIZATION ============
 # ----------- AISHAH SAKINAH -----------
