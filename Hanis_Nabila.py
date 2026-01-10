@@ -248,52 +248,6 @@ or cautious.
 """)
 
 # =====================================================
-# STRESS vs ONLINE HELP
-# =====================================================
-st.subheader("Assignment Stress vs Online Help Preference")
-# Create crosstab
-heatmap_data = pd.crosstab(
-    df['Assignments_Stress'],
-    df['Seek_Help_Online_When_Stress']
-)
-
-# Create figure
-fig, ax = plt.subplots()
-
-# Plot heatmap
-im = ax.imshow(heatmap_data.values)
-
-# Add colorbar
-plt.colorbar(im, ax=ax)
-
-# Set ticks and labels
-ax.set_xticks(range(len(heatmap_data.columns)))
-ax.set_xticklabels(heatmap_data.columns, rotation=45)
-
-ax.set_yticks(range(len(heatmap_data.index)))
-ax.set_yticklabels(heatmap_data.index)
-
-# Add values inside cells
-for i in range(len(heatmap_data.index)):
-    for j in range(len(heatmap_data.columns)):
-        ax.text(j, i, heatmap_data.iloc[i, j],
-                ha="center", va="center")
-
-# Labels and title
-ax.set_xlabel("Online Help Preference")
-ax.set_ylabel("Stress Level")
-ax.set_title("Stress Level vs Online Help Preference")
-
-# Display in Streamlit
-st.pyplot(fig)
-
-st.success("""
-**Interpretation:**  
-Students experiencing higher assignment stress are more likely to seek help through
-online platforms.
-""")
-
-# =====================================================
 # STRESS vs ONLINE COMMUNITIES
 # =====================================================
 
@@ -336,3 +290,11 @@ ax.set_title("Stress Level vs Use of Online Communities for Support")
 
 # Show in Streamlit
 st.pyplot(fig)
+
+st.success("""
+**Interpretation:**  
+The biggest group is 18 students who have a stress level of 3 and only "Sometimes" 
+use online communities for support. Another 16 students have a high stress level of 4 
+and also use communities "Sometimes." It’s clear that "Sometimes" is the most popular 
+choice for students feeling stress.
+""")
