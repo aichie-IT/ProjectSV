@@ -156,6 +156,29 @@ highlighting digital platforms as a dominant support channel.
 """)
 
 # =====================================================
+# ONLINE COMMUNITIES BY GENDER
+# =====================================================
+st.subheader("Online Community Support by Gender")
+
+gender_table = pd.crosstab(
+    df['Use_Online_Communities_for_Support'],
+    df['Gender']
+)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+gender_table.plot(kind='bar', ax=ax)
+ax.set_title("Use of Online Communities for Support by Gender")
+ax.set_xlabel("Agreement Level")
+ax.set_ylabel("Number of Students")
+st.pyplot(fig)
+
+st.success("""
+**Interpretation:**  
+Engagement with online support communities varies across genders, indicating
+different help-seeking behaviours among students.
+""")
+
+# =====================================================
 #   Assignment Stress vs Online Help
 # =====================================================
 st.subheader("Assignment Stress vs Online Help Preference")
@@ -213,29 +236,6 @@ st.success("""
 **Interpretation:**  
 Many students show a strong preference for online help during stressful situations,
 suggesting digital support is often favoured over face-to-face options.
-""")
-
-# =====================================================
-# ONLINE COMMUNITIES BY GENDER
-# =====================================================
-st.subheader("Online Community Support by Gender")
-
-gender_table = pd.crosstab(
-    df['Use_Online_Communities_for_Support'],
-    df['Gender']
-)
-
-fig, ax = plt.subplots(figsize=(10, 6))
-gender_table.plot(kind='bar', ax=ax)
-ax.set_title("Use of Online Communities for Support by Gender")
-ax.set_xlabel("Agreement Level")
-ax.set_ylabel("Number of Students")
-st.pyplot(fig)
-
-st.success("""
-**Interpretation:**  
-Engagement with online support communities varies across genders, indicating
-different help-seeking behaviours among students.
 """)
 
 # =====================================================
