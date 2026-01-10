@@ -1,6 +1,366 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings("ignore")
+
+def safe_corr(df, col_x, col_y):
+    if col_x not in df.columns or col_y not in df.columns:
+        return None
+    temp = df[[col_x, col_y]].dropna()
+    if len(temp) < 3:
+        return None
+    return temp.corr().iloc[0, 1]
+
+def generate_scientific_summary(n, usage, stress, pos, neg):
+    if n == 0:
+        return "No data available under the current filter selection."
+
+    impact_statement = (
+        "negative wellbeing perceptions outweigh positive perceptions"
+        if neg > pos else
+        "positive wellbeing perceptions outweigh negative perceptions"
+    )
+
+    return (
+        f"Based on the currently selected subgroup (n = {n}), students spend an "
+        f"average of {usage:.1f} hours per day on social media. "
+        f"The mean academic stress index is {stress:.2f}, indicating a moderate "
+        f"level of perceived academic pressure. Notably, {impact_statement}, "
+        f"suggesting that internet use is closely interrelated with students’ "
+        f"mental wellbeing within this subgroup."
+    )
+
+def usage_summary(n, median_usage, high_usage_pct, study_hours):
+    if n == 0:
+        return "No data available for the selected filters."
+    return (
+        f"For the selected subgroup (n = {n}), the median social media usage "
+        f"is {median_usage:.1f} hours per day. Approximately {high_usage_pct:.1f}% "
+        f"of students are classified as high-usage users (≥5 hours/day). "
+        f"Meanwhile, the average weekly study time is {study_hours:.1f} hours, "
+        f"highlighting a potential imbalance between online engagement and academic commitment."
+    )
+
+
+def academic_summary(impact_pct, perf, high_users, study_hours):
+    return (
+        f"Approximately {impact_pct:.1f}% of students reported that social media "
+        f"affects their academic studies. Despite this, the average academic "
+        f"performance score is {perf:.2f}, suggesting moderate academic resilience. "
+        f"Notably, {high_users:.1f}% of students belong to the high-usage group, "
+        f"which may contribute to the perceived academic impact alongside an "
+        f"average weekly study duration of {study_hours:.1f} hours."
+    )
+
+
+def wellbeing_summary(stress, sleep_pct, emotion, help_pct):
+    return (
+        f"The mental wellbeing analysis indicates a moderate average stress level "
+        f"of {stress:.2f}. Approximately {sleep_pct:.1f}% of students reported "
+        f"sleep disturbances linked to social media use. The emotional attachment "
+        f"score of {emotion:.2f} reflects a noticeable emotional connection to online platforms, "
+        f"while {help_pct:.1f}% of students seek online support during stressful periods."
+    )
+
+
+def correlation_summary(r_sm_stress, r_study_stress):
+    return (
+        f"The correlation analysis reveals a weak association between social media "
+        f"usage duration and academic stress (r = {r_sm_stress:.2f}). Similarly, "
+        f"study hours show a weak correlation with stress levels (r = {r_study_stress:.2f}), "
+        f"suggesting that both digital engagement and academic workload contribute "
+        f"incrementally to students’ stress experiences."
+    )
+
+
+
+# --- MAIN TITLE ---
+st.title(" Student Mental Health Monitoring Insights Dashboard")
+st.markdown("Exploring the Relationship Between Internet Use and Mental Health.")
+
+# --- PAGE CONFIG ---
+st.set_page_config(
+    page_title="Internet Use and Mental Health Dashboard",
+    page_icon="🧠",
+    layout="wide"
+)
+
+# banner
+st.image(
+    "banner.jpeg",
+    use_container_width=True,
+    caption="Internet Use and Mental Health Dashboard"
+)
+
+# --- LOAD DATA ---
+@st.cache_data
+def load_data():
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQnrGG72xRS-qLoiM2zon4eP8t5XMiO5MhoLUEe2jJer0G5EzodiU4e0NOmx_ssmCwZf-AnbQXhBbTM/pub?gid=1791189796&single=true&output=csv"
+    return pd.read_csv(url)
+
+df = load_data()
+
+# Clean Column Names
+df.columns = df.columns.str.strip()
+
+# Rename Columns
+df = df.rename(columns={
+    "Age / Umur:": "Age",
+    "Gender / Jantina:": "Gender",
+    "Race / Bangsa:": "Race",
+    "Year of Study / Tahun Belajar:": "Year_of_Study",
+    "Programme of Study / Program Pembelajaran (cth., SST):": "Programme_of_Study",
+    "Current living situation / Keadaan hidup sekarang:": "Current_Living_Situation",
+    "Employment Status / Status Pekerjaan:": "Employment_Status",
+    "Relationship Status / Status Perhubungan:": "Relationship_Status",
+    "How would you describe your general academic performance? / Bagaimanakah anda menerangkan prestasi akademik umum anda?": "General_Academic_Performance",
+    "How many hours do you study per week (outside class)? / Berapa jam anda belajar setiap minggu (di luar kelas)?": "Hours_Study_per_Week",
+    "How often do you use social media? / Berapa kerap anda menggunakan media sosial?": "Social_Media_Use_Frequency",
+    "Platforms you use most often (select all) / Platform yang paling kerap anda gunakan (pilih semua):": "Platforms_Most_Often_Used",
+    "I have been feeling stressed or overwhelmed with assignments. / Saya telah berasa tertekan atau terbeban dengan tugasan.": "Assignments_Stress",
+    "I often feel anxious about my academic workload. / Saya sering berasa bimbang tentang beban kerja akademik saya.": "Academic_Workload_Anxiety",
+    "I have difficulty sleeping due to university-related pressure. / Saya sukar tidur kerana tekanan berkaitan universiti.": "Difficulty_Sleeping_University_Pressure",
+    "I feel supported by friends or family when I am stressed. / Saya berasa disokong oleh rakan atau keluarga apabila saya tertekan.": "Friends_Family_Support",
+    "I can manage my emotions well during stressful periods. / Saya boleh menguruskan emosi saya dengan baik semasa tempoh tekanan.": "Manage_Emotion_Stressful_Periods",
+    "I use social media to relax or escape from academic stress. / Saya menggunakan media sosial untuk berehat atau melarikan diri daripada tekanan akademik.": "Social_Media_Relaxation",
+    "I feel emotionally connected to my social media accounts. / Saya berasa tersambung secara emosi dengan akaun media sosial saya.": "Emotional_Connection_Social_Media",
+    "Using social media is an important part of my daily routine. / Menggunakan media sosial adalah bahagian penting dalam rutin harian saya.": "Social_Media_Daily_Routine",
+    "I sometimes lose track of time when using social media. / Saya kadang-kadang terlepas masa apabila menggunakan media sosial.": "Social_Media_Waste_Time",
+    "Social media has affected my sleep (sleeping late or difficulty sleeping). / Media sosial telah menjejaskan tidur saya (tidur lewat atau sukar tidur).": "Sleep_Affected_By_Social_Media",
+    "Social media affects my ability to concentrate on studies. / Media sosial menjejaskan keupayaan saya untuk menumpukan perhatian kepada pelajaran.": "Studies_Affected_By_Social_Media",
+    "I use the Internet to look for mental health information (e.g., coping tips, stress-relief content). / Saya menggunakan Internet untuk mencari maklumat kesihatan mental (cth., petua mengatasi tekanan, kandungan melegakan tekanan).": "Mental_Health_Info_Through_Internet",
+    "I have come across upsetting or disturbing content online. / Saya telah menemui kandungan yang menjengkelkan atau mengganggu dalam talian.": "Across_Upsetting_Content_Online",
+    "When I feel stressed, I prefer to seek help online rather than talk to someone in person. / Apabila saya berasa tertekan, saya lebih suka mencari bantuan dalam talian daripada bercakap dengan seseorang secara peribadi.": "Seek_Help_Online_When_Stress",
+    "I know where to find reliable mental health information online. / Saya tahu di mana untuk mencari maklumat kesihatan mental yang boleh dipercayai dalam talian.": "Find_Mental_Health_Info_Online",
+    "I follow accounts that post motivational or mental health content. / Saya mengikuti akaun yang menyiarkan kandungan motivasi atau kesihatan mental.": "Follow_Motivational_Mental_Health_Content",
+    "I use online communities for academic or emotional support. / Saya menggunakan komuniti dalam talian untuk sokongan akademik atau emosi.": "Use_Online_Communities_for_Support",
+    "Social media has a generally positive impact on my wellbeing. / Media sosial secara amnya mempunyai kesan positif terhadap kesejahteraan saya.": "Social_Media_Positive_Impact_on_Wellbeing",
+    "Social media has a generally negative impact on my wellbeing. / Media sosial secara amnya mempunyai kesan negatif terhadap kesejahteraan saya.": "Social_Media_Negative_Impact_on_Wellbeing",
+    "Do you think universities should provide more online mental health resources? / Adakah anda fikir universiti harus menyediakan lebih banyak sumber kesihatan mental dalam talian?": "Do you think universities should provide more online mental health resources?",
+    "What type of online content affects you the most (positive or negative)? / Apakah jenis kandungan dalam talian yang paling mempengaruhi anda (positif atau negatif)?": "Type_of_Online_Content_Affects",
+    "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
+})
+
+# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
+st.header("Overall Social Media Usage (All Respondents)")
+
+# ------ DATASET OVERVIEW ------
+st.subheader("📋 Dataset Overview")
+
+st.markdown("""
+This section provides an **overall overview of the survey dataset** collected from UMK students.
+It allows users to understand the **structure, size, and completeness** of the data before any
+filtering or visualization is applied.
+""")
+
+# --- SUMMARY BOX ---
+col1, col2, col3, col4 = st.columns(4)
+
+top_academic = df['General_Academic_Performance'].mode()[0]
+top_media = df['Social_Media_Use_Frequency'].mode()[0]
+
+if not df.empty:
+    col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
+    col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
+    col3.metric("Academic Performance", top_academic, help="PLO 3: Students Academic Performance", border=True)
+    col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Use Frecuency", border=True)
+else:
+    col1.metric("Total Records", "0", help="No data available")
+    col2.metric("Avg. Age", "N/A", help="No data available")
+    col3.metric("Academic Performance", "N/A", help="No data available")
+    col4.metric("Social Media Usage", "N/A", help="No data available")
+
+# --- Dataset Preview ---
+with st.expander("View Dataset Preview"):
+    st.dataframe(df.head(20), use_container_width=True)
+
+st.markdown("---")
+
+overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
+
+fig_overall = px.bar(
+    x=overall_counts.index,
+    y=overall_counts.values,
+    labels={
+        "x": "Hours per Day",
+        "y": "Number of Students"
+    },
+    title="Overall Distribution of Daily Social Media Usage",
+    color=overall_counts.index,
+    color_discrete_sequence=px.colors.qualitative.Set2
+)
+
+fig_overall.update_layout(xaxis_tickangle=-30)
+st.plotly_chart(fig_overall, use_container_width=True)
+
+st.info(
+    "This chart represents the **entire respondent population** without any filters applied. "
+    "It serves as a baseline for comparison with filtered subgroup analyses."
+)
+
+st.markdown("---")
+
+# Fix encoding issues
+df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
+
+# Drop Irrelevant Columns
+cols_to_drop = [
+    "Timestamp",
+    "Type_of_Online_Content_Affects",
+    "Universities_Support_Actions"
+]
+
+df = df.drop(columns=cols_to_drop, errors="ignore")
+df_numeric = df.copy()
+
+# --- DATA TRANSFORMATION FOR VISUALIZATIONS ---
+
+# Mapping Gender
+gender_map = {0: 'Female', 1: 'Male', 2: 'Other'}
+df['Gender_Num'] = df['Gender'].map({'Female': 0, 'Male': 1, 'Other': 2}).fillna(2)
+
+# Mapping Year of Study
+year_map = {1: 'Year 1', 2: 'Year 2', 3: 'Year 3', 4: 'Year 4', 5: 'Year 5', 0: 'Unknown'}
+df['Year_of_Study_Num'] = df['Year_of_Study'].map({'Year 1': 1, 'Year 2': 2, 'Year 3': 3, 'Year 4': 4, 'Year 5': 5}).fillna(0)
+
+# Mapping Living Situation
+living_map = {0: 'With family', 1: 'On-campus', 2: 'Off-campus', 3: 'Other'}
+df['Current_Living_Situation_Num'] = df['Current_Living_Situation'].map({
+    'With family': 0, 'On-campus': 1, 'Off-campus (rental)': 2, 'Off-campus': 2, 'Other': 3
+}).fillna(3)
+
+# Mapping Employment (Clean string variations from CSV)
+df['Employment_Status_Num'] = df['Employment_Status'].map({
+    'Full-time student': 3,
+    'In paid employment (including part-time, self-employed)': 2,
+    'Internship': 1,
+    'Unemployed': 0
+}).fillna(2)
+
+# Mapping Social Media Impact
+impact_map = {1: 'Positive Impact', 0: 'Negative Impact', 2: 'No impact'}
+df['Social_Media_Positive_Impact_on_Wellbeing_Num'] = df['Social_Media_Positive_Impact_on_Wellbeing'].map({
+    'Positive impact': 1, 'Negative impact': 0, 'No impact': 2
+}).fillna(2)
+
+# Mapping Race
+race_map = {0: 'Malay', 1: 'Chinese', 2: 'Indian', 3: 'Other'}
+df['Race_Num'] = df['Race'].map({'Malay': 0, 'Chinese': 1, 'Indian': 2, 'Others': 3, 'Other': 3}).fillna(3)
+
+# --- NEW: Mapping Difficulty Sleeping Due to University Pressure to 5-point Likert ---
+sleep_map = {
+    'Strongly disagree': 1,
+    'Disagree': 2,
+    'Neutral': 3,
+    'Agree': 4,
+    'Strongly agree': 5
+}
+df['Difficulty_Sleeping_University_Pressure_Num'] = df['Difficulty_Sleeping_University_Pressure'].map(sleep_map).fillna(3)
+
+# --- NEW: Mapping Social Media Daily Routine to 5-point Likert ---
+routine_map = {
+    'Strongly disagree': 1,
+    'Disagree': 2,
+    'Neutral': 3,
+    'Agree': 4,
+    'Strongly agree': 5
+}
+df['Social_Media_Daily_Routine_Num'] = df['Social_Media_Daily_Routine'].map(routine_map).fillna(3)
+
+# --- DATA FILTERING FOR VISUALIZATIONS ---
+
+# Filtered data subset
+filtered_data = df[['Gender', 'Year_of_Study', 'Current_Living_Situation', 
+                    'Social_Media_Positive_Impact_on_Wellbeing', 
+                    'Difficulty_Sleeping_University_Pressure', 'Race', 
+                    'Social_Media_Daily_Routine', 'Employment_Status']].dropna()
+
+
+# ====== SIDEBAR ======
+with st.sidebar:
+    st.title("Dashboard Controls")
+    
+    # --- Data Summary ---
+    st.markdown("### 🧾 Data Summary")
+    st.info(f"*Total Records:* {len(df):,}\n\n*Columns:* {len(df.columns)}")
+
+    # --- Filters Section ---
+    with st.expander("Filter Options", expanded=True):
+        st.markdown("Select filters to refine your dashboard view:")
+
+        # --- Gender ---
+        gender_filter = st.multiselect(
+            "Gender",
+            options=sorted(df["Gender"].dropna().unique()),
+            default=[]
+        )
+
+        # --- Year of Study ---
+        year_filter = st.multiselect(
+            "Year of Study",
+            options=sorted(df["Year_of_Study"].dropna().unique()),
+            default=[]
+        )
+
+        # --- Programme ---
+        programme_filter = st.multiselect(
+            "Programme of Study",
+            options=sorted(df["Programme_of_Study"].dropna().unique()),
+            default=[]
+        )
+
+        # --- Social Media Usage ---
+        sm_filter = st.multiselect(
+            "Social Media Usage (Hours / Day)",
+            options=list(df["Social_Media_Use_Frequency"].cat.categories),
+            default=[]
+        )
+
+        # --- Age Filter (KEEP THIS) ---
+        min_age, max_age = st.slider(
+            "Age Range",
+            int(df["Age"].min()),
+            int(df["Age"].max()),
+            (int(df["Age"].min()), int(df["Age"].max()))
+        )
+
+        # ===== APPLY FILTERS =====
+        filtered_df = df.copy()
+        filtered_numeric = df_numeric.copy()
+
+        if gender_filter:
+            filtered_df = filtered_df[filtered_df["Gender"].isin(gender_filter)]
+            filtered_numeric = filtered_numeric.loc[filtered_df.index]
+
+        if year_filter:
+            filtered_df = filtered_df[filtered_df["Year_of_Study"].isin(year_filter)]
+            filtered_numeric = filtered_numeric.loc[filtered_df.index]
+
+        if programme_filter:
+            filtered_df = filtered_df[filtered_df["Programme_of_Study"].isin(programme_filter)]
+            filtered_numeric = filtered_numeric.loc[filtered_df.index]
+
+        if sm_filter:
+            filtered_df = filtered_df[filtered_df["Social_Media_Use_Frequency"].isin(sm_filter)]
+            filtered_numeric = filtered_numeric.loc[filtered_df.index]
+
+        filtered_df = filtered_df[
+            (filtered_df["Age"] >= min_age) &
+            (filtered_df["Age"] <= max_age)
+        ]
+        filtered_numeric = filtered_numeric.loc[filtered_df.index]
+        
+        # ===== REAL-TIME SUMMARY CALCULATIONS =====
+        sample_size = len(filtered_df)
+
+        avg_usage = filtered_numeric["Social_Media_Hours_Numeric"].mean()
+        avg_stress = filtered_numeric["Academic_Stress_Index"].mean()
+        avg_positive = filtered_numeric["Social_Media_Positive_Impact_on_Wellbeing_Numeric"].mean()
+        avg_negative = filtered_numeric["Social_Media_Negative_Impact_on_Wellbeing_Numeric"].mean()
 
 # ----------- TAB 4: AINUN -----------
 
