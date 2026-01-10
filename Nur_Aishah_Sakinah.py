@@ -78,7 +78,78 @@ def correlation_summary(r_sm_stress, r_study_stress):
         f"suggesting that both digital engagement and academic workload contribute "
         f"incrementally to students’ stress experiences."
     )
+    
+# Bar Chart    
+def bar_distribution_summary(counts, variable_name):
+    if counts.sum() == 0:
+        return f"No data available for {variable_name} under the current filters."
 
+    dominant = counts.idxmax()
+    dominant_pct = (counts.max() / counts.sum()) * 100
+
+    return (
+        f"The distribution of {variable_name.lower()} shows that "
+        f"'{dominant}' is the most common category, accounting for "
+        f"{dominant_pct:.1f}% of the selected respondents. This indicates "
+        f"a dominant behavioural pattern within the current subgroup."
+    )
+
+# Boxplot
+def boxplot_summary(df, x_col, y_col):
+    if df.empty:
+        return "Insufficient data to compare groups under the current filters."
+
+    group_means = df.groupby(x_col)[y_col].mean().dropna()
+    if group_means.empty:
+        return "No valid numeric data available for comparison."
+
+    highest = group_means.idxmax()
+    lowest = group_means.idxmin()
+
+    return (
+        f"Group-wise comparison indicates that '{highest}' exhibits the highest "
+        f"average {y_col.replace('_', ' ').lower()}, while '{lowest}' shows the lowest. "
+        f"This suggests meaningful variation across groups."
+    )
+
+# Histogram/Likert 
+def likert_summary(series, agree_levels=("Agree", "Strongly Agree")):
+    if series.empty:
+        return "No responses available under the current filter selection."
+
+    agree_pct = series.isin(agree_levels).mean() * 100
+
+    return (
+        f"Approximately {agree_pct:.1f}% of respondents agree or strongly agree "
+        f"with this statement, indicating a generally positive endorsement "
+        f"within the selected subgroup."
+    )
+
+# Pie/Donut Chart
+def pie_summary(counts):
+    if counts.sum() == 0:
+        return "No responses available for this question."
+
+    dominant = counts.idxmax()
+    dominant_pct = (counts.max() / counts.sum()) * 100
+
+    return (
+        f"The majority of respondents selected '{dominant}', representing "
+        f"{dominant_pct:.1f}% of the total responses. This reflects the dominant "
+        f"perception under the current filters."
+    )
+
+# Radar Chart
+def radar_summary(values, labels):
+    max_idx = values.index(max(values))
+    min_idx = values.index(min(values))
+
+    return (
+        f"The radar profile indicates that '{labels[max_idx]}' represents the "
+        f"most prominent wellbeing concern, while '{labels[min_idx]}' shows "
+        f"relatively lower impact. This highlights key dimensions driving "
+        f"mental health outcomes."
+    )
 
 
 # --- PAGE CONFIG ---
@@ -511,11 +582,10 @@ with tab1:
     st.plotly_chart(fig, use_container_width=True)
 
     st.info(
-        f"Among the selected respondents (n = {total_students}), "
-        f"{high_usage_pct:.1f}% report high social media usage of five hours or more per day. "
-        f"The full distribution indicates varying levels of engagement, with all usage "
-        f"categories retained even when specific groups are filtered. This provides a "
-        f"reliable population-level overview for subsequent academic and wellbeing analysis."
+        bar_distribution_summary(
+            usage_counts,
+            "Daily Social Media Usage"
+        )
     )
 
     st.markdown("---")
@@ -538,12 +608,14 @@ with tab1:
     usage_counts = filtered_df["Social_Media_Use_Frequency"].value_counts()
     dominant_group = usage_counts.idxmax()
 
-    st.info(
-        f"The most common usage category among the selected respondents is "
-        f"'{dominant_group}', indicating that this level of internet engagement "
-        f"represents the dominant behavioural pattern under the current filter selection."
-    )
+    study_counts = (filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order, fill_value=0))
 
+    st.info(
+        bar_distribution_summary(
+            study_counts,
+            "Weekly Study Hours"
+        )
+    )
 
     # Box Plot
     fig = px.box(
@@ -556,9 +628,14 @@ with tab1:
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    st.success("""
-    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-    """)
+    st.info(
+        boxplot_summary(
+            filtered_numeric,
+            "Gender",
+            "Social_Media_Hours_Numeric"
+        )
+    )
+
 
     # Histogram
     fig = px.histogram(
@@ -578,9 +655,11 @@ with tab1:
     )
 
     st.plotly_chart(fig, use_container_width=True)
-    st.success("""
-    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-    """)
+    st.info(
+        likert_summary(
+            filtered_df["Social_Media_Waste_Time"]
+        )
+    )
 
     # Pie Donut
     resource_counts = filtered_df[
@@ -600,9 +679,13 @@ with tab1:
     fig.update_traces(textposition="inside", textinfo="percent+label")
     st.plotly_chart(fig, use_container_width=True)
 
-    st.success("""
-    **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-    """)
+    resource_counts = filtered_df[
+        "Do you think universities should provide more online mental health resources?"
+    ].value_counts()
+
+    st.info(
+        pie_summary(resource_counts)
+    )
        
     st.markdown("#### 💬 Observation")
     st.info(
@@ -824,11 +907,15 @@ with tab3:
 
     st.plotly_chart(fig, use_container_width=True)
 
+    values = filtered_numeric[categories].mean().tolist()
+
     st.info(
-        f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
-        f"social media negatively affects their sleep. This highlights sleep disturbance "
-        f"as a key wellbeing concern linked to prolonged internet use."
+        radar_summary(
+            values,
+            categories
+        )
     )
+
 
     # Parallel coordinates
     parallel_df = df_numeric[
