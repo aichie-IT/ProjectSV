@@ -225,9 +225,8 @@ fig_heatmap = px.imshow(
     height=800
 )
 
-    fig_heatmap.update_xaxes(tickangle=45)
-
-    st.plotly_chart(fig_heatmap, use_container_width=True)
+fig_heatmap.update_xaxes(tickangle=45)
+st.plotly_chart(fig_heatmap, use_container_width=True)
 
     # --- Line Plot: Mental Health Scores vs Internet Usage ---
     st.subheader("Daily Internet Usage vs Mean Mental Health Scores")
