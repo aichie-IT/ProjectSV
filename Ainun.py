@@ -5,6 +5,7 @@ import plotly.express as px
 # ----------- TAB 4: AINUN -----------
 
 # ============ TAB 4: INDIVIDUAL VISUALIZATIONS ============
+
 with tab4:
     st.subheader("Demographic Differences with Mental Health Experiences")
 st.write("""
