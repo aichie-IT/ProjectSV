@@ -137,65 +137,6 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
-# ================= OVERALL (UNFILTERED) DISTRIBUTION =================
-st.header("Overall Social Media Usage (All Respondents)")
-
-# ------ DATASET OVERVIEW ------
-st.subheader("📋 Dataset Overview")
-
-st.markdown("""
-This section provides an **overall overview of the survey dataset** collected from UMK students.
-It allows users to understand the **structure, size, and completeness** of the data before any
-filtering or visualization is applied.
-""")
-
-# --- SUMMARY BOX ---
-col1, col2, col3, col4 = st.columns(4)
-
-top_academic = df['General_Academic_Performance'].mode()[0]
-top_media = df['Social_Media_Use_Frequency'].mode()[0]
-
-if not df.empty:
-    col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
-    col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
-    col3.metric("Academic Performance", top_academic, help="PLO 3: Students Academic Performance", border=True)
-    col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Use Frecuency", border=True)
-else:
-    col1.metric("Total Records", "0", help="No data available")
-    col2.metric("Avg. Age", "N/A", help="No data available")
-    col3.metric("Academic Performance", "N/A", help="No data available")
-    col4.metric("Social Media Usage", "N/A", help="No data available")
-
-# --- Dataset Preview ---
-with st.expander("View Dataset Preview"):
-    st.dataframe(df.head(20), use_container_width=True)
-
-st.markdown("---")
-
-overall_counts = df["Social_Media_Use_Frequency"].value_counts(sort=False)
-
-fig_overall = px.bar(
-    x=overall_counts.index,
-    y=overall_counts.values,
-    labels={
-        "x": "Hours per Day",
-        "y": "Number of Students"
-    },
-    title="Overall Distribution of Daily Social Media Usage",
-    color=overall_counts.index,
-    color_discrete_sequence=px.colors.qualitative.Set2
-)
-
-fig_overall.update_layout(xaxis_tickangle=-30)
-st.plotly_chart(fig_overall, use_container_width=True)
-
-st.info(
-    "This chart represents the **entire respondent population** without any filters applied. "
-    "It serves as a baseline for comparison with filtered subgroup analyses."
-)
-
-st.markdown("---")
-
 # Fix encoding issues
 df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
 
