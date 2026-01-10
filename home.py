@@ -672,7 +672,7 @@ with tab1:
         )
 
         fig = px.bar(
-            df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+            filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
             title="Distribution of Daily Social Media Usage",
             labels={"value": "Number of Students", "index": "Hours per Day"},
             color_discrete_sequence=px.colors.qualitative.Set2
@@ -1136,7 +1136,7 @@ with tab1:
                 "weak" if abs(corr_val) < 0.3 else
                 "moderate" if abs(corr_val) < 0.6 else
                 "strong"
-        )
+            )
 
         st.info(
             f"A {strength} positive correlation (r = {corr_val:.2f}) is observed between "
