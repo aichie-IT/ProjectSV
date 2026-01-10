@@ -83,9 +83,8 @@ filtered_data = df[
 # TAB 4: DEMOGRAPHIC DIFFERENCES WITH MENTAL HEALTH EXPERIENCES
 # ==================================================
 
-with tab4:
-    
-    st.subheader("Demographic Differences with Mental Health Experiences")
+st.title("Demographic Differences with Mental Health Experiences")
+
 st.write("""
 The purpose of this visualization is to identify and analyze demographic 
 differences in mental health experiences among students, focusing on how 
@@ -93,9 +92,8 @@ gender, race and year of study influence student's perceptions and experience ch
 """)
 
 # ==================================================
-# SUMMARY METRIC BOXES
+# SUMMARY METRICS
 # ==================================================
-
 TOTAL_RESPONDENTS = len(df)
 
 col1, col2, col3 = st.columns(3)
@@ -104,23 +102,24 @@ with col1:
     st.metric("Total Respondents", TOTAL_RESPONDENTS)
 
 with col2:
-    majority_gender = filtered_data["Gender"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
-    st.metric("Majority Gender", majority_gender)
+    st.metric(
+        "Majority Gender",
+        filtered_data["Gender"].mode()[0]
+    )
 
 with col3:
-    dominant_year = filtered_data["Year_of_Study"].mode(dropna=True)[0] if not filtered_data.empty else "N/A"
-    st.metric("Dominant Year", dominant_year)
-
-("📊 Summary Metrics")
+    st.metric(
+        "Dominant Year of Study",
+        filtered_data["Year_of_Study"].mode()[0]
+    )
 
 st.success("""
-        **Summary:** The dataset is composed of 101 participants, which is an sample to see the significant trends in the mental health 
-        of students and their internet use. The survey is dominated by female who form majority of the respondents meaning that the female 
-        students are more represented in the survey. Regarding the level of study, Year 4 students are the majority group which implies that 
-        final-year students are the most represented and can have different academic and mental health issues as compared to the lower years.
-
-        """)
-
+**Summary:**  
+The dataset is composed of 101 participants, which is an sample to see the significant trends in the mental health 
+of students and their internet use. The survey is dominated by female who form majority of the respondents meaning that the female 
+students are more represented in the survey. Regarding the level of study, Year 4 students are the majority group which implies that 
+final-year students are the most represented and can have different academic and mental health issues as compared to the lower years.
+""")
 # ==================================================
 # VISUALIZATIONS
 # ==================================================
