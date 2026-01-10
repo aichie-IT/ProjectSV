@@ -7,7 +7,7 @@ home = st.Page("home.py", title="Home", icon=":material/home:")
 
 internetUsage = st.Page("Nur_Aishah_Sakinah.py", title="Internet Use vs. Mental Health", icon=":material/insights:")
 ilya = st.Page("Ilya.py", title="Relationship Between Internet Usage and Mental Health Outcomes", icon=":material/show_chart:")
-hanis = st.Page("Hanis_Nabila.py", title="Help-Seeking Behavior", icon=":material/insights:")
+OnlineSeeking = st.Page("Hanis_Nabila.py", title="Help-Seeking Behavior", icon=":material/insights:")
 ainun = st.Page("Ainun.py", title="Demographic Differences with Mental Health Experiences", icon=":material/insights:")
 
 # Sidebar Navigation
@@ -16,7 +16,7 @@ pg = st.navigation({
     "Students Wellbeings Analysis": [
         internetUsage,
         ilya,
-        hanis,
+        OnlineSeeking,
         ainun
     ]
 })
