@@ -1310,28 +1310,36 @@ with tab2:
     )
 
     # Plot
-    df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
+   # Convert x-axis to string to treat as discrete categories
+df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
 
-    fig_line = px.line(
-        df_grouped_line,
-        x="Daily_Internet_Usage_Hours_Str",
-        y="Score",
-        facet_col="Mental_Health_Factor",
-        facet_col_wrap=2,
-        markers=True,
-        title="Daily Internet Usage vs Mean Mental Health Scores"
-    )
+# Create faceted line plots with markers
+fig_line = px.line(
+    df_grouped_line,
+    x='Daily_Internet_Usage_Hours_Str',
+    y='Score',
+    facet_col='Mental_Health_Factor',
+    facet_col_wrap=2,
+    markers=True,
+    title='Daily Internet Usage vs Mean Mental Health Scores',
+    labels={
+        'Daily_Internet_Usage_Hours_Str': 'Daily Internet Usage (Hours per Day)',
+        'Score': 'Mean Mental Health Score'
+    }
+)
 
-    fig_line.update_layout(
-        xaxis_title="Daily Internet Usage (Hours per Day)",
-        yaxis_title="Mean Mental Health Score",
-        template="plotly_white"
-    )
+# Fix layout
+fig_line.update_layout(
+    template='plotly_white',
+    height=600
+)
 
-    # Keep y-axis ticks consistent
-    fig_line.update_yaxes(dtick=1)
+# Make y-axis tick uniform
+fig_line.update_yaxes(dtick=1)
 
-    st.plotly_chart(fig_line, use_container_width=True)
+# Show in Streamlit
+st.plotly_chart(fig_line, use_container_width=True)
+
 
 
 # ----------- HANIS NABILA -----------
