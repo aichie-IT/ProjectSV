@@ -1221,7 +1221,7 @@ with tab2:
             response_int = int(response_str)
             if response_int >= 4:
                 return 'Yes'
-            elif response_int <= 3:
+            else:  # 1,2,3 or any value below 4
                 return 'No'
         except ValueError:
             return None
@@ -1297,7 +1297,6 @@ with tab2:
         .reset_index()
         .sort_values("Daily_Internet_Usage_Hours")
     )
-
     df_grouped_line['Daily_Internet_Usage_Hours_Str'] = df_grouped_line['Daily_Internet_Usage_Hours'].astype(str)
 
     fig_line = px.line(
@@ -1319,12 +1318,14 @@ with tab2:
 
     # --- Scatter Plots with Seaborn ---
     st.subheader("Scatter Plots: Daily Internet Usage vs Mental Health Scores")
+
+    # Use the same cleaned df_line for scatter
     g = sns.relplot(
         x='Daily_Internet_Usage_Hours',
         y='Score',
         col='Mental_Health_Factor',
         col_wrap=2,
-        data=df_melted_scatter,
+        data=df_line,  # <-- fixed: was df_melted_scatter
         kind='scatter',
         height=4, aspect=1.2,
         s=50, alpha=0.7
@@ -1334,6 +1335,7 @@ with tab2:
     plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02)
     plt.tight_layout(rect=[0, 0, 1, 0.98])
     st.pyplot(plt)
+
 
 # ----------- HANIS NABILA -----------
 # ================= TAB 3: HANIS NABILA =================
