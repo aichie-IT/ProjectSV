@@ -66,36 +66,39 @@ cols_to_drop = [
 df = df.drop(columns=cols_to_drop, errors="ignore")
 df_numeric = df.copy()
 
-# ========
-st.sidebar.markdown("### 📌 Goal 8 Summary")
-
-high_online_info = (
-    df['Mental_Health_Info_Through_Internet']
-    .astype(str).isin(['3', '4']).mean() * 100
-)
-
-st.sidebar.metric(
-    "Frequent Online Info Seeking (%)",
-    f"{high_online_info:.1f}%"
-)
 # =====================================================
 # DATASET OVERVIEW
 # =====================================================
-st.header("🧠 Goal 8: Mental Health Information-Seeking Behaviour")
+st.subheader("📌 Key Indicators")
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("Total Responses", len(df))
-col2.metric(
-    "Prefer Online Help (%)",
-    f"{(df['Seek_Help_Online_When_Stress'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+col1.metric(
+    "Find Info Online",
+    f"{(df['Find_Mental_Health_Info_Online']
+        .astype(str).isin(['4','5']).mean()*100):.1f}%"
 )
+
+col2.metric(
+    "Seek Help Online When Stressed",
+    f"{(df['Seek_Help_Online_When_Stress']
+        .astype(str).isin(['4','5']).mean()*100):.1f}%"
+)
+
 col3.metric(
-    "Use Online Communities (%)",
-    f"{(df['Use_Online_Communities_for_Support'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+    "Use Online Communities",
+    f"{(df['Use_Online_Communities_for_Support']
+        .astype(str).isin(['4','5']).mean()*100):.1f}%"
+)
+
+col4.metric(
+    "Follow Motivational Content",
+    f"{(df['Follow_Motivational_Mental_Health_Content']
+        .astype(str).isin(['4','5']).mean()*100):.1f}%"
 )
 
 st.markdown("---")
+
 
 # =====================================================
 # SUMMARY BOX
@@ -128,166 +131,111 @@ col4.metric(
 
 st.markdown("---")
 
-#==========
-st.subheader("📌 Key Information-Seeking Indicators")
-
-col1, col2, col3, col4 = st.columns(4)
-
-col1.metric(
-    "Seek Info Online",
-    f"{(df['Mental_Health_Info_Through_Internet']
-        .astype(str).isin(['3','4']).mean()*100):.1f}%"
-)
-
-col2.metric(
-    "Online Help When Stressed",
-    f"{(df['Seek_Help_Online_When_Stress']
-        .astype(str).isin(['4','5']).mean()*100):.1f}%"
-)
-
-col3.metric(
-    "Online Communities",
-    f"{(df['Use_Online_Communities_for_Support']
-        .astype(str).isin(['4','5']).mean()*100):.1f}%"
-)
-
-col4.metric(
-    "High Assignment Stress",
-    f"{(df['Assignments_Stress']
-        .astype(str).isin(['4','5']).mean()*100):.1f}%"
-)
-
-st.markdown("---")
-
-
 # =====================================================
-# ASSIGNMENT STRESS DISTRIBUTION
+#   ONLINE INFO SEEKING
 # =====================================================
-st.subheader("📈 Assignment Stress Distribution")
+st.subheader("Seeking Mental Health Information Online")
 
 fig = px.histogram(
     df,
-    x="Assignments_Stress",
-    title="Distribution of Assignment Stress Levels"
+    x="Mental_Health_Info_Through_Internet",
+    title="Frequency of Seeking Mental Health Information Online"
 )
 st.plotly_chart(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
-Most students report moderate to high levels of assignment stress, indicating that academic
-pressure is a common mental health concern.
+A large proportion of students frequently seek mental health information through online
+platforms, highlighting the internet as a primary source of support.
 """)
 
 # =====================================================
-# HEATMAP: SOCIAL MEDIA VS STRESS
+# ONLINE HELP WHEN STRESSED
 # =====================================================
-stress_map = {'1':'Never','2':'Rarely','3':'Sometimes','4':'Often','5':'Always'}
-df['Assignments_Stress_Cat'] = df['Assignments_Stress'].astype(str).map(stress_map)
+st.subheader("🆘 Preference for Online Help During Stress")
 
-stress_table = pd.crosstab(
-    df['Social_Media_Use_Frequency'],
-    df['Assignments_Stress_Cat']
+fig = px.histogram(
+    df,
+    x="Seek_Help_Online_When_Stress",
+    title="Preference for Seeking Help Online When Stressed"
 )
-
-fig, ax = plt.subplots(figsize=(12, 7))
-sns.heatmap(stress_table, annot=True, fmt="d", cmap="YlGnBu", ax=ax)
-ax.set_title("Social Media Usage vs Assignment Stress")
-ax.set_xlabel("Assignment Stress Level")
-ax.set_ylabel("Social Media Usage")
-st.pyplot(fig)
+st.plotly_chart(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
-Higher social media usage is associated with higher levels of assignment stress.
+Many students show a strong preference for online help during stressful situations,
+suggesting digital support is often favoured over face-to-face options.
 """)
 
 # =====================================================
-# SLEEP DISRUPTION
+# ONLINE COMMUNITIES BY GENDER
 # =====================================================
-st.subheader("😴 Social Media Usage vs Sleep Disruption")
+st.subheader("👥 Online Community Support by Gender")
 
-df['Sleep_Cat'] = df['Sleep_Affected_By_Social_Media'].astype(str).map(stress_map)
-
-sleep_table = pd.crosstab(
-    df['Social_Media_Use_Frequency'],
-    df['Sleep_Cat']
+gender_table = pd.crosstab(
+    df['Use_Online_Communities_for_Support'],
+    df['Gender']
 )
-
-fig, ax = plt.subplots(figsize=(12, 7))
-sns.heatmap(sleep_table, annot=True, fmt="d", cmap="YlGnBu", ax=ax)
-ax.set_title("Social Media Usage vs Sleep Disruption")
-ax.set_xlabel("Sleep Affected Level")
-ax.set_ylabel("Social Media Usage")
-st.pyplot(fig)
-
-st.success("""
-**Interpretation:**  
-Students who spend more time on social media are more likely to experience sleep disruption.
-""")
-
-# =====================================================
-# POSITIVE VS NEGATIVE IMPACT
-# =====================================================
-st.subheader("⚖️ Positive vs Negative Impact on Wellbeing")
-
-impact_map = {
-    '1':'Strongly Disagree',
-    '2':'Disagree',
-    '3':'Neutral',
-    '4':'Agree',
-    '5':'Strongly Agree'
-}
-
-pos = df['Social_Media_Positive_Impact_on_Wellbeing'].astype(str).map(impact_map).value_counts()
-neg = df['Social_Media_Negative_Impact_on_Wellbeing'].astype(str).map(impact_map).value_counts()
-
-impact_df = pd.DataFrame({
-    'Positive Impact': pos,
-    'Negative Impact': neg
-}).fillna(0)
 
 fig, ax = plt.subplots(figsize=(10, 6))
-impact_df.plot(kind='bar', stacked=True, ax=ax)
-ax.set_title("Perceived Impact of Social Media on Wellbeing")
+gender_table.plot(kind='bar', ax=ax)
+ax.set_title("Use of Online Communities for Support by Gender")
+ax.set_xlabel("Agreement Level")
 ax.set_ylabel("Number of Students")
 st.pyplot(fig)
 
 st.success("""
 **Interpretation:**  
-Social media plays a dual role, offering both positive support and negative mental health effects.
+Engagement with online support communities varies across genders, indicating
+different help-seeking behaviours among students.
 """)
 
 # =====================================================
-# WELLBEING SCORE
+# STRESS vs ONLINE HELP
 # =====================================================
-st.subheader("📦 Wellbeing Score by Social Media Usage")
+st.subheader("Assignment Stress vs Online Help Preference")
 
-num_map = {'1':1,'2':2,'3':3,'4':4,'5':5}
+stress_map = {'1':'Low','2':'Moderate','3':'Neutral','4':'High','5':'Very High'}
 
-df['Positive_Num'] = df['Social_Media_Positive_Impact_on_Wellbeing'].astype(str).map(num_map)
-df['Negative_Num'] = df['Social_Media_Negative_Impact_on_Wellbeing'].astype(str).map(num_map)
+df['Stress_Cat'] = df['Assignments_Stress'].astype(str).map(stress_map)
 
-melted = df.melt(
-    id_vars='Social_Media_Use_Frequency',
-    value_vars=['Positive_Num','Negative_Num'],
-    var_name='Impact_Type',
-    value_name='Score'
+stress_help_table = pd.crosstab(
+    df['Stress_Cat'],
+    df['Seek_Help_Online_When_Stress']
 )
 
-fig, ax = plt.subplots(figsize=(12, 6))
-sns.boxplot(
-    data=melted,
-    x='Social_Media_Use_Frequency',
-    y='Score',
-    hue='Impact_Type',
-    ax=ax
-)
-ax.set_title("Wellbeing Impact Score by Social Media Usage")
-ax.tick_params(axis='x', rotation=30)
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.heatmap(stress_help_table, annot=True, fmt="d", cmap="YlGnBu", ax=ax)
+ax.set_title("Assignment Stress vs Online Help Preference")
+ax.set_xlabel("Online Help Preference Level")
+ax.set_ylabel("Assignment Stress Level")
 st.pyplot(fig)
 
 st.success("""
 **Interpretation:**  
-Higher social media usage shows greater variability in negative wellbeing scores,
-suggesting increased mental health risks.
+Students experiencing higher assignment stress are more likely to seek help through
+online platforms.
+""")
+
+# =====================================================
+# STRESS vs ONLINE COMMUNITIES
+# =====================================================
+st.subheader("🤝 Assignment Stress vs Online Community Usage")
+
+stress_community_table = pd.crosstab(
+    df['Stress_Cat'],
+    df['Use_Online_Communities_for_Support']
+)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.heatmap(stress_community_table, annot=True, fmt="d", cmap="YlGnBu", ax=ax)
+ax.set_title("Assignment Stress vs Online Community Support")
+ax.set_xlabel("Online Community Usage Level")
+ax.set_ylabel("Assignment Stress Level")
+st.pyplot(fig)
+
+st.success("""
+**Interpretation:**  
+Higher stress levels correspond with increased reliance on online communities,
+emphasising their role as informal mental health support systems.
 """)
