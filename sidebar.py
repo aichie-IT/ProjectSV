@@ -16,7 +16,7 @@ pg = st.navigation({
     "Students Wellbeings Analysis": [
         internetUsage,
         ilya,
-        hanis,
+        Online Seeking,
         ainun
     ]
 })
