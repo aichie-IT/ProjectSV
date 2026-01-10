@@ -977,34 +977,23 @@ with tab3:
 
 
     # Parallel coordinates
-    parallel_df = df_numeric[
-        [
-            'Social_Media_Use_Frequency',
-            'Assignments_Stress',
-            'Academic_Workload_Anxiety',
-            'Sleep_Affected_By_Social_Media',
-            'Studies_Affected_By_Social_Media'
-        ]
-    ].dropna()
+    cols_parallel = [
+        'Assignments_Stress_Numeric',
+        'Academic_Workload_Anxiety_Numeric',
+        'Sleep_Affected_By_Social_Media_Numeric',
+        'Studies_Affected_By_Social_Media_Numeric'
+    ]
+
+    parallel_df = filtered_numeric[cols_parallel].dropna()
 
     fig = px.parallel_coordinates(
         parallel_df,
-        dimensions=[
-            'Assignments_Stress',
-            'Academic_Workload_Anxiety',
-            'Sleep_Affected_By_Social_Media',
-            'Studies_Affected_By_Social_Media'
-        ],
-        color='Assignments_Stress',
+        dimensions=cols_parallel,
+        color='Assignments_Stress_Numeric',
         color_continuous_scale=CONTINUOUS_SCALE
     )
     fig.update_layout(template="plotly_white")
     st.plotly_chart(fig, use_container_width=True)
-
-    sleep_pct = (
-        filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
-    ).mean() * 100
-
     st.info(parallel_chart_summary(filtered_numeric, cols_parallel))
 
        
