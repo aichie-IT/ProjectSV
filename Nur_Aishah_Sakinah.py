@@ -770,10 +770,10 @@ with tab1:
        
     st.markdown("#### 💬 Observation")
     st.success("""
-    Students exhibit varying social media usage patterns. The majority use social media 
-    moderately (1–4 hours/day), while a notable subgroup spends 5+ hours daily. 
-    High-usage students report higher perceptions of time wasted online, and their 
-    average study hours tend to be lower, highlighting a potential trade-off between 
+    Students exhibit varying social media usage patterns. The majority use social media
+    moderately (1–4 hours/day), while a notable subgroup spends 5+ hours daily.
+    High-usage students report higher perceptions of time wasted online, and their
+    average study hours tend to be lower, highlighting a potential trade-off between
     online engagement and academic commitment.
     """)
     
@@ -897,9 +897,9 @@ with tab2:
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
     st.success("""
-    Higher social media usage is modestly associated with increased academic stress. 
-    Despite this, most students maintain moderate to good academic performance. 
-    High-usage students (≥5 hours/day) may require support to manage stress, 
+    Higher social media usage is modestly associated with increased academic stress.
+    Despite this, most students maintain moderate to good academic performance.
+    High-usage students (≥5 hours/day) may require support to manage stress,
     and study habits appear to moderate the impact of social media on academic outcomes.
     """)
 
@@ -1010,9 +1010,9 @@ with tab3:
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
     st.success("""
-    Mental wellbeing patterns show moderate average stress levels across students. 
-    A substantial proportion report sleep disturbances linked to social media use. 
-    Emotional attachment to social media is noticeable, and many students seek online support 
+    Mental wellbeing patterns show moderate average stress levels across students.
+    A substantial proportion report sleep disturbances linked to social media use.
+    Emotional attachment to social media is noticeable, and many students seek online support
     during stressful periods, highlighting the importance of accessible mental health resources.
     """)
 
@@ -1117,9 +1117,9 @@ with tab4:
     # --- Observation Section (Fixed Indentation) ---
     st.markdown("#### 💬 Observation")
     st.success("""
-    Correlation analysis reveals weak-to-moderate associations between social media usage, 
-    study hours, and academic stress. Positive well-being impacts slightly outweigh negative ones, 
-    and students who use online communities for support show higher engagement with coping strategies. 
+    Correlation analysis reveals weak-to-moderate associations between social media usage,
+    study hours, and academic stress. Positive well-being impacts slightly outweigh negative ones,
+    and students who use online communities for support show higher engagement with coping strategies.
     These insights highlight areas for intervention and targeted support for high-usage or stressed students.
     """)
 
