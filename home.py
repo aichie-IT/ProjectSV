@@ -1339,6 +1339,28 @@ fig_line.update_yaxes(dtick=1)
 # Show the plot in Streamlit
 st.plotly_chart(fig_line, use_container_width=True)
 
+st.title("Daily Internet Usage vs Mental Health Scores")
+
+# Create the faceted scatter plots 
+g = sns.relplot(
+    x='Daily_Internet_Usage_Hours',
+    y='Score',
+    col='Mental_Health_Factor',
+    col_wrap=2, # Wrap plots after 2 columns
+    data=df_melted_scatter,
+    kind='scatter',
+    height=4, aspect=1.2,
+    s=50, alpha=0.7 # Adjust point size and transparency
+)
+
+g.set_axis_labels("Daily Internet Usage (Hours)", "Mental Health Score")
+g.set_titles("{col_name}")
+plt.suptitle('Daily Internet Usage vs Mental Health Scores', y=1.02) # Adjust suptitle position
+plt.tight_layout(rect=[0, 0, 1, 0.98]) # Adjust layout to prevent suptitle overlap
+
+# Show the plot in Streamlit
+st.pyplot(plt)
+
 
 # ----------- HANIS NABILA -----------
 # ================= TAB 3: HANIS NABILA =================
