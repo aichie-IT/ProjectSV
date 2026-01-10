@@ -653,8 +653,6 @@ with tab1:
         )
 
         st.markdown("---")
-
-        col1, col2, col3, col4 = st.columns(4)
         
         # Bar Chart
         freq_order = [
@@ -672,7 +670,7 @@ with tab1:
         )
 
         fig = px.bar(
-            filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+            df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
             title="Distribution of Daily Social Media Usage",
             labels={"value": "Number of Students", "index": "Hours per Day"},
             color_discrete_sequence=px.colors.qualitative.Set2
@@ -823,8 +821,6 @@ with tab1:
 
 
         st.markdown("---")
-
-        col1, col2, col3 = st.columns(3)
 
         # Bar Chart
         academic_numeric = filtered_numeric.dropna(
@@ -980,7 +976,6 @@ with tab1:
 
         st.markdown("---")
 
-        col1, col2 = st.columns(2)
 
         # Radar / Polar Chart
         st.subheader("Mental Health Impact Profile")
@@ -1099,8 +1094,6 @@ with tab1:
             st.info("Insufficient data to compute correlations under the current filter selection.")
 
         st.markdown("---")
-
-        col1, col2 = st.columns(2)
 
         # Heatmap
         corr = df_numeric[
