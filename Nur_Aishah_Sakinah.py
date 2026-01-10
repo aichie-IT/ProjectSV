@@ -768,15 +768,15 @@ with tab1:
         pie_summary(resource_counts)
     )
        
-    st.markdown("#### 💬 Observation")
-    st.success("""
-    Students exhibit varying social media usage patterns. The majority use social media
-    moderately (1–4 hours/day), while a notable subgroup spends 5+ hours daily.
-    High-usage students report higher perceptions of time wasted online, and their
-    average study hours tend to be lower, highlighting a potential trade-off between
-    online engagement and academic commitment.
-    """)
-    
+    st.markdown("#### 💬 Key Insights")
+    st.info(
+        "Students exhibit varying social media usage patterns. The majority use social media "
+        "moderately (1–4 hours/day), while a notable subgroup spends 5+ hours daily. "
+        "High-usage students report higher perceptions of time wasted online, and their "
+        "average study hours tend to be lower, highlighting a potential trade-off between "
+        "online engagement and academic commitment."
+    )
+
     
 # ============ TAB 2: ACADEMIC IMPACT ============
 with tab2:
@@ -894,14 +894,14 @@ with tab2:
 
     st.info(scatter_plot_summary(filtered_numeric, "Age", "Studies_Affected_By_Social_Media_Numeric"))
 
-    # --- Observation Section (Fixed Indentation) ---
-    st.markdown("#### 💬 Observation")
-    st.success("""
-    Higher social media usage is modestly associated with increased academic stress.
-    Despite this, most students maintain moderate to good academic performance.
-    High-usage students (≥5 hours/day) may require support to manage stress,
-    and study habits appear to moderate the impact of social media on academic outcomes.
-    """)
+    st.markdown("#### 💬 Key Insights")
+    st.info(
+        "Higher social media usage is modestly associated with increased academic stress. "
+        "Despite this, most students maintain moderate to good academic performance. "
+        "High-usage students (≥5 hours/day) may require support to manage stress, "
+        "and study habits appear to moderate the impact of social media on academic outcomes."
+    )
+
 
 # ============ TAB 3: WELLBEING ANALYSIS ============
 with tab3:
@@ -1007,14 +1007,14 @@ with tab3:
     st.info(parallel_chart_summary(filtered_numeric, cols_parallel))
 
        
-    # --- Observation Section (Fixed Indentation) ---
-    st.markdown("#### 💬 Observation")
-    st.success("""
-    Mental wellbeing patterns show moderate average stress levels across students.
-    A substantial proportion report sleep disturbances linked to social media use.
-    Emotional attachment to social media is noticeable, and many students seek online support
-    during stressful periods, highlighting the importance of accessible mental health resources.
-    """)
+    st.markdown("#### 💬 Key Insights")
+    st.info(
+        "Mental wellbeing patterns show moderate average stress levels across students. "
+        "A substantial proportion report sleep disturbances linked to social media use. "
+        "Emotional attachment to social media is noticeable, and many students seek online support "
+        "during stressful periods, highlighting the importance of accessible mental health resources."
+    )
+
 
 # ============ TAB 4: CORRELATION & INSIGHTS ============
 with tab4:
@@ -1114,14 +1114,14 @@ with tab4:
     st.info(waterfall_summary(filtered_df, 'Category', 'Value'))
          
        
-    # --- Observation Section (Fixed Indentation) ---
-    st.markdown("#### 💬 Observation")
-    st.success("""
-    Correlation analysis reveals weak-to-moderate associations between social media usage,
-    study hours, and academic stress. Positive well-being impacts slightly outweigh negative ones,
-    and students who use online communities for support show higher engagement with coping strategies.
-    These insights highlight areas for intervention and targeted support for high-usage or stressed students.
-    """)
+    st.markdown("#### 💬 Key Insights")
+    st.info(
+        "Correlation analysis reveals weak-to-moderate associations between social media usage, "
+        "study hours, and academic stress. Positive wellbeing impacts slightly outweigh negative ones, "
+        "and students who use online communities for support show higher engagement with coping strategies. "
+        "These insights highlight areas for intervention and targeted support for high-usage or stressed students."
+    )
+
 
 # --- FOOTER ---
 st.markdown("---")
