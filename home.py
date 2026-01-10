@@ -1344,18 +1344,19 @@ with tab3:
 ----------- TAB 4: AINUN -----------
 
 # ============ TAB 4: INDIVIDUAL VISUALIZATIONS ============
+
+filtered_data = df.copy()
+
+# Create the tab (or adjust if using st.tabs elsewhere)
+tab4 = st.tabs(["Individual Visualizations"])[0]
+
 with tab4:
     st.subheader("Demographic Differences with Mental Health Experiences")
     st.write("""
         The purpose of this visualization is to identify and analyze demographic 
         differences in mental health experiences among students, focusing on how 
-        gender, ethnicity, and year of study influence students' perceptions and experiences.
+        gender, ethnicity, and year of study influence student perceptions and experiences.
     """)
-
-    # ==================================================
-    # SAFELY DEFINE FILTERED DATA
-    # ==================================================
-    filtered_data = df.copy()  # Use original dataframe or apply filters if needed
 
     # ==================================================
     # SUMMARY METRIC BOXES
@@ -1363,7 +1364,6 @@ with tab4:
     TOTAL_RESPONDENTS = len(filtered_data)
 
     col1, col2, col3 = st.columns(3)
-
     with col1:
         st.metric("Total Respondents", TOTAL_RESPONDENTS)
 
@@ -1380,8 +1380,8 @@ with tab4:
     st.write("📊 Summary Metrics")
 
     st.success("""
-    **Summary:** The dataset consists of 101 participants, providing insight into mental health and internet use trends among students.
-    Female students form the majority, and Year 4 students are the largest study group, which may influence academic and mental health challenges.
+    **Summary:** The dataset provides insight into mental health and internet use trends among students.
+    Female students are the majority, and Year 4 students are the largest study group. 
     """)
 
     # ==================================================
@@ -1400,11 +1400,7 @@ with tab4:
             labels={"Year_of_Study": "Year of Study"}
         )
         st.plotly_chart(fig1, use_container_width=True)
-
-        st.success("""
-        **Interpretation:**  
-        Female students dominate across most years of study, and Year 1 students are relatively active in the survey.
-        """)
+        st.success("Female students dominate across most years. Year 1 students are relatively active in the survey.")
 
         # 2️⃣ Gender vs Social Media Positive Impact
         st.write("2️⃣ Gender vs Social Media Positive Impact")
@@ -1416,11 +1412,7 @@ with tab4:
             labels={"Social_Media_Positive_Impact_on_Wellbeing": "Perceived Positive Impact"}
         )
         st.plotly_chart(fig2, use_container_width=True)
-
-        st.success("""
-        **Interpretation:**  
-        Responses show how gender perceives the positive impact of social media on wellbeing.
-        """)
+        st.success("Shows how gender perceives the positive impact of social media on wellbeing.")
 
         # 3️⃣ Gender vs Difficulty Sleeping
         st.write("3️⃣ Gender vs Difficulty Sleeping")
@@ -1432,11 +1424,7 @@ with tab4:
             labels={"Difficulty_Sleeping_University_Pressure": "Difficulty Sleeping"}
         )
         st.plotly_chart(fig3, use_container_width=True)
-
-        st.success("""
-        **Interpretation:**  
-        Female students report slightly higher difficulty sleeping due to university-related pressure. Academic stress may affect sleep quality.
-        """)
+        st.success("Female students report slightly higher difficulty sleeping due to university-related pressure.")
 
     with right:
         # 4️⃣ Year of Study vs Living Situation
@@ -1452,11 +1440,7 @@ with tab4:
             labels={"x": "Living Situation", "y": "Year of Study", "color": "Count"}
         )
         st.plotly_chart(fig4, use_container_width=True)
-
-        st.success("""
-        **Interpretation:**  
-        Students in higher years tend to live off-campus, showing a trend toward independent living as they progress in their studies.
-        """)
+        st.success("Higher-year students tend to live off-campus, showing a trend toward independent living.")
 
         # 5️⃣ Race vs Social Media Routine
         st.write("5️⃣ Race vs Social Media Routine")
@@ -1468,11 +1452,7 @@ with tab4:
             labels={"Social_Media_Daily_Routine": "Social Media Routine"}
         )
         st.plotly_chart(fig5, use_container_width=True)
-
-        st.success("""
-        **Interpretation:**  
-        Social media usage routines vary across races, suggesting cultural or social norms influence online engagement.
-        """)
+        st.success("Social media usage routines vary across races, suggesting cultural or social norms influence engagement.")
 
         # 6️⃣ Employment Status Distribution
         st.write("6️⃣ Employment Status Distribution")
@@ -1482,20 +1462,19 @@ with tab4:
             labels={"Employment_Status": "Employment Status"}
         )
         st.plotly_chart(fig6, use_container_width=True)
-
-        st.success("""
-        **Interpretation:**  
-        Most respondents are full-time students. Part-time employment is less common, highlighting the priority of academic commitments.
-        """)
+        st.success("Most respondents are full-time students; part-time employment is less common.")
 
     # ==================================================
-    # SUMMARY
+    # FINAL SUMMARY
     # ==================================================
     st.success("""
     **Observation:**  
-    Visualizations reveal demographic differences in mental health experiences. Female students report higher academic pressure and sleep difficulties, 
-    higher-year students tend to live off-campus, and full-time students dominate the survey population.
+    Visualizations reveal demographic differences in student mental health experiences. 
+    Female students report higher academic pressure and sleep difficulties, higher-year students tend to live off-campus, 
+    and full-time students dominate the survey population.
     """)
+
+   
 
    
 # --- FOOTER ---
