@@ -1211,16 +1211,16 @@ with tab2:
         ax=ax
     )
 
-ax.set_title("Average Mental Health Scores by Internet Usage Level")
-ax.set_xlabel("Internet Usage Category")
-ax.set_ylabel("Mean Score (Likert Scale: 1 = Strongly Disagree, 5 = Strongly Agree)")
-ax.legend(
+    ax.set_title("Average Mental Health Scores by Internet Usage Level")
+    ax.set_xlabel("Internet Usage Category")
+    ax.set_ylabel("Mean Score (Likert Scale: 1 = Strongly Disagree, 5 = Strongly Agree)")
+    ax.legend(
     title="Mental Health Factor",
     bbox_to_anchor=(1.05, 1),
     loc='upper left'
-)
+    )
 
-st.pyplot(fig, use_container_width=True)
+    st.pyplot(fig, use_container_width=True)
 
     # --- Box Plot ---
     # Create the box plot for "Difficulty Sleeping Due to University Pressure by Social Media Affecting Sleep"
