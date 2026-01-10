@@ -52,6 +52,75 @@ df = df.rename(columns={
     "What type of online content affects you the most (positive or negative)? / Apakah jenis kandungan dalam talian yang paling mempengaruhi anda (positif atau negatif)?": "Type_of_Online_Content_Affects",
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
+# ==============================
+# DATA CLEANING
+# ==============================
+
+# Standardise column names
+df.columns = df.columns.str.strip()
+
+# Fix encoding issues
+df = df.replace(
+    {"â\x80\x93": "-", "–": "-", "—": "-"},
+    regex=True
+)
+
+# ==============================
+# DATA FILTERING
+# ==============================
+
+# Remove irrelevant columns
+columns_to_remove = [
+    "Timestamp",
+    "Type_of_Online_Content_Affects",
+    "Universities_Support_Actions"
+]
+
+df = df.drop(columns=columns_to_remove, errors="ignore")
+
+# Keep only variables needed for mental health analysis
+columns_to_keep = [
+    "Gender",
+    "Find_Mental_Health_Info_Online",
+    "Seek_Help_Online_When_Stress",
+    "Use_Online_Communities_for_Support",
+    "Assignments_Stress",
+    "Follow_Motivational_Mental_Health_Content",
+    "Mental_Health_Info_Through_Internet"
+]
+
+df = df[columns_to_keep]
+
+# ==============================
+# DATA TRANSFORMATION
+# ==============================
+
+# Likert scale mapping
+likert_map = {
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5
+}
+
+# Convert Likert responses to numeric
+likert_columns = [
+    "Find_Mental_Health_Info_Online",
+    "Seek_Help_Online_When_Stress",
+    "Use_Online_Communities_for_Support",
+    "Assignments_Stress",
+    "Follow_Motivational_Mental_Health_Content",
+    "Mental_Health_Info_Through_Internet"
+]
+
+for col in likert_columns:
+    df[col + "_Numeric"] = (
+        df[col]
+        .astype(str)
+        .map(likert_map)
+    )
+
 
 # Fix encoding issues
 df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
@@ -95,5 +164,7 @@ likert_cols = [
 
 for col in likert_cols:
     df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
+
+
 
    
