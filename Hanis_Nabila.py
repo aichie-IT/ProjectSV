@@ -130,10 +130,10 @@ st.markdown("---")
 # =====================================================
 #   Online Help Preference (High vs Low)
 # =====================================================
-st.subheader("🥧 Preference for Online Help (High vs Low)")
+st.subheader("Preference for Online Help (High vs Low)")
 
 df['Online_Help_Level'] = df['Seek_Help_Online_When_Stress'].astype(str).apply(
-    lambda x: 'High (Agree)' if x in ['4','5'] else 'Low / Neutral'
+    lambda x: 'High (Agree)' if x in ['4','5'] else 'Low (Neutral)'
 )
 
 pie_data = df['Online_Help_Level'].value_counts().reset_index()
@@ -200,7 +200,7 @@ platforms, highlighting the internet as a primary source of support.
 # =====================================================
 # ONLINE HELP WHEN STRESSED
 # =====================================================
-st.subheader("🆘 Preference for Online Help During Stress")
+st.subheader("Preference for Online Help During Stress")
 
 fig = px.histogram(
     df,
@@ -218,7 +218,7 @@ suggesting digital support is often favoured over face-to-face options.
 # =====================================================
 # ONLINE COMMUNITIES BY GENDER
 # =====================================================
-st.subheader("👥 Online Community Support by Gender")
+st.subheader("Online Community Support by Gender")
 
 gender_table = pd.crosstab(
     df['Use_Online_Communities_for_Support'],
