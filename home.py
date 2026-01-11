@@ -1489,10 +1489,10 @@ with tab3:
     # =====================================================
     st.subheader("Online Community Support by Gender")
 
-gender_table = pd.crosstab(
-    df['Use_Online_Communities_for_Support'],
-    df['Gender']
-)
+    gender_table = pd.crosstab(
+        df['Use_Online_Communities_for_Support'],
+        df['Gender']
+    )
 
     fig, ax = plt.subplots(figsize=(10, 6))
     gender_table.plot(kind='bar', ax=ax)
