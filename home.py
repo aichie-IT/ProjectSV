@@ -685,7 +685,7 @@ with st.sidebar:
         # --- Social Media Usage ---
         sm_filter = st.multiselect(
             "Social Media Usage (Hours / Day)",
-            options=USAGE_ORDER,,
+            options=USAGE_ORDER,
             default=[]
         )
 
