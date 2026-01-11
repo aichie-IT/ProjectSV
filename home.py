@@ -1453,10 +1453,37 @@ with tab2:
 # ================= TAB 3: HANIS NABILA =================
 with tab3:
     st.header("Analyze Mental Health Information-Seeking Behavior")
+    st.subheader("📌 Key Mental Health Indicators")
 
-    # =====================================================
-    #   Online Help Preference (High vs Low)
-    # =====================================================
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric(
+        "Often/Always Stress with assignment",
+        f"{(df['Assignments_Stress'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+    )
+
+    col2.metric(
+        "Sleep Frequently Affected",
+        f"{(df['Sleep_Affected_By_Social_Media'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+    )
+
+    col3.metric(
+        "High Usage of Social Media (>5 hrs/day)",
+        f"{(df['Social_Media_Use_Frequency']
+            .isin(['5 to 6 hours per day','More than 6 hours per day'])
+            .mean()*100):.1f}%"
+    )
+
+    col4.metric(
+        "Negative Impact of Social Media on Wellbeing",
+        f"{(df['Social_Media_Negative_Impact_on_Wellbeing'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+    )
+
+    st.markdown("---")
+
+# =====================================================
+#   Online Help Preference (High vs Low)
+# =====================================================
     st.subheader("Preference for Online Help (High vs Low)")
 
     df['Online_Help_Level'] = df['Seek_Help_Online_When_Stress'].astype(str).apply(
@@ -1484,9 +1511,9 @@ with tab3:
 
     """)
 
-    # =====================================================
-    #    ONLINE COMMUNITIES BY GENDER
-    # =====================================================
+# =====================================================
+#    ONLINE COMMUNITIES BY GENDER
+# =====================================================
     st.subheader("Online Community Support by Gender")
 
     gender_table = pd.crosstab(
@@ -1508,9 +1535,9 @@ with tab3:
     This shows that frequent engagement with online support communities is almost exclusively a female behavior in this dataset.
     """)
 
-    # =====================================================
-    #   Assignment Stress vs Online Help
-    # =====================================================
+# =====================================================
+#   Assignment Stress vs Online Help
+# =====================================================
     st.subheader("Assignment Stress vs Online Help Preference")
 
     fig = px.box(
@@ -1533,9 +1560,9 @@ with tab3:
     do not need care for online help (Level 1) usually have lower stress. 
     """)
 
-    # =====================================================
-    #   ONLINE INFO SEEKING
-    # =====================================================
+# =====================================================
+#   ONLINE INFO SEEKING
+# =====================================================
     st.subheader("Seeking Mental Health Information Online")
 
     fig = px.histogram(
@@ -1554,9 +1581,9 @@ with tab3:
     they do so sporadically rather than as a constant habit.
     """)
 
-    # =====================================================
-    # ONLINE HELP WHEN STRESSED
-    # =====================================================
+# =====================================================
+# ONLINE HELP WHEN STRESSED
+# =====================================================
     st.subheader("Preference for Online Help During Stress")
 
     fig = px.histogram(
