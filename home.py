@@ -75,7 +75,164 @@ def correlation_summary(r_sm_stress, r_study_stress):
         f"suggesting that both digital engagement and academic workload contribute "
         f"incrementally to students’ stress experiences."
     )
+    
+# Bar Chart    
+def bar_distribution_summary(counts, variable_name):
+    if counts.sum() == 0:
+        return f"No data available for {variable_name} under the current filters."
 
+    dominant = counts.idxmax()
+    dominant_pct = (counts.max() / counts.sum()) * 100
+
+    return (
+        f"The distribution of {variable_name.lower()} shows that "
+        f"'{dominant}' is the most common category, accounting for "
+        f"{dominant_pct:.1f}% of the selected respondents. This indicates "
+        f"a dominant behavioural pattern within the current subgroup."
+    )
+
+# Boxplot
+def boxplot_summary(df, x_col, y_col):
+    if df.empty:
+        return "Insufficient data to compare groups under the current filters."
+
+    group_means = df.groupby(x_col)[y_col].mean().dropna()
+    if group_means.empty:
+        return "No valid numeric data available for comparison."
+
+    highest = group_means.idxmax()
+    lowest = group_means.idxmin()
+
+    return (
+        f"Group-wise comparison indicates that '{highest}' exhibits the highest "
+        f"average {y_col.replace('_', ' ').lower()}, while '{lowest}' shows the lowest. "
+        f"This suggests meaningful variation across groups."
+    )
+
+# Histogram/Likert 
+def likert_summary(series, agree_levels=("Agree", "Strongly Agree")):
+    if series.empty:
+        return "No responses available under the current filter selection."
+
+    agree_pct = series.isin(agree_levels).mean() * 100
+
+    return (
+        f"Approximately {agree_pct:.1f}% of respondents agree or strongly agree "
+        f"with this statement, indicating a generally positive endorsement "
+        f"within the selected subgroup."
+    )
+
+# Pie/Donut Chart
+def pie_summary(counts):
+    if counts.sum() == 0:
+        return "No responses available for this question."
+
+    dominant = counts.idxmax()
+    dominant_pct = (counts.max() / counts.sum()) * 100
+
+    return (
+        f"The majority of respondents selected '{dominant}', representing "
+        f"{dominant_pct:.1f}% of the total responses. This reflects the dominant "
+        f"perception under the current filters."
+    )
+
+# Radar Chart
+def radar_summary(values, labels):
+    max_idx = values.index(max(values))
+    min_idx = values.index(min(values))
+
+    return (
+        f"The radar profile indicates that '{labels[max_idx]}' represents the "
+        f"most prominent wellbeing concern, while '{labels[min_idx]}' shows "
+        f"relatively lower impact. This highlights key dimensions driving "
+        f"mental health outcomes."
+    )
+
+def bar_chart_summary(df, col):
+    if df.empty:
+        return "No data available."
+    counts = df[col].value_counts(normalize=True) * 100
+    max_cat = counts.idxmax()
+    min_cat = counts.idxmin()
+    return (
+        f"The bar chart shows the distribution of {col}. "
+        f"Most respondents belong to '{max_cat}' ({counts[max_cat]:.1f}%), "
+        f"while the least is '{min_cat}' ({counts[min_cat]:.1f}%). "
+        f"This suggests a skewed distribution in {col} among the respondents."
+    )
+
+def box_plot_summary(df, col):
+    if df.empty:
+        return "No data available."
+    median = df[col].median()
+    q1 = df[col].quantile(0.25)
+    q3 = df[col].quantile(0.75)
+    outliers = df[col][(df[col] < q1 - 1.5*(q3-q1)) | (df[col] > q3 + 1.5*(q3-q1))]
+    return (
+        f"The box plot for {col} shows a median of {median:.2f}, "
+        f"with the interquartile range between {q1:.2f} and {q3:.2f}. "
+        f"There are {len(outliers)} outlier(s), indicating occasional extreme responses."
+    )
+
+def scatter_plot_summary(df, x_col, y_col):
+    if df.empty:
+        return "No data available."
+    corr = df[[x_col, y_col]].corr().iloc[0,1]
+    direction = "positive" if corr > 0 else "negative"
+    strength = "weak" if abs(corr)<0.3 else "moderate" if abs(corr)<0.6 else "strong"
+    return (
+        f"The scatter plot shows the relationship between {x_col} and {y_col}. "
+        f"The correlation is {corr:.2f}, indicating a {strength} {direction} relationship. "
+        f"Clusters or trends may suggest patterns worth investigating."
+    )
+def parallel_chart_summary(df, cols):
+    if df.empty:
+        return "No data available."
+    means = df[cols].mean()
+    highest = means.idxmax()
+    lowest = means.idxmin()
+    return (
+        f"The parallel coordinates plot visualizes trends across {', '.join(cols)}. "
+        f"On average, '{highest}' has the highest values ({means[highest]:.2f}) "
+        f"while '{lowest}' has the lowest ({means[lowest]:.2f}), "
+        f"indicating which attributes dominate overall patterns."
+    )
+
+def heatmap_summary(df, cols):
+    if df.empty:
+        return "No data available."
+    corr = df[cols].corr()
+    max_pair = corr.unstack().sort_values(ascending=False).drop_duplicates().iloc[1] # skip 1=diagonal 1.0
+    max_cols = corr.unstack().sort_values(ascending=False).drop_duplicates().index[1]
+    return (
+        f"The heatmap shows correlations among {', '.join(cols)}. "
+        f"The strongest relationship is between '{max_cols[0]}' and '{max_cols[1]}' "
+        f"with a correlation of {max_pair:.2f}, indicating a notable positive association."
+    )
+
+def waterfall_summary(df, col, value_col):
+    """
+    df: dataframe containing the waterfall data
+    col: categorical column for steps (e.g., categories)
+    value_col: numeric column for the amounts
+    """
+    if df.empty:
+        return "No data available."
+    if col not in df.columns or value_col not in df.columns:
+        return f"Columns '{col}' or '{value_col}' not found in the dataframe."
+
+    # Group by category and sum values
+    grouped = df.groupby(col)[value_col].sum()
+    total_change = grouped.sum()
+    max_step = grouped.idxmax()
+    min_step = grouped.idxmin()
+    
+    return (
+        f"The waterfall chart shows incremental changes in '{value_col}' across '{col}'. "
+        f"The total net change is {total_change:.2f}. "
+        f"The largest positive change is in '{max_step}', "
+        f"while the largest negative change is in '{min_step}'."
+    )
 
 
 # --- MAIN TITLE ---
@@ -627,15 +784,18 @@ with tab1:
         st.markdown("Understand how much and how often students use the internet/social media.")
 
         # Summary box
-        col1, col2, col3, col4 = st.columns(4)
+        freq_order = df["Social_Media_Use_Frequency"].cat.categories
         median_usage = filtered_numeric["Social_Media_Hours_Numeric"].median()
         high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
         avg_study_hours = filtered_numeric["Study_Hours_Numeric"].mean()
         time_waste_pct = (filtered_df["Social_Media_Waste_Time"].isin(["Agree", "Strongly Agree"]).mean() * 100)
+        usage_counts = (filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order, fill_value=0))
+        total_students = usage_counts.sum()
 
-        col1.metric("Median Social Media Hours/Day", f"{median_usage:.1f} hrs", help="Typical daily social media usage (median)", border=True)
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Median Social Media Hours/Day", f"{median_usage:.1f} hrs" if pd.notna(median_usage) else "N/A", help="Typical daily social media usage (median)", border=True)
         col2.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
-        col3.metric("Avg. Study Hours/Week", f"{avg_study_hours:.1f}", help="Average academic study commitment", border=True)
+        col3.metric("Avg. Study Hours/Week", f"{avg_study_hours:.1f}" if pd.notna(median_usage) else "N/A", help="Average academic study commitment", border=True)
         col4.metric("Perceived Time Loss (%)", f"{time_waste_pct:.1f}%", help="Students who feel social media wastes their time", border=True)
         
         # Scientific Summary
@@ -655,44 +815,25 @@ with tab1:
         st.markdown("---")
         
         # Bar Chart
-        freq_order = [
-            "Less than 1 hour per day",
-            "1 to 2 hours per day",
-            "3 to 4 hours per day",
-            "5 to 6 hours per day",
-            "More than 6 hours per day"
-        ]
-
-        filtered_df["Social_Media_Use_Frequency"] = pd.Categorical(
-            filtered_df["Social_Media_Use_Frequency"],
-            categories=freq_order,
-            ordered=True
-        )
-
         fig = px.bar(
-            filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order),
+            x=usage_counts.index,
+            y=usage_counts.values,
             title="Distribution of Daily Social Media Usage",
-            labels={"value": "Number of Students", "index": "Hours per Day"},
+            labels={
+                "x": "Hours per Day",
+                "y": "Number of Students"
+            },
             color_discrete_sequence=px.colors.qualitative.Set2
         )
 
         fig.update_layout(xaxis_tickangle=-30)
-        
-        usage_counts = filtered_df["Social_Media_Use_Frequency"].value_counts()
-        total_students = usage_counts.sum()
-        high_usage_pct = (
-            filtered_df["Social_Media_Use_Frequency"]
-            .isin(["5 to 6 hours per day", "More than 6 hours per day"])
-            .mean() * 100
-        )
-
         st.plotly_chart(fig, use_container_width=True)
 
         st.info(
-            f"Among the selected respondents (n = {total_students}), "
-            f"{high_usage_pct:.1f}% report high social media usage of five hours or more per day. "
-            f"This indicates that prolonged internet engagement is common and forms an important "
-            f"context for analysing its relationship with academic stress and mental wellbeing."
+            bar_distribution_summary(
+                usage_counts,
+                "Daily Social Media Usage"
+            )
         )
 
         st.markdown("---")
@@ -715,12 +856,14 @@ with tab1:
         usage_counts = filtered_df["Social_Media_Use_Frequency"].value_counts()
         dominant_group = usage_counts.idxmax()
 
-        st.info(
-            f"The most common usage category among the selected respondents is "
-            f"'{dominant_group}', indicating that this level of internet engagement "
-            f"represents the dominant behavioural pattern under the current filter selection."
-        )
+        study_counts = (filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order, fill_value=0))
 
+        st.info(
+            bar_distribution_summary(
+                study_counts,
+                "Weekly Study Hours"
+            )
+        )
 
         # Box Plot
         fig = px.box(
@@ -733,9 +876,14 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+        st.info(
+            boxplot_summary(
+                filtered_numeric,
+                "Gender",
+                "Social_Media_Hours_Numeric"
+            )
+        )
+
 
         # Histogram
         fig = px.histogram(
@@ -755,9 +903,11 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+        st.info(
+            likert_summary(
+                filtered_df["Social_Media_Waste_Time"]
+            )
+        )
 
         # Pie Donut
         resource_counts = filtered_df[
@@ -777,16 +927,21 @@ with tab1:
         fig.update_traces(textposition="inside", textinfo="percent+label")
         st.plotly_chart(fig, use_container_width=True)
 
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
-       
-        st.markdown("#### 💬 Observation")
+        resource_counts = filtered_df[
+            "Do you think universities should provide more online mental health resources?"
+        ].value_counts()
+
         st.info(
-            "Overall patterns observed in this section suggest that internet usage behaviour "
-            "varies across student groups and is meaningfully associated with academic and "
-            "wellbeing indicators. These observations motivate further correlation and "
-            "multivariate analysis in subsequent sections."
+            pie_summary(resource_counts)
+        )
+       
+        st.markdown("#### 💬 Key Insights")
+        st.info(
+            "Students exhibit varying social media usage patterns. The majority use social media "
+            "moderately (1–4 hours/day), while a notable subgroup spends 5+ hours daily. "
+            "High-usage students report higher perceptions of time wasted online, and their "
+            "average study hours tend to be lower, highlighting a potential trade-off between "
+            "online engagement and academic commitment."
         )
 
     
@@ -801,7 +956,9 @@ with tab1:
         academic_perf = filtered_numeric["General_Academic_Performance_Numeric"].dropna()
         study_hours = filtered_numeric["Study_Hours_Numeric"].dropna()
         high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
-
+        sleep_pct = (filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4).mean() * 100
+        corr_val = safe_corr(filtered_numeric, "Social_Media_Hours_Numeric", "Assignments_Stress_Numeric")
+    
         col1.metric("Study Impact (%)", f"{(study_impact.mean()/5*100):.1f}%" if not study_impact.empty else "N/A", help="Average perceived impact of social media on studies", border=True)
         col2.metric("Avg. Academic Performance", f"{academic_perf.mean():.2f}" if not academic_perf.empty else "N/A", help="Numeric scale: 1=Below Avg → 4=Excellent", border=True)
         col3.metric("High Usage Students (%)", f"{high_users_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
@@ -854,12 +1011,7 @@ with tab1:
         st.plotly_chart(fig, use_container_width=True)
         mean_stress = usage_group_mean["Academic_Stress_Index"].mean()
 
-        st.info(
-            f"The visualization shows variations in academic stress across different levels "
-            f"of social media usage. The average stress index across usage groups is "
-            f"{mean_stress:.2f}, suggesting that increased internet exposure may be associated "
-            f"with elevated academic stress, although the pattern is not uniform across all groups."
-        )
+        st.info(bar_chart_summary(filtered_df, "Social_Media_Use_Frequency"))
 
         
         # Box Plot
@@ -872,9 +1024,7 @@ with tab1:
             color_discrete_sequence=px.colors.qualitative.Set3
         )
         st.plotly_chart(fig, use_container_width=True)
-        st.success("""
-        **Interpretation:** Most students show moderate-to-high social media usage, indicating its strong integration into daily routines.
-        """)
+        st.info(box_plot_summary(filtered_numeric, "General_Academic_Performance_Numeric"))
 
         # Box Plot
         fig = px.box(
@@ -893,15 +1043,8 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
-        sleep_pct = (
-            filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
-        ).mean() * 100
 
-        st.info(
-            f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
-            f"social media negatively affects their sleep. This highlights sleep disturbance "
-            f"as a key wellbeing concern linked to prolonged internet use."
-        )
+        st.info(box_plot_summary(filtered_numeric, "Sleep_Affected_By_Social_Media_Numeric"))
 
         # Scatter Plot
         fig = px.scatter(
@@ -915,35 +1058,16 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
-        corr_val = safe_corr(
-            filtered_numeric,
-            "Social_Media_Hours_Numeric",
-            "Assignments_Stress_Numeric"
+
+        st.info(scatter_plot_summary(filtered_numeric, "Age", "Studies_Affected_By_Social_Media_Numeric"))
+
+        st.markdown("#### 💬 Key Insights")
+        st.info(
+            "Higher social media usage is modestly associated with increased academic stress. "
+            "Despite this, most students maintain moderate to good academic performance. "
+            "High-usage students (≥5 hours/day) may require support to manage stress, "
+            "and study habits appear to moderate the impact of social media on academic outcomes."
         )
-
-        if corr_val is not None:
-            strength = (
-                "weak" if abs(corr_val) < 0.3 else
-                "moderate" if abs(corr_val) < 0.6 else
-                "strong"
-            )
-
-            st.info(
-                f"A {strength} positive correlation (r = {corr_val:.2f}) is observed between "
-                f"daily social media usage and academic stress. This suggests an association "
-                f"between increased online engagement and higher stress levels, though the "
-                f"relationship does not imply direct causation."
-            )
-        else:
-            st.info("Insufficient data to compute correlation under current filters.")
-
-        # --- Observation Section (Fixed Indentation) ---
-        st.markdown("#### 💬 Observation")
-        st.success("""
-        The majority of accidents are classified as minor. Helmet usage is generally high,
-        which correlates with lower accident severity. Riders with valid licenses also
-        exhibit safer driving trends, suggesting that training and enforcement play key roles.
-        """)
 
     # ============ TAB 1.3: WELLBEING ANALYSIS ============
     with wellbeing_tab:
@@ -956,7 +1080,8 @@ with tab1:
         sleep = filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"].dropna()
         emotion = filtered_numeric["Emotional_Connection_Social_Media_Numeric"].dropna()
         help_seek = filtered_numeric["Seek_Help_Online_When_Stress_Numeric"].dropna()
-
+        sleep_pct = (filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4).mean() * 100
+    
         col1.metric("Avg. Stress Level", f"{stress.mean():.2f}" if not stress.empty else "N/A", border=True)
         col2.metric("Sleep Affected (%)", f"{(sleep.mean()/5*100):.1f}%" if not sleep.empty else "N/A", border=True)
         col3.metric("Emotional Attachment", f"{emotion.mean():.2f}" if not emotion.empty else "N/A", border=True)
@@ -1005,59 +1130,45 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
-        sleep_pct = (
-            filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
-        ).mean() * 100
+
+        values = filtered_numeric[categories].mean().tolist()
 
         st.info(
-            f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
-            f"social media negatively affects their sleep. This highlights sleep disturbance "
-            f"as a key wellbeing concern linked to prolonged internet use."
+            radar_summary(
+                values,
+                categories
+            )
         )
 
+
         # Parallel coordinates
-        parallel_df = df_numeric[
-            [
-                'Social_Media_Use_Frequency',
-                'Assignments_Stress',
-                'Academic_Workload_Anxiety',
-                'Sleep_Affected_By_Social_Media',
-                'Studies_Affected_By_Social_Media'
-            ]
-        ].dropna()
+        cols_parallel = [
+            'Assignments_Stress_Numeric',
+            'Academic_Workload_Anxiety_Numeric',
+            'Sleep_Affected_By_Social_Media_Numeric',
+            'Studies_Affected_By_Social_Media_Numeric'
+        ]
+
+        parallel_df = filtered_numeric[cols_parallel].dropna()
 
         fig = px.parallel_coordinates(
             parallel_df,
-            dimensions=[
-                'Assignments_Stress',
-                'Academic_Workload_Anxiety',
-                'Sleep_Affected_By_Social_Media',
-                'Studies_Affected_By_Social_Media'
-            ],
-            color='Assignments_Stress',
+            dimensions=cols_parallel,
+            color='Assignments_Stress_Numeric',
             color_continuous_scale=CONTINUOUS_SCALE
         )
         fig.update_layout(template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
-
-        sleep_pct = (
-            filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4
-        ).mean() * 100
-
-        st.info(
-            f"Approximately {sleep_pct:.1f}% of students agree or strongly agree that "
-            f"social media negatively affects their sleep. This highlights sleep disturbance "
-            f"as a key wellbeing concern linked to prolonged internet use."
-        )
+        st.info(parallel_chart_summary(filtered_numeric, cols_parallel))
 
        
-        # --- Observation Section (Fixed Indentation) ---
-        st.markdown("#### 💬 Observation")
-        st.success("""
-        The majority of accidents are classified as minor. Helmet usage is generally high,
-        which correlates with lower accident severity. Riders with valid licenses also
-        exhibit safer driving trends, suggesting that training and enforcement play key roles.
-        """)
+        st.markdown("#### 💬 Key Insights")
+        st.info(
+            "Mental wellbeing patterns show moderate average stress levels across students. "
+            "A substantial proportion report sleep disturbances linked to social media use. "
+            "Emotional attachment to social media is noticeable, and many students seek online support "
+            "during stressful periods, highlighting the importance of accessible mental health resources."
+        )
 
     # ============ TAB 1.4: CORRELATION & INSIGHTS ============
     with insight_tab:
@@ -1118,27 +1229,7 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
-        corr_val = safe_corr(
-            filtered_numeric,
-            "Social_Media_Hours_Numeric",
-            "Assignments_Stress_Numeric"
-        )
-
-        if corr_val is not None:
-            strength = (
-                "weak" if abs(corr_val) < 0.3 else
-                "moderate" if abs(corr_val) < 0.6 else
-                "strong"
-            )
-
-            st.info(
-                f"A {strength} positive correlation (r = {corr_val:.2f}) is observed between "
-                f"daily social media usage and academic stress. This suggests an association "
-                f"between increased online engagement and higher stress levels, though the "
-                f"relationship does not imply direct causation."
-            )
-        else:
-            st.info("Insufficient data to compute correlation under current filters.")
+        st.info(heatmap_summary(filtered_numeric, cols_parallel))
 
         # Waterfall Chart
         mean_vals = df_numeric[
@@ -1174,15 +1265,16 @@ with tab1:
         )
 
         st.plotly_chart(fig, use_container_width=True)
-         
+        st.info(waterfall_summary(filtered_numeric, col='Gender', value_col='Academic_Stress_Index'))
+   
        
-        # --- Observation Section (Fixed Indentation) ---
-        st.markdown("#### 💬 Observation")
-        st.success("""
-        The majority of accidents are classified as minor. Helmet usage is generally high,
-        which correlates with lower accident severity. Riders with valid licenses also
-        exhibit safer driving trends, suggesting that training and enforcement play key roles.
-        """)
+        st.markdown("#### 💬 Key Insights")
+        st.info(
+            "Correlation analysis reveals weak-to-moderate associations between social media usage, "
+            "study hours, and academic stress. Positive wellbeing impacts slightly outweigh negative ones, "
+            "and students who use online communities for support show higher engagement with coping strategies. "
+            "These insights highlight areas for intervention and targeted support for high-usage or stressed students."
+        )
 
 # ----------- ILYA -----------
 
