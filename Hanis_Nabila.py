@@ -130,8 +130,8 @@ col1.metric(
 )
 
 col2.metric(
-    "Actively Search Mental Health Info",
-    f"{(df['Find_Mental_Health_Info_Online_Numeric'] >= 4).mean()*100:.1f}%"
+    "Search Mental Health Info Online",
+    f"{(df['Find_Mental_Health_Info_Online_Numeric'] == 1).mean()*100:.1f}%"
 )
 
 col3.metric(
@@ -140,12 +140,11 @@ col3.metric(
 )
 
 col4.metric(
-    "Use Online Communities for Support",
-    f"{(df['Use_Online_Communities_for_Support_Numeric'] >= 4).mean()*100:.1f}%"
+    "Use Online Communities (Sometimes/Often)",
+    f"{(df['Use_Online_Communities_for_Support_Numeric'] >= 3).mean()*100:.1f}%"
 )
 
 st.markdown("---")
-
 
 # =====================================================
 #   Online Help Preference (High vs Low)
