@@ -111,20 +111,20 @@ col1.metric(
 )
 
 col2.metric(
-    "Sleep Frequently Affected",
-    f"{(df['Sleep_Affected_By_Social_Media'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+    "Search Mental Health Info",
+    f"{(df['Find_Mental_Health_Info_Online'].astype(str).isin(['4','5']).mean()*100):.1f}%"
 )
 
 col3.metric(
-    "High Usage of Social Media (>5 hrs/day)",
-    f"{(df['Social_Media_Use_Frequency']
+    "Prefer Online Help When Stressed",
+    f"{(df['Seek_Help_Online_When_Stress']
         .isin(['5 to 6 hours per day','More than 6 hours per day'])
         .mean()*100):.1f}%"
 )
 
 col4.metric(
-    "Negative Impact of Social Media on Wellbeing",
-    f"{(df['Social_Media_Negative_Impact_on_Wellbeing'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+    "Use Online Communities for Support",
+    f"{(df['Use_Online_Communities_for_Support'].astype(str).isin(['4','5']).mean()*100):.1f}%"
 )
 
 st.markdown("---")
