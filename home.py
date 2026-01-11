@@ -817,7 +817,7 @@ with tab1:
                 len(filtered_df),
                 filtered_numeric["Social_Media_Hours_Numeric"].median(),
                 (filtered_df["Social_Media_Use_Frequency"]
-                 .isin(["5 to 6 hours per day", "More than 6 hours per day"])
+                 .isin(HIGH_USAGE)
                  .mean() * 100),
                 filtered_numeric["Study_Hours_Numeric"].mean()
             )
@@ -833,7 +833,7 @@ with tab1:
                 "x": "Daily Social Media Usage",
                 "y": "Number of Students"
             },
-            title="Distribution of Daily Social Media Usage"
+            title="Distribution of Daily Social Media Usage",
             color_discrete_sequence=px.colors.qualitative.Set2
         )
 
