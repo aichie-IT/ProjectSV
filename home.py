@@ -1484,34 +1484,6 @@ with tab2:
 # ================= TAB 3: HANIS NABILA =================
 with tab3:
     st.header("Analyze Mental Health Information-Seeking Behavior")
-    
-    st.subheader("📌 Key Mental Health Indicators")
-
-    col1, col2, col3, col4 = st.columns(4)
-
-    col1.metric(
-        "Often/Always Stress with assignment",
-        f"{(df['Assignments_Stress'].astype(str).isin(['4','5']).mean()*100):.1f}%"
-    )
-
-    col2.metric(
-        "Search Mental Health Info",
-        f"{(df['Find_Mental_Health_Info_Online'].astype(str).isin(['4','5']).mean()*100):.1f}%"
-    )
-
-    col3.metric(
-        "Prefer Online Help When Stressed",
-        f"{(df['Seek_Help_Online_When_Stress']
-            .isin(['5 to 6 hours per day','More than 6 hours per day'])
-            .mean()*100):.1f}%"
-    )
-
-    col4.metric(
-        "Use Online Communities for Support",
-        f"{(df['Use_Online_Communities_for_Support'].astype(str).isin(['4','5']).mean()*100):.1f}%"
-    )
-
-    st.markdown("---")
 
 # =====================================================
 #   Online Help Preference (High vs Low)
