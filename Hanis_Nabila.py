@@ -106,10 +106,9 @@ columns_to_keep = [
     'Mental_Health_Info_Through_Internet'
 ]
 
+# Likert-scale (1–5)
 likert_cols = [
-    'Find_Mental_Health_Info_Online',
     'Seek_Help_Online_When_Stress',
-    'Use_Online_Communities_for_Support',
     'Assignments_Stress',
     'Follow_Motivational_Mental_Health_Content',
     'Mental_Health_Info_Through_Internet'
