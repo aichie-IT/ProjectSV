@@ -88,13 +88,13 @@ freq_map = {
     'Often': 4
 }
 
-    df['Find_Mental_Health_Info_Online_Numeric'] = (
-    df['Find_Mental_Health_Info_Online'].astype(str).map(yes_no_map)
-    )
+df['Find_Mental_Health_Info_Online_Numeric'] = (
+df['Find_Mental_Health_Info_Online'].astype(str).map(yes_no_map)
+)
 
-    df['Use_Online_Communities_for_Support_Numeric'] = (
-    df['Use_Online_Communities_for_Support'].astype(str).map(freq_map)
-    )
+df['Use_Online_Communities_for_Support_Numeric'] = (
+df['Use_Online_Communities_for_Support'].astype(str).map(freq_map)
+)
 
 columns_to_keep = [
     'Gender',
