@@ -76,6 +76,18 @@ likert_numeric_map = {
     '5': 5
 }
 
+yes_no_map = {
+    'Yes': 1,
+    'No': 0
+}
+
+freq_map = {
+    'Never': 1,
+    'Rarely': 2,
+    'Sometimes': 3,
+    'Often': 4
+}
+
 columns_to_keep = [
     'Gender',
     'Find_Mental_Health_Info_Online',
