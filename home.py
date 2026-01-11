@@ -556,6 +556,26 @@ likert_numeric_map = {
     '5': 5
 }
 
+yes_no_map = {
+    'Yes': 1,
+    'No': 0
+}
+
+freq_map = {
+    'Never': 1,
+    'Rarely': 2,
+    'Sometimes': 3,
+    'Often': 4
+}
+
+df['Find_Mental_Health_Info_Online_Numeric'] = (
+df['Find_Mental_Health_Info_Online'].astype(str).map(yes_no_map)
+)
+
+df['Use_Online_Communities_for_Support_Numeric'] = (
+df['Use_Online_Communities_for_Support'].astype(str).map(freq_map)
+)
+
 columns_to_keep = [
     'Gender',
     'Find_Mental_Health_Info_Online',
@@ -566,10 +586,9 @@ columns_to_keep = [
     'Mental_Health_Info_Through_Internet'
 ]
 
+# Likert-scale (1–5)
 likert_cols = [
-    'Find_Mental_Health_Info_Online',
     'Seek_Help_Online_When_Stress',
-    'Use_Online_Communities_for_Support',
     'Assignments_Stress',
     'Follow_Motivational_Mental_Health_Content',
     'Mental_Health_Info_Through_Internet'
@@ -1484,6 +1503,32 @@ with tab2:
 # ================= TAB 3: HANIS NABILA =================
 with tab3:
     st.header("Analyze Mental Health Information-Seeking Behavior")
+    st.subheader("📌 Key Mental Health Information-Seeking Indicators")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric(
+        "Often / Always Assignment Stress",
+        f"{(df['Assignments_Stress_Numeric'] >= 4).mean()*100:.1f}%"
+    )
+
+    col2.metric(
+        "Search Mental Health Info Online",
+        f"{(df['Find_Mental_Health_Info_Online_Numeric'] == 1).mean()*100:.1f}%"
+    )
+
+    col3.metric(
+        "Prefer Online Help When Stressed",
+        f"{(df['Seek_Help_Online_When_Stress_Numeric'] >= 4).mean()*100:.1f}%"
+    )
+
+    col4.metric(
+        "Use Online Communities (Sometimes/Often)",
+        f"{(df['Use_Online_Communities_for_Support_Numeric'] >= 3).mean()*100:.1f}%"
+    )
+
+    st.markdown("---")
+
 
 # =====================================================
 #   Online Help Preference (High vs Low)
