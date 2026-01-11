@@ -547,6 +547,37 @@ df_melted['Mental_Health_Factor'] = df_melted['Mental_Health_Factor'].map(mental
 df_grouped = df_melted.groupby(['Daily_Internet_Usage_Hours', 'Mental_Health_Factor'])['Score'].mean().reset_index()
 
 # ----------- HANIS NABILA -----------
+
+likert_numeric_map = {
+    '1': 1,
+    '2': 2,
+    '3': 3,
+    '4': 4,
+    '5': 5
+}
+
+columns_to_keep = [
+    'Gender',
+    'Find_Mental_Health_Info_Online',
+    'Seek_Help_Online_When_Stress',
+    'Use_Online_Communities_for_Support',
+    'Assignments_Stress',
+    'Follow_Motivational_Mental_Health_Content',
+    'Mental_Health_Info_Through_Internet'
+]
+
+likert_cols = [
+    'Find_Mental_Health_Info_Online',
+    'Seek_Help_Online_When_Stress',
+    'Use_Online_Communities_for_Support',
+    'Assignments_Stress',
+    'Follow_Motivational_Mental_Health_Content',
+    'Mental_Health_Info_Through_Internet'
+]
+
+for col in likert_cols:
+    df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
+    
 # ----------- AINUN -----------
 
 # --- DATA TRANSFORMATION FOR VISUALIZATIONS ---
@@ -1453,6 +1484,7 @@ with tab2:
 # ================= TAB 3: HANIS NABILA =================
 with tab3:
     st.header("Analyze Mental Health Information-Seeking Behavior")
+    
     st.subheader("📌 Key Mental Health Indicators")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -1463,20 +1495,20 @@ with tab3:
     )
 
     col2.metric(
-        "Sleep Frequently Affected",
-        f"{(df['Sleep_Affected_By_Social_Media'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+        "Search Mental Health Info",
+        f"{(df['Find_Mental_Health_Info_Online'].astype(str).isin(['4','5']).mean()*100):.1f}%"
     )
 
     col3.metric(
-        "High Usage of Social Media (>5 hrs/day)",
-        f"{(df['Social_Media_Use_Frequency']
+        "Prefer Online Help When Stressed",
+        f"{(df['Seek_Help_Online_When_Stress']
             .isin(['5 to 6 hours per day','More than 6 hours per day'])
             .mean()*100):.1f}%"
     )
 
     col4.metric(
-        "Negative Impact of Social Media on Wellbeing",
-        f"{(df['Social_Media_Negative_Impact_on_Wellbeing'].astype(str).isin(['4','5']).mean()*100):.1f}%"
+        "Use Online Communities for Support",
+        f"{(df['Use_Online_Communities_for_Support'].astype(str).isin(['4','5']).mean()*100):.1f}%"
     )
 
     st.markdown("---")
