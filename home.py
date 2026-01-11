@@ -474,6 +474,15 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
 ].mean(axis=1)
 
 # ----- CATEGORICAL ORDER -----
+# ---- Step 1: Clean raw text safely ----
+df["Social_Media_Use_Frequency"] = (
+    df["Social_Media_Use_Frequency"]
+    .astype(str)
+    .str.strip()
+    .str.replace("–", "-", regex=False)
+)
+
+# ---- Step 2: Define STANDARD labels (single source of truth) ----
 USAGE_ORDER = [
     "< 1 hr",
     "1–2 hrs",
@@ -484,7 +493,8 @@ USAGE_ORDER = [
 
 HIGH_USAGE = ["5–6 hrs", "> 6 hrs"]
 
-df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].map({
+# ---- Replace long labels → short labels (SAFE) ----
+df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].replace({
     "Less than 1 hour per day": "< 1 hr",
     "1 to 2 hours per day": "1–2 hrs",
     "3 to 4 hours per day": "3–4 hrs",
@@ -492,10 +502,25 @@ df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].map({
     "More than 6 hours per day": "> 6 hrs"
 })
 
+# ---- Apply categorical ordering (CRITICAL) ----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
     categories=USAGE_ORDER,
     ordered=True
+)
+
+# ---- Numeric mapping (for analysis & boxplots) ----
+social_media_hours_map = {
+    "< 1 hr": 0.5,
+    "1–2 hrs": 1.5,
+    "3–4 hrs": 3.5,
+    "5–6 hrs": 5.5,
+    "> 6 hrs": 7.0
+}
+
+df["Social_Media_Hours_Numeric"] = (
+    df["Social_Media_Use_Frequency"]
+    .map(social_media_hours_map)
 )
 
 # ----------- ILYA -----------
@@ -660,7 +685,7 @@ with st.sidebar:
         # --- Social Media Usage ---
         sm_filter = st.multiselect(
             "Social Media Usage (Hours / Day)",
-            options=list(df["Social_Media_Use_Frequency"].cat.categories),
+            options=USAGE_ORDER,,
             default=[]
         )
 
@@ -762,6 +787,7 @@ with tab1:
     # Summary box
     col1, col2, col3, col4 = st.columns(4)
     valid_stress = filtered_numeric["Academic_Stress_Index"].dropna()
+    high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(HIGH_USAGE).mean() * 100)
 
     col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
@@ -769,7 +795,7 @@ with tab1:
         col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
     else:
         col3.metric("Avg Stress Index", "N/A", help="No valid stress index data after filtering", border=True)
-    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
+    col4.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using 5 hours or more per day", border=True)
 
     # Scientific Summary
     # ===== REAL-TIME SCIENTIFIC SUMMARY =====
