@@ -474,53 +474,16 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
 ].mean(axis=1)
 
 # ----- CATEGORICAL ORDER -----
-# ---- Step 1: Clean raw text safely ----
-df["Social_Media_Use_Frequency"] = (
-    df["Social_Media_Use_Frequency"]
-    .astype(str)
-    .str.strip()
-    .str.replace("–", "-", regex=False)
-)
-
-# ---- Step 2: Define STANDARD labels (single source of truth) ----
-USAGE_ORDER = [
-    "< 1 hr",
-    "1–2 hrs",
-    "3–4 hrs",
-    "5–6 hrs",
-    "> 6 hrs"
-]
-
-HIGH_USAGE = ["5–6 hrs", "> 6 hrs"]
-
-# ---- Replace long labels → short labels (SAFE) ----
-df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].replace({
-    "Less than 1 hour per day": "< 1 hr",
-    "1 to 2 hours per day": "1–2 hrs",
-    "3 to 4 hours per day": "3–4 hrs",
-    "5 to 6 hours per day": "5–6 hrs",
-    "More than 6 hours per day": "> 6 hrs"
-})
-
-# ---- Apply categorical ordering (CRITICAL) ----
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
-    categories=USAGE_ORDER,
+    categories=[
+        "Less than 1 hour per day",
+        "1 to 2 hours per day",
+        "3 to 4 hours per day",
+        "5 to 6 hours per day",
+        "More than 6 hours per day"
+    ],
     ordered=True
-)
-
-# ---- Numeric mapping (for analysis & boxplots) ----
-social_media_hours_map = {
-    "< 1 hr": 0.5,
-    "1–2 hrs": 1.5,
-    "3–4 hrs": 3.5,
-    "5–6 hrs": 5.5,
-    "> 6 hrs": 7.0
-}
-
-df["Social_Media_Hours_Numeric"] = (
-    df["Social_Media_Use_Frequency"]
-    .map(social_media_hours_map)
 )
 
 # ----------- ILYA -----------
@@ -685,7 +648,7 @@ with st.sidebar:
         # --- Social Media Usage ---
         sm_filter = st.multiselect(
             "Social Media Usage (Hours / Day)",
-            options=USAGE_ORDER,
+            options=list(df["Social_Media_Use_Frequency"].cat.categories),
             default=[]
         )
 
@@ -787,7 +750,6 @@ with tab1:
     # Summary box
     col1, col2, col3, col4 = st.columns(4)
     valid_stress = filtered_numeric["Academic_Stress_Index"].dropna()
-    high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(HIGH_USAGE).mean() * 100)
 
     col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
     col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
@@ -795,7 +757,7 @@ with tab1:
         col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
     else:
         col3.metric("Avg Stress Index", "N/A", help="No valid stress index data after filtering", border=True)
-    col4.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using 5 hours or more per day", border=True)
+    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
 
     # Scientific Summary
     # ===== REAL-TIME SCIENTIFIC SUMMARY =====
@@ -822,15 +784,17 @@ with tab1:
         st.markdown("Understand how much and how often students use the internet/social media.")
 
         # Summary box
+        freq_order = df["Social_Media_Use_Frequency"].cat.categories
         median_usage = filtered_numeric["Social_Media_Hours_Numeric"].median()
-        high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(HIGH_USAGE).mean() * 100)
+        high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
         avg_study_hours = filtered_numeric["Study_Hours_Numeric"].mean()
         time_waste_pct = (filtered_df["Social_Media_Waste_Time"].isin(["Agree", "Strongly Agree"]).mean() * 100)
-        usage_counts = (filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(USAGE_ORDER, fill_value=0))
-        
+        usage_counts = (filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order, fill_value=0))
+        total_students = usage_counts.sum()
+
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Median Social Media Hours/Day", f"{median_usage:.1f} hrs" if pd.notna(median_usage) else "N/A", help="Typical daily social media usage (median)", border=True)
-        col2.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using 5 hours or more per day", border=True)
+        col2.metric("High Usage Group (%)", f"{high_usage_pct:.1f}%", help="Students using ≥5 hours/day", border=True)
         col3.metric("Avg. Study Hours/Week", f"{avg_study_hours:.1f}" if pd.notna(median_usage) else "N/A", help="Average academic study commitment", border=True)
         col4.metric("Perceived Time Loss (%)", f"{time_waste_pct:.1f}%", help="Students who feel social media wastes their time", border=True)
         
@@ -842,7 +806,7 @@ with tab1:
                 len(filtered_df),
                 filtered_numeric["Social_Media_Hours_Numeric"].median(),
                 (filtered_df["Social_Media_Use_Frequency"]
-                 .isin(HIGH_USAGE)
+                 .isin(["5 to 6 hours per day", "More than 6 hours per day"])
                  .mean() * 100),
                 filtered_numeric["Study_Hours_Numeric"].mean()
             )
@@ -854,11 +818,11 @@ with tab1:
         fig = px.bar(
             x=usage_counts.index,
             y=usage_counts.values,
+            title="Distribution of Daily Social Media Usage",
             labels={
-                "x": "Daily Social Media Usage",
+                "x": "Hours per Day",
                 "y": "Number of Students"
             },
-            title="Distribution of Daily Social Media Usage",
             color_discrete_sequence=px.colors.qualitative.Set2
         )
 
