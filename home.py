@@ -796,7 +796,6 @@ with tab1:
         st.markdown("Understand how much and how often students use the internet/social media.")
 
         # Summary box
-        freq_order = df["Social_Media_Use_Frequency"].cat.categories
         median_usage = filtered_numeric["Social_Media_Hours_Numeric"].median()
         high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(HIGH_USAGE).mean() * 100)
         avg_study_hours = filtered_numeric["Study_Hours_Numeric"].mean()
