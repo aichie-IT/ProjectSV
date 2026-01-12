@@ -261,6 +261,7 @@ def load_data():
 
 df = load_data()
 
+# ================= DATA CLEANING =================
 # Clean Column Names
 df.columns = df.columns.str.strip()
 
@@ -301,6 +302,19 @@ df = df.rename(columns={
     "What type of online content affects you the most (positive or negative)? / Apakah jenis kandungan dalam talian yang paling mempengaruhi anda (positif atau negatif)?": "Type_of_Online_Content_Affects",
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
+
+# Fix encoding issues
+df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
+
+# Drop Irrelevant Columns
+cols_to_drop = [
+    "Timestamp",
+    "Type_of_Online_Content_Affects",
+    "Universities_Support_Actions"
+]
+
+df = df.drop(columns=cols_to_drop, errors="ignore")
+df_numeric = df.copy()
 
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
 st.header("Overall Social Media Usage (All Respondents)")
@@ -360,19 +374,6 @@ st.info(
 )
 
 st.markdown("---")
-
-# Fix encoding issues
-df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
-
-# Drop Irrelevant Columns
-cols_to_drop = [
-    "Timestamp",
-    "Type_of_Online_Content_Affects",
-    "Universities_Support_Actions"
-]
-
-df = df.drop(columns=cols_to_drop, errors="ignore")
-df_numeric = df.copy()
 
 # ============ INDIVIDUAL PART FILTERING AND MAPPING ============
 # ----------- AISHAH SAKINAH -----------
