@@ -1867,4 +1867,4 @@ with tab4:
    
 # --- FOOTER ---
 st.markdown("---")
-st.caption("© 2025 Exploring Internet Use and Suicidality in Mental Health Populations | Designed with ❤️ using Streamlit & Plotly")
+st.caption("© 2026 Exploring Internet Use and Mental Health in Students Live | Designed with ❤️ using Streamlit & Plotly")
