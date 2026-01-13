@@ -334,9 +334,16 @@ col1, col2, col3, col4 = st.columns(4)
 top_academic = df['General_Academic_Performance'].mode()[0]
 top_media = df['Social_Media_Use_Frequency'].mode()[0]
 
+# Create age ranges
+age_bins = [0, 18, 20, 22, 24, 100]
+age_labels = ["≤18", "19–20", "21–22", "23–24", "≥25"]
+df["Age_Range"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=True)
+
+most_common_age_range = df["Age_Range"].mode()[0]
+
 if not df.empty:
     col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
-    col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
+    col2.metric("Most Common Age Range", most_common_age_range, help="PLO 2: Students Age Group", border=True)
     col3.metric("Academic Performance", top_academic, help="PLO 3: Students Academic Performance", border=True)
     col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Use Frecuency", border=True)
 else:
