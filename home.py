@@ -443,7 +443,7 @@ study_hour_map = {
 }
 
 social_media_hour_map = {
-    "Less than 1 hour per day": "< 1 hours/day",
+    "Less than 1 hour per day": "< 1 hour/day",
     "1-2 hours per day": "1–2 hours/day",
     "3-4 hours per day": "3–4 hours/day",
     "5-6 hours per day": "5–6 hours/day",
@@ -464,7 +464,7 @@ df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map({
 
 # Social media hours
 df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map({
-    "< 1 hours/day": 0.5,
+    "< 1 hour/day": 0.5,
     "1–2 hours/day": 1.5,
     "3–4 hours/day": 3.5,
     "5–6 hours/day": 5.5,
