@@ -1761,7 +1761,7 @@ with tab4:
             x="Year_of_Study",
             color="Gender",
             barmode="group",
-            labels={"Year_of_Study":"Year of Study","Number of Respondents":"Number of Respondents"}
+            labels={"Year_of_Study":"Year of Study","count":"Number of Respondents"}
         )
         st.plotly_chart(fig1, use_container_width=True)
     
@@ -1777,7 +1777,7 @@ with tab4:
             x="Gender",
             color="Social_Media_Positive_Impact_on_Wellbeing",
             barmode="stack",
-            labels={"Social_Media_Positive_Impact_on_Wellbeing":"Perceived Positive Impact","Number of Respondents":"Number of Respondents"}
+            labels={"Social_Media_Positive_Impact_on_Wellbeing":"Perceived Positive Impact","count":"Number of Respondents"}
         )
         st.plotly_chart(fig2, use_container_width=True)
      
@@ -1795,7 +1795,7 @@ with tab4:
             x="Difficulty_Sleeping_University_Pressure",
             color="Gender",
             barmode="group",
-            labels={"Difficulty_Sleeping_University_Pressure":"Difficulty Sleeping","Number of Respondents":"Number of Respondents"}
+            labels={"Difficulty_Sleeping_University_Pressure":"Difficulty Sleeping","count":"Number of Respondents"}
         )
         st.plotly_chart(fig3, use_container_width=True)
     
@@ -1817,7 +1817,7 @@ with tab4:
             heatmap_data,
             text_auto=True,
             color_continuous_scale="YlGnBu",
-            labels={"x":"Living Situation","y":"Year of Study","color":"Count"}
+            labels={"x":"Living Situation","y":"Year of Study","color":"Number of Respondents"}
         )
         st.plotly_chart(fig4, use_container_width=True)
      
@@ -1834,7 +1834,7 @@ with tab4:
             x="Social_Media_Daily_Routine",
             color="Race",
             barmode="group",
-            labels={"Social_Media_Daily_Routine":"Social Media Routine","Number of Respondents":"Number of Respondents"}
+            labels={"Social_Media_Daily_Routine":"Social Media Routine","count":"Number of Respondents"}
         )
         st.plotly_chart(fig5, use_container_width=True)
     
@@ -1860,7 +1860,7 @@ with tab4:
         """)
 
         # ==================================================
-        # SUMMARY
+        # OBSERVATION
         # ==================================================
 
         st.success("""
