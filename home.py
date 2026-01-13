@@ -877,7 +877,7 @@ with tab1:
         )
 
         fig.update_layout(xaxis_tickangle=-30)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         st.info(
             bar_distribution_summary(
@@ -902,7 +902,7 @@ with tab1:
         )
 
         fig.update_layout(xaxis_tickangle=-25)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         usage_counts = filtered_df["Social_Media_Use_Frequency"].value_counts()
         dominant_group = usage_counts.idxmax()
 
@@ -925,7 +925,7 @@ with tab1:
             color_discrete_sequence=px.colors.qualitative.Safe
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(
             boxplot_summary(
                 filtered_numeric,
@@ -952,7 +952,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(
             likert_summary(
                 filtered_df["Social_Media_Waste_Time"]
@@ -975,7 +975,7 @@ with tab1:
             title="Need for Online Mental Health Resources"
         )
         fig.update_traces(textposition="inside", textinfo="percent+label")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         resource_counts = filtered_df[
             "Do you think universities should provide more online mental health resources?"
@@ -1058,7 +1058,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         mean_stress = usage_group_mean["Academic_Stress_Index"].mean()
 
         st.info(bar_chart_summary(filtered_df, "Social_Media_Use_Frequency"))
@@ -1073,7 +1073,7 @@ with tab1:
             color="Social_Media_Use_Frequency",
             color_discrete_sequence=px.colors.qualitative.Set3
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(box_plot_summary(filtered_numeric, "General_Academic_Performance_Numeric"))
 
         # Box Plot
@@ -1092,8 +1092,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
-
+        st.plotly_chart(fig, width="stretch")
         st.info(box_plot_summary(filtered_numeric, "Sleep_Affected_By_Social_Media_Numeric"))
 
         # Scatter Plot
@@ -1107,8 +1106,7 @@ with tab1:
             color_discrete_sequence=px.colors.qualitative.Dark2
         )
 
-        st.plotly_chart(fig, use_container_width=True)
-
+        st.plotly_chart(fig, width="stretch")
         st.info(scatter_plot_summary(filtered_numeric, "Age", "Studies_Affected_By_Social_Media_Numeric"))
 
         st.markdown("#### 💬 Key Insights")
@@ -1179,8 +1177,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
-
+        st.plotly_chart(fig, width="stretch")
         values = filtered_numeric[categories].mean().tolist()
 
         st.info(
@@ -1208,7 +1205,7 @@ with tab1:
             color_continuous_scale=CONTINUOUS_SCALE
         )
         fig.update_layout(template="plotly_white")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(parallel_chart_summary(filtered_numeric, cols_parallel))
 
        
@@ -1278,7 +1275,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(heatmap_summary(filtered_numeric, cols_parallel))
 
         # Waterfall Chart
@@ -1314,7 +1311,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(waterfall_summary(filtered_numeric, col='Gender', value_col='Academic_Stress_Index'))
    
        
