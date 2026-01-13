@@ -15,15 +15,6 @@ def safe_corr(df, col_x, col_y):
         return None
     return temp.corr().iloc[0, 1]
 
-def get_safe_categories(series):
-    """
-    Safely extract categories or unique values
-    without crashing on dtype issues.
-    """
-    if pd.api.types.is_categorical_dtype(series):
-        return list(series.cat.categories)
-    return sorted(series.dropna().unique().tolist())
-
 def generate_scientific_summary(n, usage, stress, pos, neg):
     if n == 0:
         return "No data available under the current filter selection."
@@ -158,62 +149,42 @@ def radar_summary(values, labels):
     )
 
 def bar_chart_summary(df, col):
-    s = safe_series(df, col)
-    if s is None:
-        return "No data available for interpretation."
-
-    counts = s.value_counts(normalize=True) * 100
+    if df.empty:
+        return "No data available."
+    counts = df[col].value_counts(normalize=True) * 100
     max_cat = counts.idxmax()
     min_cat = counts.idxmin()
-
     return (
-        f"The chart illustrates the distribution of {col}. "
-        f"The most common response is '{max_cat}' ({counts[max_cat]:.1f}%), "
-        f"while '{min_cat}' is the least selected ({counts[min_cat]:.1f}%). "
-        f"This indicates uneven participation across response categories."
+        f"The bar chart shows the distribution of {col}. "
+        f"Most respondents belong to '{max_cat}' ({counts[max_cat]:.1f}%), "
+        f"while the least is '{min_cat}' ({counts[min_cat]:.1f}%). "
+        f"This suggests a skewed distribution in {col} among the respondents."
     )
-
 
 def box_plot_summary(df, col):
-    s = safe_series(df, col)
-    if s is None:
-        return "No numerical data available for box plot interpretation."
-
-    q1, q3 = s.quantile([0.25, 0.75])
-    median = s.median()
-    iqr = q3 - q1
-    outliers = s[(s < q1 - 1.5 * iqr) | (s > q3 + 1.5 * iqr)]
-
+    if df.empty:
+        return "No data available."
+    median = df[col].median()
+    q1 = df[col].quantile(0.25)
+    q3 = df[col].quantile(0.75)
+    outliers = df[col][(df[col] < q1 - 1.5*(q3-q1)) | (df[col] > q3 + 1.5*(q3-q1))]
     return (
-        f"The box plot shows a median value of {median:.2f}, "
-        f"with most responses ranging between {q1:.2f} and {q3:.2f}. "
-        f"There are {len(outliers)} outliers, suggesting some extreme responses."
+        f"The box plot for {col} shows a median of {median:.2f}, "
+        f"with the interquartile range between {q1:.2f} and {q3:.2f}. "
+        f"There are {len(outliers)} outlier(s), indicating occasional extreme responses."
     )
-
 
 def scatter_plot_summary(df, x_col, y_col):
-    if x_col not in df or y_col not in df:
-        return "Insufficient data to analyse the relationship."
-
-    temp = df[[x_col, y_col]].dropna()
-    if temp.empty:
-        return "No valid paired data points available."
-
-    corr = temp.corr().iloc[0, 1]
-
-    strength = (
-        "weak" if abs(corr) < 0.3 else
-        "moderate" if abs(corr) < 0.6 else
-        "strong"
-    )
+    if df.empty:
+        return "No data available."
+    corr = df[[x_col, y_col]].corr().iloc[0,1]
     direction = "positive" if corr > 0 else "negative"
-
+    strength = "weak" if abs(corr)<0.3 else "moderate" if abs(corr)<0.6 else "strong"
     return (
-        f"The scatter plot indicates a {strength} {direction} relationship "
-        f"between {x_col} and {y_col} (r = {corr:.2f}). "
-        f"This suggests a meaningful association worth further investigation."
+        f"The scatter plot shows the relationship between {x_col} and {y_col}. "
+        f"The correlation is {corr:.2f}, indicating a {strength} {direction} relationship. "
+        f"Clusters or trends may suggest patterns worth investigating."
     )
-
 def parallel_chart_summary(df, cols):
     if df.empty:
         return "No data available."
@@ -228,19 +199,15 @@ def parallel_chart_summary(df, cols):
     )
 
 def heatmap_summary(df, cols):
-    temp = df[cols].dropna()
-    if temp.empty:
-        return "Insufficient data to compute correlations."
-
-    corr = temp.corr()
-    corr_vals = corr.where(~np.eye(corr.shape[0], dtype=bool))
-    max_pair = corr_vals.abs().stack().idxmax()
-    max_value = corr.loc[max_pair]
-
+    if df.empty:
+        return "No data available."
+    corr = df[cols].corr()
+    max_pair = corr.unstack().sort_values(ascending=False).drop_duplicates().iloc[1] # skip 1=diagonal 1.0
+    max_cols = corr.unstack().sort_values(ascending=False).drop_duplicates().index[1]
     return (
-        f"The heatmap reveals relationships among the selected variables. "
-        f"The strongest association is between '{max_pair[0]}' and '{max_pair[1]}' "
-        f"with a correlation of {max_value:.2f}, indicating a strong linear relationship."
+        f"The heatmap shows correlations among {', '.join(cols)}. "
+        f"The strongest relationship is between '{max_cols[0]}' and '{max_cols[1]}' "
+        f"with a correlation of {max_pair:.2f}, indicating a notable positive association."
     )
 
 def waterfall_summary(df, col, value_col):
@@ -294,7 +261,6 @@ def load_data():
 
 df = load_data()
 
-# ================= DATA CLEANING =================
 # Clean Column Names
 df.columns = df.columns.str.strip()
 
@@ -336,19 +302,6 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
-# Fix encoding issues
-df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
-
-# Drop Irrelevant Columns
-cols_to_drop = [
-    "Timestamp",
-    "Type_of_Online_Content_Affects",
-    "Universities_Support_Actions"
-]
-
-df = df.drop(columns=cols_to_drop, errors="ignore")
-df_numeric = df.copy()
-
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
 st.header("Overall Social Media Usage (All Respondents)")
 
@@ -384,7 +337,6 @@ else:
     col2.metric("Most Common Age Range", "N/A", help="No data available")
     col3.metric("Most Common Academic Performance", "N/A", help="No data available")
     col4.metric("Most Common Social Media Usage (/Day)", "N/A", help="No data available")
-
 # --- Dataset Preview ---
 with st.expander("View Dataset Preview"):
     st.dataframe(df.head(20), use_container_width=True)
@@ -415,6 +367,19 @@ st.info(
 
 st.markdown("---")
 
+# Fix encoding issues
+df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
+
+# Drop Irrelevant Columns
+cols_to_drop = [
+    "Timestamp",
+    "Type_of_Online_Content_Affects",
+    "Universities_Support_Actions"
+]
+
+df = df.drop(columns=cols_to_drop, errors="ignore")
+df_numeric = df.copy()
+
 # ============ INDIVIDUAL PART FILTERING AND MAPPING ============
 # ----------- AISHAH SAKINAH -----------
 
@@ -435,6 +400,7 @@ LIKERT_COLS = [
     'Social_Media_Positive_Impact_on_Wellbeing',
     'Social_Media_Negative_Impact_on_Wellbeing'
 ]
+
 
 # Numeric Likert Columns
 for col in LIKERT_COLS:
@@ -465,43 +431,23 @@ for col in FREQ_COLS:
         df_numeric[col + "_Numeric"] = (
             df_numeric[col].astype(str).str.strip().map(freq_map)
         )
-        
-study_hour_map = {
-    "Less than 5 hours": "< 5 hours/week",
-    "5-10 hours": "5-10 hours/week",
-    "11-15 hours": "11-15 hours/week",
-    "16-20 hours": "16-20 hours/week",
-    "More than 20 hours": "> 20 hours/week"
-}
-
-social_media_hour_map = {
-    "Less than 1 hour per day": "< 1 hour/day",
-    "1-2 hours per day": "1-2 hours/day",
-    "3-4 hours per day": "3-4 hours/day",
-    "5-6 hours per day": "5-6 hours/day",
-    "More than 6 hours per day": "> 6 hours/day"
-}
-
-df["Hours_Study_per_Week"] = df["Hours_Study_per_Week"].replace(study_hour_map)
-df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].replace(social_media_hour_map)
-
-
+    
 # Study hours
 df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map({
-    "< 5 hours/week": 2.5,
-    "5-10 hours/week": 7.5,
-    "11-15 hours/week": 13,
-    "16-20 hours/week": 18,
-    "> 20 hours/week": 22.5
+    "Less than 5 hours": 2.5,
+    "5 to 10 hours": 7.5,
+    "11 to 15 hours": 13,
+    "16 to 20 hours": 18,
+    "More than 20 hours": 22.5
 })
 
 # Social media hours
 df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map({
-    "< 1 hour/day": 0.5,
-    "1-2 hours/day": 1.5,
-    "3-4 hours/day": 3.5,
-    "5-6 hours/day": 5.5,
-    "> 6 hours/day": 7
+    "Less than 1 hour per day": 0.5,
+    "1 to 2 hours per day": 1.5,
+    "3 to 4 hours per day": 3.5,
+    "5 to 6 hours per day": 5.5,
+    "More than 6 hours per day": 7
 })
 
 # Academic performance mapping
@@ -534,45 +480,17 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
 ].mean(axis=1)
 
 # ----- CATEGORICAL ORDER -----
-usage_order = [
-    "< 1 hour/day",
-    "1-2 hours/day",
-    "3-4 hours/day",
-    "5-6 hours/day",
-    "> 6 hours/day"
-]
-
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
-    categories=["< 1 hr", "1–2 hrs", "3–4 hrs", "5–6 hrs", "> 6 hrs"],
+    categories=[
+        "Less than 1 hour per day",
+        "1 to 2 hours per day",
+        "3 to 4 hours per day",
+        "5 to 6 hours per day",
+        "More than 6 hours per day"
+    ],
     ordered=True
 )
-study_order = [
-    "< 5 hours/week",
-    "5-10 hours/week",
-    "11-15 hours/week",
-    "16-20 hours/week",
-    "> 20 hours/week"
-]
-
-df["Hours_Study_per_Week"] = pd.Categorical(
-    df["Hours_Study_per_Week"],
-    categories=study_order,
-    ordered=True
-)
-
-# ================= FINAL SAFE CATEGORICAL ENFORCEMENT =================
-categorical_columns = [
-    "Gender",
-    "Social_Media_Use_Frequency",
-    "Hours_Study_per_Week",
-    "Social_Media_Waste_Time"
-]
-
-for col in categorical_columns:
-    if col in df.columns and not pd.api.types.is_categorical_dtype(df[col]):
-        df[col] = df[col].astype("category")
-
 
 # ----------- ILYA -----------
 # Re-apply short label mapping to 'Social_Media_Use_Frequency'
@@ -691,77 +609,35 @@ for col in likert_cols:
 
 # Mapping Gender
 gender_map = {0: 'Female', 1: 'Male', 2: 'Other'}
-df['Gender_Num'] = (
-    df['Gender']
-    .map({'Female': 0, 'Male': 1, 'Other': 2})
-    .astype('float')
-    .fillna(2)
-    .astype(int)
-)
+df['Gender_Num'] = df['Gender'].map({'Female': 0, 'Male': 1, 'Other': 2}).fillna(2)
 
 # Mapping Year of Study
 year_map = {1: 'Year 1', 2: 'Year 2', 3: 'Year 3', 4: 'Year 4', 5: 'Year 5', 0: 'Unknown'}
-df['Year_of_Study_Num'] = (
-    df['Year_of_Study']
-    .map({'Year 1': 1, 'Year 2': 2, 'Year 3': 3, 'Year 4': 4, 'Year 5': 5})
-    .astype('float')
-    .fillna(0)
-    .astype(int)
-)
+df['Year_of_Study_Num'] = df['Year_of_Study'].map({'Year 1': 1, 'Year 2': 2, 'Year 3': 3, 'Year 4': 4, 'Year 5': 5}).fillna(0)
 
 # Mapping Living Situation
 living_map = {0: 'With family', 1: 'On-campus', 2: 'Off-campus', 3: 'Other'}
-df['Current_Living_Situation_Num'] = (
-    df['Current_Living_Situation']
-    .map({
-        'With family': 0,
-        'On-campus': 1,
-        'Off-campus (rental)': 2,
-        'Off-campus': 2,
-        'Other': 3
-    })
-    .astype('float')
-    .fillna(3)
-    .astype(int)
-)
+df['Current_Living_Situation_Num'] = df['Current_Living_Situation'].map({
+    'With family': 0, 'On-campus': 1, 'Off-campus (rental)': 2, 'Off-campus': 2, 'Other': 3
+}).fillna(3)
 
 # Mapping Employment (Clean string variations from CSV)
-df['Employment_Status_Num'] = (
-    df['Employment_Status']
-    .map({
-        'Full-time student': 3,
-        'In paid employment (including part-time, self-employed)': 2,
-        'Internship': 1,
-        'Unemployed': 0
-    })
-    .astype('float')
-    .fillna(2)
-    .astype(int)
-)
+df['Employment_Status_Num'] = df['Employment_Status'].map({
+    'Full-time student': 3,
+    'In paid employment (including part-time, self-employed)': 2,
+    'Internship': 1,
+    'Unemployed': 0
+}).fillna(2)
 
 # Mapping Social Media Impact
 impact_map = {1: 'Positive Impact', 0: 'Negative Impact', 2: 'No impact'}
-df['Social_Media_Positive_Impact_on_Wellbeing_Num'] = (
-    df['Social_Media_Positive_Impact_on_Wellbeing']
-    .map({
-        'Positive impact': 1,
-        'Negative impact': 0,
-        'No impact': 2
-    })
-    .astype('float')
-    .fillna(2)
-    .astype(int)
-)
+df['Social_Media_Positive_Impact_on_Wellbeing_Num'] = df['Social_Media_Positive_Impact_on_Wellbeing'].map({
+    'Positive impact': 1, 'Negative impact': 0, 'No impact': 2
+}).fillna(2)
 
 # Mapping Race
 race_map = {0: 'Malay', 1: 'Chinese', 2: 'Indian', 3: 'Other'}
-df['Race_Num'] = (
-    df['Race']
-    .map({'Malay': 0, 'Chinese': 1, 'Indian': 2, 'Others': 3, 'Other': 3})
-    .astype('float')
-    .fillna(3)
-    .astype(int)
-)
+df['Race_Num'] = df['Race'].map({'Malay': 0, 'Chinese': 1, 'Indian': 2, 'Others': 3, 'Other': 3}).fillna(3)
 
 # --- NEW: Mapping Difficulty Sleeping Due to University Pressure to 5-point Likert ---
 sleep_map = {
@@ -828,7 +704,7 @@ with st.sidebar:
         # --- Social Media Usage ---
         sm_filter = st.multiselect(
             "Social Media Usage (Hours / Day)",
-            options=get_safe_categories(df["Social_Media_Use_Frequency"]),
+            options=list(df["Social_Media_Use_Frequency"].cat.categories),
             default=[]
         )
 
@@ -857,9 +733,7 @@ with st.sidebar:
             filtered_numeric = filtered_numeric.loc[filtered_df.index]
 
         if sm_filter:
-            filtered_df = filtered_df[
-                filtered_df["Social_Media_Use_Frequency"].isin(sm_filter)
-            ]
+            filtered_df = filtered_df[filtered_df["Social_Media_Use_Frequency"].isin(sm_filter)]
             filtered_numeric = filtered_numeric.loc[filtered_df.index]
 
         filtered_df = filtered_df[
@@ -945,7 +819,7 @@ with tab1:
         col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
     else:
         col3.metric("Avg Stress Index", "N/A", help="No valid stress index data after filtering", border=True)
-    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5–6 hours/day', '> 6 hours/day']).mean() * 100):.1f}%", border=True)
+    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
 
     # Scientific Summary
     # ===== REAL-TIME SCIENTIFIC SUMMARY =====
@@ -974,7 +848,7 @@ with tab1:
         # Summary box
         freq_order = df["Social_Media_Use_Frequency"].cat.categories
         median_usage = filtered_numeric["Social_Media_Hours_Numeric"].median()
-        high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5–6 hours/day", "> 6 hours/day"]).mean() * 100)
+        high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
         avg_study_hours = filtered_numeric["Study_Hours_Numeric"].mean()
         time_waste_pct = (filtered_df["Social_Media_Waste_Time"].isin(["Agree", "Strongly Agree"]).mean() * 100)
         usage_counts = (filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order, fill_value=0))
@@ -994,7 +868,7 @@ with tab1:
                 len(filtered_df),
                 filtered_numeric["Social_Media_Hours_Numeric"].median(),
                 (filtered_df["Social_Media_Use_Frequency"]
-                 .isin(["5–6 hours/day", "> 6 hours/day"])
+                 .isin(["5 to 6 hours per day", "More than 6 hours per day"])
                  .mean() * 100),
                 filtered_numeric["Study_Hours_Numeric"].mean()
             )
@@ -1015,7 +889,7 @@ with tab1:
         )
 
         fig.update_layout(xaxis_tickangle=-30)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         st.info(
             bar_distribution_summary(
@@ -1027,6 +901,11 @@ with tab1:
         st.markdown("---")
             
         # Bar Chart
+        study_order = [
+            "Less than 5 hours", "5 to 10 hours",
+            "11 to 15 hours", "16 to 20 hours", "More than 20 hours"
+        ]
+
         fig = px.bar(
             filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order),
             title="Frequency of Study Hours per Week",
@@ -1035,7 +914,7 @@ with tab1:
         )
 
         fig.update_layout(xaxis_tickangle=-25)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         usage_counts = filtered_df["Social_Media_Use_Frequency"].value_counts()
         dominant_group = usage_counts.idxmax()
 
@@ -1058,7 +937,7 @@ with tab1:
             color_discrete_sequence=px.colors.qualitative.Safe
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(
             boxplot_summary(
                 filtered_numeric,
@@ -1085,7 +964,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(
             likert_summary(
                 filtered_df["Social_Media_Waste_Time"]
@@ -1108,7 +987,7 @@ with tab1:
             title="Need for Online Mental Health Resources"
         )
         fig.update_traces(textposition="inside", textinfo="percent+label")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         resource_counts = filtered_df[
             "Do you think universities should provide more online mental health resources?"
@@ -1138,7 +1017,7 @@ with tab1:
         study_impact = filtered_numeric["Studies_Affected_By_Social_Media_Numeric"].dropna()
         academic_perf = filtered_numeric["General_Academic_Performance_Numeric"].dropna()
         study_hours = filtered_numeric["Study_Hours_Numeric"].dropna()
-        high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5–6 hours/day", "> 6 hours/day"]).mean() * 100)
+        high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
         sleep_pct = (filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4).mean() * 100
         corr_val = safe_corr(filtered_numeric, "Social_Media_Hours_Numeric", "Assignments_Stress_Numeric")
     
@@ -1191,7 +1070,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         mean_stress = usage_group_mean["Academic_Stress_Index"].mean()
 
         st.info(bar_chart_summary(filtered_df, "Social_Media_Use_Frequency"))
@@ -1206,7 +1085,7 @@ with tab1:
             color="Social_Media_Use_Frequency",
             color_discrete_sequence=px.colors.qualitative.Set3
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(box_plot_summary(filtered_numeric, "General_Academic_Performance_Numeric"))
 
         # Box Plot
@@ -1225,8 +1104,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
-
+        st.plotly_chart(fig, width="stretch")
         st.info(box_plot_summary(filtered_numeric, "Sleep_Affected_By_Social_Media_Numeric"))
 
         # Scatter Plot
@@ -1240,8 +1118,7 @@ with tab1:
             color_discrete_sequence=px.colors.qualitative.Dark2
         )
 
-        st.plotly_chart(fig, use_container_width=True)
-
+        st.plotly_chart(fig, width="stretch")
         st.info(scatter_plot_summary(filtered_numeric, "Age", "Studies_Affected_By_Social_Media_Numeric"))
 
         st.markdown("#### 💬 Key Insights")
@@ -1312,8 +1189,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
-
+        st.plotly_chart(fig, width="stretch")
         values = filtered_numeric[categories].mean().tolist()
 
         st.info(
@@ -1341,7 +1217,7 @@ with tab1:
             color_continuous_scale=CONTINUOUS_SCALE
         )
         fig.update_layout(template="plotly_white")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(parallel_chart_summary(filtered_numeric, cols_parallel))
 
        
@@ -1411,7 +1287,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(heatmap_summary(filtered_numeric, cols_parallel))
 
         # Waterfall Chart
@@ -1447,7 +1323,7 @@ with tab1:
             template="plotly_white"
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         st.info(waterfall_summary(filtered_numeric, col='Gender', value_col='Academic_Stress_Index'))
    
        
@@ -1835,7 +1711,6 @@ with tab3:
     choice for students feeling stress.
     """)
 
-
 # ----------- TAB 4: AINUN -----------
 
 # ============ TAB 4: INDIVIDUAL VISUALIZATIONS ============
@@ -1999,4 +1874,4 @@ with tab4:
    
 # --- FOOTER ---
 st.markdown("---")
-st.caption("© 2026 Exploring Internet Use and Mental Health in Students Live | Designed with ❤️ using Streamlit & Plotly")
+st.caption("© 2025 Exploring Internet Use and Suicidality in Mental Health Populations | Designed with ❤️ using Streamlit & Plotly")
