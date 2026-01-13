@@ -15,6 +15,15 @@ def safe_corr(df, col_x, col_y):
         return None
     return temp.corr().iloc[0, 1]
 
+def get_safe_categories(series):
+    """
+    Safely extract categories or unique values
+    without crashing on dtype issues.
+    """
+    if pd.api.types.is_categorical_dtype(series):
+        return list(series.cat.categories)
+    return sorted(series.dropna().unique().tolist())
+
 def generate_scientific_summary(n, usage, stress, pos, neg):
     if n == 0:
         return "No data available under the current filter selection."
@@ -249,7 +258,7 @@ st.set_page_config(
 # banner
 st.image(
     "banner.jpeg",
-    use_container_width=True,
+    width="stretch",
     caption="Internet Use and Mental Health Dashboard"
 )
 
@@ -452,7 +461,20 @@ social_media_hour_map = {
 
 df["Hours_Study_per_Week"] = df["Hours_Study_per_Week"].replace(study_hour_map)
 df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].replace(social_media_hour_map)
-    
+
+# ================= SAFE CATEGORICAL ENFORCEMENT =================
+df["Social_Media_Use_Frequency"] = pd.Categorical(
+    df["Social_Media_Use_Frequency"],
+    categories=usage_order,
+    ordered=True
+)
+
+df["Hours_Study_per_Week"] = pd.Categorical(
+    df["Hours_Study_per_Week"],
+    categories=study_order,
+    ordered=True
+)
+
 # Study hours
 df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map({
     "< 5 hours/week": 2.5,
@@ -742,7 +764,7 @@ with st.sidebar:
         # --- Social Media Usage ---
         sm_filter = st.multiselect(
             "Social Media Usage (Hours / Day)",
-            options=list(df["Social_Media_Use_Frequency"].cat.categories),
+            options=get_safe_categories(df["Social_Media_Use_Frequency"]),
             default=[]
         )
 
@@ -771,7 +793,9 @@ with st.sidebar:
             filtered_numeric = filtered_numeric.loc[filtered_df.index]
 
         if sm_filter:
-            filtered_df = filtered_df[filtered_df["Social_Media_Use_Frequency"].isin(sm_filter)]
+            filtered_df = filtered_df[
+                filtered_df["Social_Media_Use_Frequency"].isin(sm_filter)
+            ]
             filtered_numeric = filtered_numeric.loc[filtered_df.index]
 
         filtered_df = filtered_df[
