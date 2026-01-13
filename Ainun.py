@@ -245,7 +245,7 @@ with right:
         heatmap_data,
         text_auto=True,
         color_continuous_scale="YlGnBu",
-        labels={"x":"Living Situation","y":"Year of Study","color":"Count"}
+        labels={"x":"Living Situation","y":"Year of Study","color":"Number of Respondents"}
     )
     st.plotly_chart(fig4, use_container_width=True)
      
