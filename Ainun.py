@@ -183,14 +183,15 @@ left, right = st.columns(2)
 
 with left:
     ("1️⃣ Gender Distribution Across Year of Study")
-
     fig1 = px.histogram(
-        filtered_data,
-        x="Year_of_Study",
-        color="Gender",
-        barmode="group",
-        labels={"Year_of_Study":"Year of Study","count":"Number of Respondents"}
-    )
+    filtered_data,
+    x="Year_of_Study",
+    color="Gender",
+    barmode="group",
+    labels={
+        "Year_of_Study": "Year of Study",
+        "count": "Number of Respondents"
+    }
     st.plotly_chart(fig1, use_container_width=True)
     
     st.success("""
