@@ -15,15 +15,6 @@ def safe_corr(df, col_x, col_y):
         return None
     return temp.corr().iloc[0, 1]
 
-def get_safe_categories(series):
-    """
-    Safely extract categories or unique values
-    without crashing on dtype issues.
-    """
-    if pd.api.types.is_categorical_dtype(series):
-        return list(series.cat.categories)
-    return sorted(series.dropna().unique().tolist())
-
 def generate_scientific_summary(n, usage, stress, pos, neg):
     if n == 0:
         return "No data available under the current filter selection."
@@ -258,7 +249,7 @@ st.set_page_config(
 # banner
 st.image(
     "banner.jpeg",
-    width="stretch",
+    use_container_width=True,
     caption="Internet Use and Mental Health Dashboard"
 )
 
@@ -270,7 +261,6 @@ def load_data():
 
 df = load_data()
 
-# ================= DATA CLEANING =================
 # Clean Column Names
 df.columns = df.columns.str.strip()
 
@@ -312,19 +302,6 @@ df = df.rename(columns={
     "What do you think universities can do to support student wellbeing? / Pada pendapat anda, apakah yang boleh dilakukan oleh universiti untuk menyokong kesejahteraan pelajar?": "Universities_Support_Actions"
 })
 
-# Fix encoding issues
-df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
-
-# Drop Irrelevant Columns
-cols_to_drop = [
-    "Timestamp",
-    "Type_of_Online_Content_Affects",
-    "Universities_Support_Actions"
-]
-
-df = df.drop(columns=cols_to_drop, errors="ignore")
-df_numeric = df.copy()
-
 # ================= OVERALL (UNFILTERED) DISTRIBUTION =================
 st.header("Overall Social Media Usage (All Respondents)")
 
@@ -343,23 +320,16 @@ col1, col2, col3, col4 = st.columns(4)
 top_academic = df['General_Academic_Performance'].mode()[0]
 top_media = df['Social_Media_Use_Frequency'].mode()[0]
 
-# Create age ranges
-age_bins = [0, 18, 20, 22, 24, 100]
-age_labels = ["≤18", "19–20", "21–22", "23–24", "≥25"]
-df["Age_Range"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=True)
-
-most_common_age_range = df["Age_Range"].mode()[0]
-
 if not df.empty:
     col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
-    col2.metric("Most Common Age Range", most_common_age_range, help="PLO 2: Most Common Students Age Group", border=True)
-    col3.metric("Most Common Academic Performance", top_academic, help="PLO 3: Most Common Students' Academic Performance", border=True)
-    col4.metric("Most Common Social Media Usage (/Day)", top_media, help="PLO 4: Social Media Use Frequency per Day", border=True)
+    col2.metric("Avg. Age", f"{df['Age'].mean():.1f} years", help="PLO 2: Students Age", border=True)
+    col3.metric("Academic Performance", top_academic, help="PLO 3: Students Academic Performance", border=True)
+    col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Use Frecuency", border=True)
 else:
     col1.metric("Total Records", "0", help="No data available")
-    col2.metric("Most Common Age Range", "N/A", help="No data available")
-    col3.metric("Most Common Academic Performance", "N/A", help="No data available")
-    col4.metric("Most Common Social Media Usage (/Day)", "N/A", help="No data available")
+    col2.metric("Avg. Age", "N/A", help="No data available")
+    col3.metric("Academic Performance", "N/A", help="No data available")
+    col4.metric("Social Media Usage", "N/A", help="No data available")
 
 # --- Dataset Preview ---
 with st.expander("View Dataset Preview"):
@@ -390,6 +360,19 @@ st.info(
 )
 
 st.markdown("---")
+
+# Fix encoding issues
+df = df.replace({"â\x80\x93": "-", "–": "-", "—": "-"}, regex=True)
+
+# Drop Irrelevant Columns
+cols_to_drop = [
+    "Timestamp",
+    "Type_of_Online_Content_Affects",
+    "Universities_Support_Actions"
+]
+
+df = df.drop(columns=cols_to_drop, errors="ignore")
+df_numeric = df.copy()
 
 # ============ INDIVIDUAL PART FILTERING AND MAPPING ============
 # ----------- AISHAH SAKINAH -----------
@@ -442,55 +425,23 @@ for col in FREQ_COLS:
         df_numeric[col + "_Numeric"] = (
             df_numeric[col].astype(str).str.strip().map(freq_map)
         )
-        
-study_hour_map = {
-    "Less than 5 hours": "< 5 hours/week",
-    "5-10 hours": "5–10 hours/week",
-    "11 to 15 hours": "11–15 hours/week",
-    "16 to 20 hours": "16–20 hours/week",
-    "More than 20 hours": "> 20 hours/week"
-}
-
-social_media_hour_map = {
-    "Less than 1 hour per day": "< 1 hour/day",
-    "1-2 hours per day": "1–2 hours/day",
-    "3-4 hours per day": "3–4 hours/day",
-    "5-6 hours per day": "5–6 hours/day",
-    "More than 6 hours per day": "> 6 hours/day"
-}
-
-df["Hours_Study_per_Week"] = df["Hours_Study_per_Week"].replace(study_hour_map)
-df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].replace(social_media_hour_map)
-
-# ================= SAFE CATEGORICAL ENFORCEMENT =================
-df["Social_Media_Use_Frequency"] = pd.Categorical(
-    df["Social_Media_Use_Frequency"],
-    categories=usage_order,
-    ordered=True
-)
-
-df["Hours_Study_per_Week"] = pd.Categorical(
-    df["Hours_Study_per_Week"],
-    categories=study_order,
-    ordered=True
-)
-
+    
 # Study hours
 df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map({
-    "< 5 hours/week": 2.5,
-    "5–10 hours/week": 7.5,
-    "11–15 hours/week": 13,
-    "16–20 hours/week": 18,
-    "> 20 hours/week": 22.5
+    "Less than 5 hours": 2.5,
+    "5 to 10 hours": 7.5,
+    "11 to 15 hours": 13,
+    "16 to 20 hours": 18,
+    "More than 20 hours": 22.5
 })
 
 # Social media hours
 df_numeric["Social_Media_Hours_Numeric"] = df_numeric["Social_Media_Use_Frequency"].map({
-    "< 1 hour/day": 0.5,
-    "1–2 hours/day": 1.5,
-    "3–4 hours/day": 3.5,
-    "5–6 hours/day": 5.5,
-    "> 6 hours/day": 7
+    "Less than 1 hour per day": 0.5,
+    "1 to 2 hours per day": 1.5,
+    "3 to 4 hours per day": 3.5,
+    "5 to 6 hours per day": 5.5,
+    "More than 6 hours per day": 7
 })
 
 # Academic performance mapping
@@ -523,34 +474,17 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
 ].mean(axis=1)
 
 # ----- CATEGORICAL ORDER -----
-usage_order = [
-    "< 1 hour/day",
-    "1–2 hours/day",
-    "3–4 hours/day",
-    "5–6 hours/day",
-    "> 6 hours/day"
-]
-
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
-    categories=usage_order,
+    categories=[
+        "Less than 1 hour per day",
+        "1 to 2 hours per day",
+        "3 to 4 hours per day",
+        "5 to 6 hours per day",
+        "More than 6 hours per day"
+    ],
     ordered=True
 )
-
-study_order = [
-    "< 5 hours/week",
-    "5–10 hours/week",
-    "11–15 hours/week",
-    "16–20 hours/week",
-    "> 20 hours/week"
-]
-
-df["Hours_Study_per_Week"] = pd.Categorical(
-    df["Hours_Study_per_Week"],
-    categories=study_order,
-    ordered=True
-)
-
 
 # ----------- ILYA -----------
 # Re-apply short label mapping to 'Social_Media_Use_Frequency'
@@ -613,56 +547,6 @@ df_melted['Mental_Health_Factor'] = df_melted['Mental_Health_Factor'].map(mental
 df_grouped = df_melted.groupby(['Daily_Internet_Usage_Hours', 'Mental_Health_Factor'])['Score'].mean().reset_index()
 
 # ----------- HANIS NABILA -----------
-
-likert_numeric_map = {
-    '1': 1,
-    '2': 2,
-    '3': 3,
-    '4': 4,
-    '5': 5
-}
-
-yes_no_map = {
-    'Yes': 1,
-    'No': 0
-}
-
-freq_map = {
-    'Never': 1,
-    'Rarely': 2,
-    'Sometimes': 3,
-    'Often': 4
-}
-
-df['Find_Mental_Health_Info_Online_Numeric'] = (
-df['Find_Mental_Health_Info_Online'].astype(str).map(yes_no_map)
-)
-
-df['Use_Online_Communities_for_Support_Numeric'] = (
-df['Use_Online_Communities_for_Support'].astype(str).map(freq_map)
-)
-
-columns_to_keep = [
-    'Gender',
-    'Find_Mental_Health_Info_Online',
-    'Seek_Help_Online_When_Stress',
-    'Use_Online_Communities_for_Support',
-    'Assignments_Stress',
-    'Follow_Motivational_Mental_Health_Content',
-    'Mental_Health_Info_Through_Internet'
-]
-
-# Likert-scale (1–5)
-likert_cols = [
-    'Seek_Help_Online_When_Stress',
-    'Assignments_Stress',
-    'Follow_Motivational_Mental_Health_Content',
-    'Mental_Health_Info_Through_Internet'
-]
-
-for col in likert_cols:
-    df[col + "_Numeric"] = df[col].astype(str).map(likert_numeric_map)
-    
 # ----------- AINUN -----------
 
 # --- DATA TRANSFORMATION FOR VISUALIZATIONS ---
@@ -764,7 +648,7 @@ with st.sidebar:
         # --- Social Media Usage ---
         sm_filter = st.multiselect(
             "Social Media Usage (Hours / Day)",
-            options=get_safe_categories(df["Social_Media_Use_Frequency"]),
+            options=list(df["Social_Media_Use_Frequency"].cat.categories),
             default=[]
         )
 
@@ -793,9 +677,7 @@ with st.sidebar:
             filtered_numeric = filtered_numeric.loc[filtered_df.index]
 
         if sm_filter:
-            filtered_df = filtered_df[
-                filtered_df["Social_Media_Use_Frequency"].isin(sm_filter)
-            ]
+            filtered_df = filtered_df[filtered_df["Social_Media_Use_Frequency"].isin(sm_filter)]
             filtered_numeric = filtered_numeric.loc[filtered_df.index]
 
         filtered_df = filtered_df[
@@ -869,19 +751,13 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
     valid_stress = filtered_numeric["Academic_Stress_Index"].dropna()
 
-    # Create age ranges
-    age_bins = [0, 18, 20, 22, 24, 100]
-    age_labels = ["≤18", "19–20", "21–22", "23–24", "≥25"]
-    df["Age_Range"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=True)
-    most_common_age_range = df["Age_Range"].mode()[0]
-
-    col1.metric("Total Students", f"{len(filtered_df):,}", help="PLO 1: Total Students Records", border=True)
-    col2.metric("Most Common Age Range", most_common_age_range, help="PLO 2: Most Common Students Age Group", border=True)
+    col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
+    col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
     if not valid_stress.empty:
         col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
     else:
         col3.metric("Avg Stress Index", "N/A", help="No valid stress index data after filtering", border=True)
-    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5–6 hours/day', '> 6 hours/day']).mean() * 100):.1f}%", border=True)
+    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
 
     # Scientific Summary
     # ===== REAL-TIME SCIENTIFIC SUMMARY =====
@@ -910,7 +786,7 @@ with tab1:
         # Summary box
         freq_order = df["Social_Media_Use_Frequency"].cat.categories
         median_usage = filtered_numeric["Social_Media_Hours_Numeric"].median()
-        high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5–6 hours/day", "> 6 hours/day"]).mean() * 100)
+        high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
         avg_study_hours = filtered_numeric["Study_Hours_Numeric"].mean()
         time_waste_pct = (filtered_df["Social_Media_Waste_Time"].isin(["Agree", "Strongly Agree"]).mean() * 100)
         usage_counts = (filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order, fill_value=0))
@@ -930,7 +806,7 @@ with tab1:
                 len(filtered_df),
                 filtered_numeric["Social_Media_Hours_Numeric"].median(),
                 (filtered_df["Social_Media_Use_Frequency"]
-                 .isin(["5–6 hours/day", "> 6 hours/day"])
+                 .isin(["5 to 6 hours per day", "More than 6 hours per day"])
                  .mean() * 100),
                 filtered_numeric["Study_Hours_Numeric"].mean()
             )
@@ -963,6 +839,11 @@ with tab1:
         st.markdown("---")
             
         # Bar Chart
+        study_order = [
+            "Less than 5 hours", "5 to 10 hours",
+            "11 to 15 hours", "16 to 20 hours", "More than 20 hours"
+        ]
+
         fig = px.bar(
             filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order),
             title="Frequency of Study Hours per Week",
@@ -1074,7 +955,7 @@ with tab1:
         study_impact = filtered_numeric["Studies_Affected_By_Social_Media_Numeric"].dropna()
         academic_perf = filtered_numeric["General_Academic_Performance_Numeric"].dropna()
         study_hours = filtered_numeric["Study_Hours_Numeric"].dropna()
-        high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5–6 hours/day", "> 6 hours/day"]).mean() * 100)
+        high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
         sleep_pct = (filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4).mean() * 100
         corr_val = safe_corr(filtered_numeric, "Social_Media_Hours_Numeric", "Assignments_Stress_Numeric")
     
@@ -1572,204 +1453,178 @@ with tab2:
 # ================= TAB 3: HANIS NABILA =================
 with tab3:
     st.header("Analyze Mental Health Information-Seeking Behavior")
-    st.subheader("📌 Key Mental Health Information-Seeking Indicators")
 
-    col1, col2, col3, col4 = st.columns(4)
-
-    col1.metric(
-        "Often / Always Assignment Stress",
-        f"{(df['Assignments_Stress_Numeric'] >= 4).mean()*100:.1f}%"
-    )
-
-    col2.metric(
-        "Search Mental Health Info Online",
-        f"{(df['Find_Mental_Health_Info_Online_Numeric'] == 1).mean()*100:.1f}%"
-    )
-
-    col3.metric(
-        "Prefer Online Help When Stressed",
-        f"{(df['Seek_Help_Online_When_Stress_Numeric'] >= 4).mean()*100:.1f}%"
-    )
-
-    col4.metric(
-        "Use Online Communities (Sometimes/Often)",
-        f"{(df['Use_Online_Communities_for_Support_Numeric'] >= 3).mean()*100:.1f}%"
-    )
-
-    st.markdown("---")
-
-
-# =====================================================
+    # =====================================================
 #   Online Help Preference (High vs Low)
 # =====================================================
-    st.subheader("Preference for Online Help (High vs Low)")
+st.subheader("Preference for Online Help (High vs Low)")
 
-    df['Online_Help_Level'] = df['Seek_Help_Online_When_Stress'].astype(str).apply(
-        lambda x: 'High (Agree)' if x in ['4','5'] else 'Low (Neutral)'
-    )
+df['Online_Help_Level'] = df['Seek_Help_Online_When_Stress'].astype(str).apply(
+    lambda x: 'High (Agree)' if x in ['4','5'] else 'Low (Neutral)'
+)
 
-    pie_data = df['Online_Help_Level'].value_counts().reset_index()
-    pie_data.columns = ['Preference', 'Count']
+pie_data = df['Online_Help_Level'].value_counts().reset_index()
+pie_data.columns = ['Preference', 'Count']
 
-    fig = px.pie(
-        pie_data,
-        names='Preference',
-        values='Count',
-        hole=0.45,
-        title="Overall Preference for Seeking Help Online"
-    )
+fig = px.pie(
+    pie_data,
+    names='Preference',
+    values='Count',
+    hole=0.45,
+    title="Overall Preference for Seeking Help Online"
+)
 
-    st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
 
-    st.success("""
-    **Interpretation:**  
-    The donut chart shows that a huge majority of students, 72.3%, stay in the low or neutral zone. 
-    Only 27.7% really prefer getting help online regarding this preference. It seems like some 
-    people really find digital platforms to be their go-to for support.
+st.success("""
+**Interpretation:**  
+The donut chart shows that a huge majority of students, 72.3%, stay in the low or neutral zone. 
+Only 27.7% really prefer getting help online regarding this preference. It seems like some 
+people really find digital platforms to be their go-to for support.
 
-    """)
+""")
 
 # =====================================================
-#    ONLINE COMMUNITIES BY GENDER
+# ONLINE COMMUNITIES BY GENDER
 # =====================================================
-    st.subheader("Online Community Support by Gender")
+st.subheader("Online Community Support by Gender")
 
-    gender_table = pd.crosstab(
-        df['Use_Online_Communities_for_Support'],
-        df['Gender']
-    )
+gender_table = pd.crosstab(
+    df['Use_Online_Communities_for_Support'],
+    df['Gender']
+)
 
-    fig, ax = plt.subplots(figsize=(10, 6))
-    gender_table.plot(kind='bar', ax=ax)
-    ax.set_title("Use of Online Communities for Support by Gender")
-    ax.set_xlabel("Agreement Level")
-    ax.set_ylabel("Number of Students")
-    st.pyplot(fig)
+fig, ax = plt.subplots(figsize=(10, 6))
+gender_table.plot(kind='bar', ax=ax)
+ax.set_title("Use of Online Communities for Support by Gender")
+ax.set_xlabel("Agreement Level")
+ax.set_ylabel("Number of Students")
+st.pyplot(fig)
 
-    st.success("""
-    **Interpretation:**  
-    Female students consistently outnumber male students across almost all frequency categories, 
-    most notably in the "Sometimes" category. "Often" category shows 15 female participants but 0 male participants.
-    This shows that frequent engagement with online support communities is almost exclusively a female behavior in this dataset.
-    """)
+st.success("""
+**Interpretation:**  
+Female students consistently outnumber male students across almost all frequency categories, 
+most notably in the "Sometimes" category. "Often" category shows 15 female participants but 0 male participants.
+This shows that frequent engagement with online support communities is almost exclusively a female behavior in this dataset.
+""")
 
 # =====================================================
 #   Assignment Stress vs Online Help
 # =====================================================
-    st.subheader("Assignment Stress vs Online Help Preference")
+st.subheader("Assignment Stress vs Online Help Preference")
 
-    fig = px.box(
-        df,
-        x="Seek_Help_Online_When_Stress",
-        y="Assignments_Stress",
-        title="Assignment Stress Levels Across Online Help Preference",
-        labels={
-            "Seek_Help_Online_When_Stress": "Online Help Preference Level",
-            "Assignments_Stress": "Assignment Stress Level"
-        }
-    )
+fig = px.box(
+    df,
+    x="Seek_Help_Online_When_Stress",
+    y="Assignments_Stress",
+    title="Assignment Stress Levels Across Online Help Preference",
+    labels={
+        "Seek_Help_Online_When_Stress": "Online Help Preference Level",
+        "Assignments_Stress": "Assignment Stress Level"
+    }
+)
 
-    st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
 
-    st.success("""
-    **Interpretation:**  
-    The box plot shows that students who really want online help (Level 5) also have some of 
-    the highest stress levels, reaching up to level 5 on the stress scale. Meanwhile, those who 
-    do not need care for online help (Level 1) usually have lower stress. 
-    """)
+st.success("""
+**Interpretation:**  
+The box plot shows that students who really want online help (Level 5) also have some of 
+the highest stress levels, reaching up to level 5 on the stress scale. Meanwhile, those who 
+do not need care for online help (Level 1) usually have lower stress. 
+""")
 
 # =====================================================
 #   ONLINE INFO SEEKING
 # =====================================================
-    st.subheader("Seeking Mental Health Information Online")
+st.subheader("Seeking Mental Health Information Online")
 
-    fig = px.histogram(
-        df,
-        x="Mental_Health_Info_Through_Internet",
-        title="Frequency of Seeking Mental Health Information Online"
-    )
-    st.plotly_chart(fig, use_container_width=True)
+fig = px.histogram(
+    df,
+    x="Mental_Health_Info_Through_Internet",
+    title="Frequency of Seeking Mental Health Information Online"
+)
+st.plotly_chart(fig, use_container_width=True)
 
-    st.success("""
-    **Interpretation:**  
-    This chart shows that shows that "Sometimes" is the most common frequency, with a count of 50. 
-    This is followed by "Rarely" (20) and "Often" (17). Notably, only a small fraction of the 
-    group "Always" (8) or "Never" (6) seeks out this information.
-    This indicates that while most students use the internet for mental health information, 
-    they do so sporadically rather than as a constant habit.
-    """)
+st.success("""
+**Interpretation:**  
+This chart shows that shows that "Sometimes" is the most common frequency, with a count of 50. 
+This is followed by "Rarely" (20) and "Often" (17). Notably, only a small fraction of the 
+group "Always" (8) or "Never" (6) seeks out this information.
+This indicates that while most students use the internet for mental health information, 
+they do so sporadically rather than as a constant habit.
+""")
 
 # =====================================================
 # ONLINE HELP WHEN STRESSED
 # =====================================================
-    st.subheader("Preference for Online Help During Stress")
+st.subheader("Preference for Online Help During Stress")
 
-    fig = px.histogram(
-        df,
-        x="Seek_Help_Online_When_Stress",
-        title="Preference for Seeking Help Online When Stressed"
-    )
-    st.plotly_chart(fig, use_container_width=True)
+fig = px.histogram(
+    df,
+    x="Seek_Help_Online_When_Stress",
+    title="Preference for Seeking Help Online When Stressed"
+)
+st.plotly_chart(fig, use_container_width=True)
 
-    st.success("""
-    **Interpretation:**  
-    The distribution is somewhat bell-shaped but leans toward the middle. The highest 
-    count is at Level 3 (35 students), indicating a moderate preference. This suggests 
-    that while students are open to online help when stressed, many maintain a neutral 
-    or cautious.
-    """)
+st.success("""
+**Interpretation:**  
+The distribution is somewhat bell-shaped but leans toward the middle. The highest 
+count is at Level 3 (35 students), indicating a moderate preference. This suggests 
+that while students are open to online help when stressed, many maintain a neutral 
+or cautious.
+""")
 
 # =====================================================
 # STRESS vs ONLINE COMMUNITIES
 # =====================================================
 
-    # Crosstab
-    heatmap_data = pd.crosstab(
-        df['Assignments_Stress'],
-        df['Use_Online_Communities_for_Support']
-    )
+# Crosstab
+heatmap_data = pd.crosstab(
+    df['Assignments_Stress'],
+    df['Use_Online_Communities_for_Support']
+)
 
-    # Create figure
-    fig, ax = plt.subplots()
+# Create figure
+fig, ax = plt.subplots()
 
-    # Plot heatmap
-    im = ax.imshow(heatmap_data.values)
+# Plot heatmap
+im = ax.imshow(heatmap_data.values)
 
-    # Colorbar
-    plt.colorbar(im, ax=ax)
+# Colorbar
+plt.colorbar(im, ax=ax)
 
-    # Axis ticks and labels
-    ax.set_xticks(range(len(heatmap_data.columns)))
-    ax.set_xticklabels(heatmap_data.columns, rotation=45)
+# Axis ticks and labels
+ax.set_xticks(range(len(heatmap_data.columns)))
+ax.set_xticklabels(heatmap_data.columns, rotation=45)
 
-    ax.set_yticks(range(len(heatmap_data.index)))
-    ax.set_yticklabels(heatmap_data.index)
+ax.set_yticks(range(len(heatmap_data.index)))
+ax.set_yticklabels(heatmap_data.index)
 
-    # Add cell values
-    for i in range(len(heatmap_data.index)):
-        for j in range(len(heatmap_data.columns)):
-            ax.text(
-                j, i,
-                heatmap_data.iloc[i, j],
-                ha="center",
-                va="center"
-            )
+# Add cell values
+for i in range(len(heatmap_data.index)):
+    for j in range(len(heatmap_data.columns)):
+        ax.text(
+            j, i,
+            heatmap_data.iloc[i, j],
+            ha="center",
+            va="center"
+        )
 
-    # Labels and title
-    ax.set_xlabel("Use Online Communities for Support")
-    ax.set_ylabel("Stress Level")
-    ax.set_title("Stress Level vs Use of Online Communities for Support")
+# Labels and title
+ax.set_xlabel("Use Online Communities for Support")
+ax.set_ylabel("Stress Level")
+ax.set_title("Stress Level vs Use of Online Communities for Support")
 
-    # Show in Streamlit
-    st.pyplot(fig)
+# Show in Streamlit
+st.pyplot(fig)
 
-    st.success("""
-    **Interpretation:**  
-    The biggest group is 18 students who have a stress level of 3 and only "Sometimes" 
-    use online communities for support. Another 16 students have a high stress level of 4 
-    and also use communities "Sometimes." It’s clear that "Sometimes" is the most popular 
-    choice for students feeling stress.
-    """)
+st.success("""
+**Interpretation:**  
+The biggest group is 18 students who have a stress level of 3 and only "Sometimes" 
+use online communities for support. Another 16 students have a high stress level of 4 
+and also use communities "Sometimes." It’s clear that "Sometimes" is the most popular 
+choice for students feeling stress.
+""")
 
 
 # ----------- TAB 4: AINUN -----------
@@ -1935,4 +1790,4 @@ with tab4:
    
 # --- FOOTER ---
 st.markdown("---")
-st.caption("© 2026 Exploring Internet Use and Mental Health in Students Live | Designed with ❤️ using Streamlit & Plotly")
+st.caption("© 2025 Exploring Internet Use and Suicidality in Mental Health Populations | Designed with ❤️ using Streamlit & Plotly")
