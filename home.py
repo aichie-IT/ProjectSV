@@ -965,11 +965,14 @@ with tab1:
         )
 
         st.plotly_chart(fig, width="stretch")
-        st.info(
-            likert_summary(
-                filtered_df["Social_Media_Waste_Time"]
-            )
-        )
+        st.info("""
+        **Interpretation: Perception of Wasting Time on Social Media**
+        • Students who selected **Response Level 4** represent the largest group, indicating that many students feel they **often waste time** on social media.
+        • Response Level 3 is also high, showing that a significant portion of students are **moderately aware** that social media consumes their time.
+        • A notable number of students also chose **Response Level 5**, suggesting that some believe they **very frequently** waste time on social platforms.
+        • Very few students selected **Response Level 1**, indicating that only a small number feel they **rarely** waste time on social media.
+        Overall, the distribution suggests that **most students perceive themselves as spending more time than intended on social media**, raising concerns about distraction, procrastination, and reduced productivity.
+        """)
 
         # Pie Donut
         resource_counts = filtered_df[
@@ -1073,8 +1076,14 @@ with tab1:
         st.plotly_chart(fig, width="stretch")
         mean_stress = usage_group_mean["Academic_Stress_Index"].mean()
 
-        st.info(bar_chart_summary(filtered_df, "Social_Media_Use_Frequency"))
-
+         st.info("""
+        **Interpretation: Academic Stress vs Social Media Usage**
+        • Students who use social media for **3–4 hours per day** show the **highest academic stress**, suggesting this level of usage may cause the most distraction and time management issues.
+        • Stress remains relatively high for those using **5–6 hours per day**, but is slightly lower than the 3–4 hour group.
+        • Students who use social media **more than 6 hours per day** show a moderate stress level, possibly because academic engagement may already be reduced.
+        • The **lowest stress levels** are observed among students who use social media **less than 2 hours per day**, indicating better balance and focus on academic activities.
+        Overall, academic stress increases from low to moderate usage, peaks at 3–4 hours, and then slightly decreases at very high usage levels.
+         """)
         
         # Box Plot
         fig = px.box(
@@ -1086,7 +1095,14 @@ with tab1:
             color_discrete_sequence=px.colors.qualitative.Set3
         )
         st.plotly_chart(fig, width="stretch")
-        st.info(box_plot_summary(filtered_numeric, "General_Academic_Performance_Numeric"))
+        st.info("""
+        **Interpretation: Social Media Frequency vs Academic Performance**
+        • Students who use social media **less than 1 hour per day** tend to achieve **better academic performance**, with most falling in the **Good to Excellent** category.
+        • In contrast, students who use social media **more than 6 hours per day** mostly fall within the **Good to Average** performance range, with fewer reaching the Excellent level.
+        • This suggests that **lower social media usage is associated with higher academic achievement**, likely due to better concentration, time management, and study habits.
+        Overall, excessive social media use may negatively impact academic performance, while limited use appears to support better academic outcomes.
+        """)
+
 
         # Box Plot
         fig = px.box(
@@ -1105,7 +1121,13 @@ with tab1:
         )
 
         st.plotly_chart(fig, width="stretch")
-        st.info(box_plot_summary(filtered_numeric, "Sleep_Affected_By_Social_Media_Numeric"))
+        st.info("""
+        **Interpretation: Sleep Disturbance by Social Media Usage**
+        • Students who use social media **more than 6 hours per day** experience the **highest sleep disturbance**, with scores mostly between 3 and 5. This indicates frequent late-night usage may significantly disrupt sleep patterns.
+        • Those using social media for **3–4 hours** and **5–6 hours per day** also show relatively high sleep disturbance, suggesting moderate-to-high usage still affects sleep quality.
+        • Students with **1–2 hours per day** show moderate sleep impact, while those using social media **less than 1 hour per day** report the **lowest sleep disturbance**.
+        Overall, the results indicate a clear trend: **as social media usage increases, sleep quality tends to worsen**, highlighting the negative effect of prolonged screen time on rest and recovery.
+        """)
 
         # Scatter Plot
         fig = px.scatter(
@@ -1288,7 +1310,15 @@ with tab1:
         )
 
         st.plotly_chart(fig, width="stretch")
-        st.info(heatmap_summary(filtered_numeric, cols_parallel))
+        st.info("""
+        **Interpretation: Correlation Between Internet Use & Mental Health**
+        • There is a **strong positive correlation (0.64)** between **Assignments Stress** and **Academic Workload Anxiety**, indicating that students who feel stressed by assignments also tend to experience higher academic anxiety.
+        • **Sleep Affected by Social Media** shows **moderate correlations** with both **Studies Affected (0.58)** and **Social Media Hours (0.54)**, suggesting that increased social media use is linked to poorer sleep quality and reduced study effectiveness.
+        • **Studies Affected by Social Media** also correlates moderately with **Social Media Hours (0.39)**, meaning the more time students spend online, the more likely their academic performance is negatively impacted.
+        • Correlations between social media usage and assignment stress or academic anxiety are **weaker (0.18–0.27)**, indicating that internet use influences mental health more through **sleep disruption and study habits** rather than direct stress or anxiety.
+        Overall, the correlation matrix suggests that **higher social media usage is most strongly connected to sleep disturbances and declining study performance**, which indirectly contribute to increased stress and academic anxiety.
+        """)
+
 
         # Waterfall Chart
         mean_vals = df_numeric[
@@ -1324,7 +1354,15 @@ with tab1:
         )
 
         st.plotly_chart(fig, width="stretch")
-        st.info(waterfall_summary(filtered_numeric, col='Gender', value_col='Academic_Stress_Index'))
+        st.info("""
+        **Interpretation: Cumulative Mental Health Impact**
+        • The chart shows a step-by-step increase in mental health strain, beginning with **Assignment Stress**, which contributes the first noticeable rise in cumulative impact.
+        • **Academic Anxiety** adds another significant increase, suggesting that students are also experiencing pressure related to exams, grades, and academic expectations.
+        • **Sleep Affected** continues the upward trend, indicating that many students experience disrupted or reduced sleep as a result of academic-related stress.
+        • **Studies Affected** contributes an additional rise, showing that mental health challenges are now beginning to interfere with productivity, concentration, and academic performance.
+        Overall, the cumulative pattern demonstrates that **multiple academic stressors build on each other**, leading to a substantial **overall mental health impact**. This suggests that student stress is not caused by a single factor but by a combination of stress, anxiety, sleep issues, and academic performance concerns working together.
+        """)
+
    
        
         st.markdown("#### 💬 Key Insights")
