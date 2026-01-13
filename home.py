@@ -343,14 +343,14 @@ most_common_age_range = df["Age_Range"].mode()[0]
 
 if not df.empty:
     col1.metric("Total Records", f"{len(df):,}", help="PLO 1: Total Respondent Records of Student", border=True)
-    col2.metric("Most Common Age Range", most_common_age_range, help="PLO 2: Students Age Group", border=True)
-    col3.metric("Academic Performance", top_academic, help="PLO 3: Students Academic Performance", border=True)
-    col4.metric("Social Media Usage", top_media, help="PLO 4: Social Media Use Frecuency", border=True)
+    col2.metric("Most Common Age Range", most_common_age_range, help="PLO 2: Most Common Students Age Group", border=True)
+    col3.metric("Most Common Academic Performance", top_academic, help="PLO 3: Most Common Students' Academic Performance", border=True)
+    col4.metric("Most Common Social Media Usage (/Day)", top_media, help="PLO 4: Social Media Use Frequency per Day", border=True)
 else:
     col1.metric("Total Records", "0", help="No data available")
-    col2.metric("Avg. Age", "N/A", help="No data available")
-    col3.metric("Academic Performance", "N/A", help="No data available")
-    col4.metric("Social Media Usage", "N/A", help="No data available")
+    col2.metric("Most Common Age Range", "N/A", help="No data available")
+    col3.metric("Most Common Academic Performance", "N/A", help="No data available")
+    col4.metric("Most Common Social Media Usage (/Day)", "N/A", help="No data available")
 
 # --- Dataset Preview ---
 with st.expander("View Dataset Preview"):
@@ -433,11 +433,30 @@ for col in FREQ_COLS:
         df_numeric[col + "_Numeric"] = (
             df_numeric[col].astype(str).str.strip().map(freq_map)
         )
+        
+study_hour_map = {
+    "Less than 5 hours": "< 5 hours/week",
+    "5-10 hours": "5–10 hours/week",
+    "11 to 15 hours": "11–15 hours/week",
+    "16 to 20 hours": "16–20 hours/week",
+    "More than 20 hours": "> 20 hours/week"
+}
+
+social_media_hour_map = {
+    "Less than 1 hour per day": "< 1 hours/day",
+    "1 to 2 hours per day": "1–2 hours/day",
+    "3 to 4 hours per day": "3–4 hours/day",
+    "5 to 6 hours per day": "5–6 hours/day",
+    "More than 6 hours per day": "> 6 hours/day"
+}
+
+df["Hours_Study_per_Week"] = df["Hours_Study_per_Week"].replace(study_hour_map)
+df["Social_Media_Use_Frequency"] = df["Social_Media_Use_Frequency"].replace(social_media_hour_map)
     
 # Study hours
 df_numeric["Study_Hours_Numeric"] = df_numeric["Hours_Study_per_Week"].map({
     "Less than 5 hours": 2.5,
-    "5 to 10 hours": 7.5,
+    "5-10 hours": 7.5,
     "11 to 15 hours": 13,
     "16 to 20 hours": 18,
     "More than 20 hours": 22.5
@@ -815,8 +834,8 @@ with tab1:
     df["Age_Range"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=True)
     most_common_age_range = df["Age_Range"].mode()[0]
 
-    col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
-    col2.metric("Most Common Age Range", most_common_age_range, help="PLO 2: Students Age Group", border=True)
+    col1.metric("Total Students", f"{len(filtered_df):,}", help="PLO 1: Total Students Records", border=True)
+    col2.metric("Most Common Age Range", most_common_age_range, help="PLO 2: Most Common Students Age Group", border=True)
     if not valid_stress.empty:
         col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
     else:
