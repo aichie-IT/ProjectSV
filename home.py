@@ -501,17 +501,34 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
 ].mean(axis=1)
 
 # ----- CATEGORICAL ORDER -----
+usage_order = [
+    "< 1 hour/day",
+    "1–2 hours/day",
+    "3–4 hours/day",
+    "5–6 hours/day",
+    "> 6 hours/day"
+]
+
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
-    categories=[
-        "< 1 hours/day",
-        "1–2 hours/day",
-        "3–4 hours/day",
-        "5–6 hours/day",
-        "> 6 hours/day"
-    ],
+    categories=usage_order,
     ordered=True
 )
+
+study_order = [
+    "< 5 hours/week",
+    "5–10 hours/week",
+    "11–15 hours/week",
+    "16–20 hours/week",
+    "> 20 hours/week"
+]
+
+df["Hours_Study_per_Week"] = pd.Categorical(
+    df["Hours_Study_per_Week"],
+    categories=study_order,
+    ordered=True
+)
+
 
 # ----------- ILYA -----------
 # Re-apply short label mapping to 'Social_Media_Use_Frequency'
@@ -840,7 +857,7 @@ with tab1:
         col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
     else:
         col3.metric("Avg Stress Index", "N/A", help="No valid stress index data after filtering", border=True)
-    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5 to 6 hours per day', 'More than 6 hours per day']).mean() * 100):.1f}%", border=True)
+    col4.metric("High Usage (%)", f"{(filtered_df['Social_Media_Use_Frequency'].isin(['5–6 hours/day', '> 6 hours/day']).mean() * 100):.1f}%", border=True)
 
     # Scientific Summary
     # ===== REAL-TIME SCIENTIFIC SUMMARY =====
@@ -922,11 +939,6 @@ with tab1:
         st.markdown("---")
             
         # Bar Chart
-        study_order = [
-            "Less than 5 hours", "5 to 10 hours",
-            "11 to 15 hours", "16 to 20 hours", "More than 20 hours"
-        ]
-
         fig = px.bar(
             filtered_df["Hours_Study_per_Week"].value_counts().reindex(study_order),
             title="Frequency of Study Hours per Week",
@@ -1038,7 +1050,7 @@ with tab1:
         study_impact = filtered_numeric["Studies_Affected_By_Social_Media_Numeric"].dropna()
         academic_perf = filtered_numeric["General_Academic_Performance_Numeric"].dropna()
         study_hours = filtered_numeric["Study_Hours_Numeric"].dropna()
-        high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
+        high_users_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5–6 hours/day", "> 6 hours/day"]).mean() * 100)
         sleep_pct = (filtered_numeric["Sleep_Affected_By_Social_Media_Numeric"] >= 4).mean() * 100
         corr_val = safe_corr(filtered_numeric, "Social_Media_Hours_Numeric", "Assignments_Stress_Numeric")
     
