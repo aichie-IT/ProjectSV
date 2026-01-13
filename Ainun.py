@@ -190,8 +190,9 @@ with left:
     barmode="group",
     labels={
         "Year_of_Study": "Year of Study",
-        "count": "Number of Respondents"
+        "count": "Number of Respondents" 
     }
+    )
     st.plotly_chart(fig1, use_container_width=True)
     
     st.success("""
