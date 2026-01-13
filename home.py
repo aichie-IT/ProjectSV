@@ -869,7 +869,7 @@ with tab1:
         # Summary box
         freq_order = df["Social_Media_Use_Frequency"].cat.categories
         median_usage = filtered_numeric["Social_Media_Hours_Numeric"].median()
-        high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5 to 6 hours per day", "More than 6 hours per day"]).mean() * 100)
+        high_usage_pct = (filtered_df["Social_Media_Use_Frequency"].isin(["5–6 hours/day", "> 6 hours/day"]).mean() * 100)
         avg_study_hours = filtered_numeric["Study_Hours_Numeric"].mean()
         time_waste_pct = (filtered_df["Social_Media_Waste_Time"].isin(["Agree", "Strongly Agree"]).mean() * 100)
         usage_counts = (filtered_df["Social_Media_Use_Frequency"].value_counts().reindex(freq_order, fill_value=0))
@@ -889,7 +889,7 @@ with tab1:
                 len(filtered_df),
                 filtered_numeric["Social_Media_Hours_Numeric"].median(),
                 (filtered_df["Social_Media_Use_Frequency"]
-                 .isin(["5 to 6 hours per day", "More than 6 hours per day"])
+                 .isin(["5–6 hours/day", "> 6 hours/day"])
                  .mean() * 100),
                 filtered_numeric["Study_Hours_Numeric"].mean()
             )
