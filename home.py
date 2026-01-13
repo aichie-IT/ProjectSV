@@ -692,35 +692,77 @@ for col in likert_cols:
 
 # Mapping Gender
 gender_map = {0: 'Female', 1: 'Male', 2: 'Other'}
-df['Gender_Num'] = df['Gender'].map({'Female': 0, 'Male': 1, 'Other': 2}).fillna(2)
+df['Gender_Num'] = (
+    df['Gender']
+    .map({'Female': 0, 'Male': 1, 'Other': 2})
+    .astype('float')
+    .fillna(2)
+    .astype(int)
+)
 
 # Mapping Year of Study
 year_map = {1: 'Year 1', 2: 'Year 2', 3: 'Year 3', 4: 'Year 4', 5: 'Year 5', 0: 'Unknown'}
-df['Year_of_Study_Num'] = df['Year_of_Study'].map({'Year 1': 1, 'Year 2': 2, 'Year 3': 3, 'Year 4': 4, 'Year 5': 5}).fillna(0)
+df['Year_of_Study_Num'] = (
+    df['Year_of_Study']
+    .map({'Year 1': 1, 'Year 2': 2, 'Year 3': 3, 'Year 4': 4, 'Year 5': 5})
+    .astype('float')
+    .fillna(0)
+    .astype(int)
+)
 
 # Mapping Living Situation
 living_map = {0: 'With family', 1: 'On-campus', 2: 'Off-campus', 3: 'Other'}
-df['Current_Living_Situation_Num'] = df['Current_Living_Situation'].map({
-    'With family': 0, 'On-campus': 1, 'Off-campus (rental)': 2, 'Off-campus': 2, 'Other': 3
-}).fillna(3)
+df['Current_Living_Situation_Num'] = (
+    df['Current_Living_Situation']
+    .map({
+        'With family': 0,
+        'On-campus': 1,
+        'Off-campus (rental)': 2,
+        'Off-campus': 2,
+        'Other': 3
+    })
+    .astype('float')
+    .fillna(3)
+    .astype(int)
+)
 
 # Mapping Employment (Clean string variations from CSV)
-df['Employment_Status_Num'] = df['Employment_Status'].map({
-    'Full-time student': 3,
-    'In paid employment (including part-time, self-employed)': 2,
-    'Internship': 1,
-    'Unemployed': 0
-}).fillna(2)
+df['Employment_Status_Num'] = (
+    df['Employment_Status']
+    .map({
+        'Full-time student': 3,
+        'In paid employment (including part-time, self-employed)': 2,
+        'Internship': 1,
+        'Unemployed': 0
+    })
+    .astype('float')
+    .fillna(2)
+    .astype(int)
+)
 
 # Mapping Social Media Impact
 impact_map = {1: 'Positive Impact', 0: 'Negative Impact', 2: 'No impact'}
-df['Social_Media_Positive_Impact_on_Wellbeing_Num'] = df['Social_Media_Positive_Impact_on_Wellbeing'].map({
-    'Positive impact': 1, 'Negative impact': 0, 'No impact': 2
-}).fillna(2)
+df['Social_Media_Positive_Impact_on_Wellbeing_Num'] = (
+    df['Social_Media_Positive_Impact_on_Wellbeing']
+    .map({
+        'Positive impact': 1,
+        'Negative impact': 0,
+        'No impact': 2
+    })
+    .astype('float')
+    .fillna(2)
+    .astype(int)
+)
 
 # Mapping Race
 race_map = {0: 'Malay', 1: 'Chinese', 2: 'Indian', 3: 'Other'}
-df['Race_Num'] = df['Race'].map({'Malay': 0, 'Chinese': 1, 'Indian': 2, 'Others': 3, 'Other': 3}).fillna(3)
+df['Race_Num'] = (
+    df['Race']
+    .map({'Malay': 0, 'Chinese': 1, 'Indian': 2, 'Others': 3, 'Other': 3})
+    .astype('float')
+    .fillna(3)
+    .astype(int)
+)
 
 # --- NEW: Mapping Difficulty Sleeping Due to University Pressure to 5-point Likert ---
 sleep_map = {
