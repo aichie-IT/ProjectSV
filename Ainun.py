@@ -86,7 +86,7 @@ gender_map = {0: 'Female', 1: 'Male', 2: 'Other'}
 df['Gender_Num'] = df['Gender'].map({'Female': 0, 'Male': 1, 'Other': 2}).fillna(2)
 
 # Mapping Year of Study
-year_map = {1: 'Year 1', 2: 'Year 2', 3: 'Year 3', 4: 'Year 4', 5: 'Year 5', 0: 'Unknown'}
+year_map = {1: 'Year 1', 2: 'Year 2', 3: 'Year 3', 4: 'Year 4', 5: 'postgraduate', 0: 'Unknown'}
 df['Year_of_Study_Num'] = df['Year_of_Study'].map({'Year 1': 1, 'Year 2': 2, 'Year 3': 3, 'Year 4': 4, 'postgraduate': 5}).fillna(0)
 
 # Mapping Living Situation
@@ -175,6 +175,11 @@ of students and their internet use. The survey is dominated by female who form m
 students are more represented in the survey. Regarding the level of study, Year 4 students are the majority group which implies that 
 final-year students are the most represented and can have different academic and mental health issues as compared to the lower years.
 """)
+
+st.success("""
+**Summary:** 
+Explaination : count for Number of Respondents
+
 # ==================================================
 # VISUALIZATIONS
 # ==================================================
