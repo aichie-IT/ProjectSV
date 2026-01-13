@@ -504,11 +504,11 @@ df_numeric["Academic_Stress_Index"] = df_numeric[
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
     categories=[
-        "Less than 1 hour per day",
-        "1 to 2 hours per day",
-        "3 to 4 hours per day",
-        "5 to 6 hours per day",
-        "More than 6 hours per day"
+        "< 1 hours/day",
+        "1–2 hours/day",
+        "3–4 hours/day",
+        "5–6 hours/day",
+        "> 6 hours/day"
     ],
     ordered=True
 )
