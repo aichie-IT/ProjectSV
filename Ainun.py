@@ -87,7 +87,7 @@ df['Gender_Num'] = df['Gender'].map({'Female': 0, 'Male': 1, 'Other': 2}).fillna
 
 # Mapping Year of Study
 year_map = {1: 'Year 1', 2: 'Year 2', 3: 'Year 3', 4: 'Year 4', 5: 'Year 5', 0: 'Unknown'}
-df['Year_of_Study_Num'] = df['Year_of_Study'].map({'Year 1': 1, 'Year 2': 2, 'Year 3': 3, 'Year 4': 4, 'Year 5': 5}).fillna(0)
+df['Year_of_Study_Num'] = df['Year_of_Study'].map({'Year 1': 1, 'Year 2': 2, 'Year 3': 3, 'Year 4': 4, 'postgraduate': 5}).fillna(0)
 
 # Mapping Living Situation
 living_map = {0: 'With family', 1: 'On-campus', 2: 'Off-campus', 3: 'Other'}
@@ -111,7 +111,7 @@ df['Social_Media_Positive_Impact_on_Wellbeing_Num'] = df['Social_Media_Positive_
 
 # Mapping Race
 race_map = {0: 'Malay', 1: 'Chinese', 2: 'Indian', 3: 'Other'}
-df['Race_Num'] = df['Race'].map({'Malay': 0, 'Chinese': 1, 'Indian': 2, 'Others': 3, 'Other': 3}).fillna(3)
+df['Race_Num'] = df['Race'].map({'Malay': 0, 'Chinese': 1, 'Indian': 2, 'Others': 3, 'Other': 4}).fillna(3)
 
 # --- NEW: Mapping Difficulty Sleeping Due to University Pressure to 5-point Likert ---
 sleep_map = {
@@ -189,7 +189,7 @@ with left:
         x="Year_of_Study",
         color="Gender",
         barmode="group",
-        labels={"Year_of_Study":"Year of Study","Number of Respondents":"Number of Respondents"}
+        labels={"Year_of_Study":"Year of Study","count":"Number of Respondents"}
     )
     st.plotly_chart(fig1, use_container_width=True)
     
@@ -205,7 +205,7 @@ with left:
         x="Gender",
         color="Social_Media_Positive_Impact_on_Wellbeing",
         barmode="stack",
-        labels={"Social_Media_Positive_Impact_on_Wellbeing":"Perceived Positive Impact","Number of Respondents":"Number of Respondents"}
+        labels={"Social_Media_Positive_Impact_on_Wellbeing":"Perceived Positive Impact","count":"Number of Respondents"}
     )
     st.plotly_chart(fig2, use_container_width=True)
      
@@ -223,7 +223,7 @@ with left:
         x="Difficulty_Sleeping_University_Pressure",
         color="Gender",
         barmode="group",
-        labels={"Difficulty_Sleeping_University_Pressure":"Difficulty Sleeping","Number of Respondents":"Number of Respondents"}
+        labels={"Difficulty_Sleeping_University_Pressure":"Difficulty Sleeping","count":"Number of Respondents"}
     )
     st.plotly_chart(fig3, use_container_width=True)
     
@@ -245,7 +245,7 @@ with right:
         heatmap_data,
         text_auto=True,
         color_continuous_scale="YlGnBu",
-        labels={"x":"Living Situation","y":"Year of Study","color":"Number of Respondents"}
+        labels={"x":"Living Situation","y":"Year of Study","color":"count"}
     )
     st.plotly_chart(fig4, use_container_width=True)
      
@@ -262,7 +262,7 @@ with right:
         x="Social_Media_Daily_Routine",
         color="Race",
         barmode="group",
-        labels={"Social_Media_Daily_Routine":"Social Media Routine","Number of Respondents":"Number of Respondents"}
+        labels={"Social_Media_Daily_Routine":"Social Media Routine","count":"Number of Respondents"}
     )
     st.plotly_chart(fig5, use_container_width=True)
     
