@@ -544,10 +544,9 @@ usage_order = [
 
 df["Social_Media_Use_Frequency"] = pd.Categorical(
     df["Social_Media_Use_Frequency"],
-    categories=usage_order,
+    categories=["< 1 hr", "1–2 hrs", "3–4 hrs", "5–6 hrs", "> 6 hrs"],
     ordered=True
 )
-
 study_order = [
     "< 5 hours/week",
     "5-10 hours/week",
