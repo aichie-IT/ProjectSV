@@ -249,7 +249,7 @@ st.set_page_config(
 # banner
 st.image(
     "banner.jpeg",
-    use_container_width=True,
+    width="stretch",
     caption="Internet Use and Mental Health Dashboard"
 )
 
