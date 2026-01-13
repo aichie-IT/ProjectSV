@@ -807,8 +807,14 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
     valid_stress = filtered_numeric["Academic_Stress_Index"].dropna()
 
-    col1.metric("Total Students", f"{len(filtered_df):,}", border=True)
-    col2.metric("Avg. Age", f"{filtered_df['Age'].mean():.1f}", border=True)
+    # Create age ranges
+    age_bins = [0, 18, 20, 22, 24, 100]
+    age_labels = ["≤18", "19–20", "21–22", "23–24", "≥25"]
+    df["Age_Range"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels, right=True)
+    most_common_age_range = df["Age_Range"].mode()[0]
+
+    col1.metric("Total Students", f"{len(filtered_df):,}", help="PLO 1: Total Students Records", border=True)
+    col2.metric("Most Common Age Range", most_common_age_range, help="PLO 2: Most Common Students Age Group", border=True)
     if not valid_stress.empty:
         col3.metric("Avg. Stress Index", f"{valid_stress.mean():.2f}", border=True)
     else:
