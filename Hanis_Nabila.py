@@ -294,7 +294,7 @@ fig.update_layout(
     yaxis=dict(tickmode='array', tickvals=list(range(len(heatmap_data.index))), ticktext=heatmap_data.index)
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig)
 
 
 st.success("""
