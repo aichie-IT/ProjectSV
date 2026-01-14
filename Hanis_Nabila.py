@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
+import plotly.graph_objects as go
 
 st.subheader("Analyze Mental Health Information-Seeking Behavior")
 
@@ -271,46 +272,30 @@ or cautious.
 # =====================================================
 # STRESS vs ONLINE COMMUNITIES
 # =====================================================
-
-# Crosstab
+# Interactive Heatmap (Stress Level vs Use of Online Communities)
 heatmap_data = pd.crosstab(
     df['Assignments_Stress'],
     df['Use_Online_Communities_for_Support']
 )
 
-# Create figure
-fig, ax = plt.subplots(figsize=(8, 6))
+fig = go.Figure(data=go.Heatmap(
+    z=heatmap_data.values,
+    x=heatmap_data.columns,
+    y=heatmap_data.index,
+    colorscale='Viridis',  # You can choose other colorscales as well
+    colorbar=dict(title="Number of Students")
+))
 
-# Plot heatmap
-im = ax.imshow(heatmap_data.values)
+fig.update_layout(
+    title="Stress Level vs Use of Online Communities for Support",
+    xaxis_title="Use Online Communities for Support",
+    yaxis_title="Stress Level",
+    xaxis=dict(tickmode='array', tickvals=list(range(len(heatmap_data.columns))), ticktext=heatmap_data.columns),
+    yaxis=dict(tickmode='array', tickvals=list(range(len(heatmap_data.index))), ticktext=heatmap_data.index)
+)
 
-# Colorbar
-plt.colorbar(im, ax=ax)
+st.plotly_chart(fig, use_container_width=True)
 
-# Axis ticks and labels
-ax.set_xticks(range(len(heatmap_data.columns)))
-ax.set_xticklabels(heatmap_data.columns, rotation=45)
-
-ax.set_yticks(range(len(heatmap_data.index)))
-ax.set_yticklabels(heatmap_data.index)
-
-# Add cell values
-for i in range(len(heatmap_data.index)):
-    for j in range(len(heatmap_data.columns)):
-        ax.text(
-            j, i,
-            heatmap_data.iloc[i, j],
-            ha="center",
-            va="center"
-        )
-
-# Labels and title
-ax.set_xlabel("Use Online Communities for Support")
-ax.set_ylabel("Stress Level")
-ax.set_title("Stress Level vs Use of Online Communities for Support")
-
-# Show in Streamlit
-st.pyplot(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
