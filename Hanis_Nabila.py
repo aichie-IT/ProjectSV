@@ -191,7 +191,7 @@ gender_table.plot(kind='bar', ax=ax)
 ax.set_title("Use of Online Communities for Support by Gender")
 ax.set_xlabel("Agreement Level")
 ax.set_ylabel("Number of Students")
-st.pyplot(fig)
+st.pyplot(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
@@ -308,7 +308,7 @@ ax.set_ylabel("Stress Level")
 ax.set_title("Stress Level vs Use of Online Communities for Support")
 
 # Show in Streamlit
-st.pyplot(fig)
+st.pyplot(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
