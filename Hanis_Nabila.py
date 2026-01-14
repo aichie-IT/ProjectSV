@@ -165,7 +165,7 @@ fig = px.pie(
     hole=0.45,
     title="Overall Preference for Seeking Help Online",
     color='Preference',
-    color_discrete_sequence=['#FF0000', '#0000FF']
+    color_discrete_sequence=['#0000FF', '#FF0000']
 )
 
 st.plotly_chart(fig, use_container_width=True)
