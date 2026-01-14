@@ -291,6 +291,9 @@ or cautious.
 # =====================================================
 # STRESS vs ONLINE COMMUNITIES
 # =====================================================
+
+st.subheader("Stress Level vs Use of Online Communities")
+
 # Interactive Heatmap (Stress Level vs Use of Online Communities)
 heatmap_data = pd.crosstab(
     df['Assignments_Stress'],
