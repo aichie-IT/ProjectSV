@@ -163,7 +163,7 @@ fig = px.pie(
     names='Preference',
     values='Count',
     hole=0.45,
-    title="Overall Preference for Seeking Help Online"
+    title="Overall Preference for Seeking Help Online",
     color='Preference',
     color_discrete_sequence=['#FF0000', '#0000FF']
 )
