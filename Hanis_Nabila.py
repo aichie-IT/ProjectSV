@@ -282,7 +282,7 @@ fig = go.Figure(data=go.Heatmap(
     z=heatmap_data.values,
     x=heatmap_data.columns,
     y=heatmap_data.index,
-    colorscale='Viridis',  # You can choose other colorscales as well
+    colorscale='cividis',  # You can choose other colorscales as well
     colorbar=dict(title="Number of Students")
 ))
 
