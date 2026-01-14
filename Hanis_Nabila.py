@@ -188,7 +188,7 @@ gender_table = pd.crosstab(
     df['Gender']
 )
 
-fig, ax = plt.subplots(figsize=(12, 8))
+fig, ax = plt.subplots(figsize=(14, 10))
 gender_table.plot(kind='bar', ax=ax)
 ax.set_title("Use of Online Communities for Support by Gender")
 ax.set_xlabel("Agreement Level")
