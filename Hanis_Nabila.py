@@ -164,6 +164,8 @@ fig = px.pie(
     values='Count',
     hole=0.45,
     title="Overall Preference for Seeking Help Online"
+    color='Preference',
+    color_discrete_sequence=['#FF0000', '#0000FF']
 )
 
 st.plotly_chart(fig, use_container_width=True)
@@ -186,7 +188,7 @@ gender_table = pd.crosstab(
     df['Gender']
 )
 
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(12, 8))
 gender_table.plot(kind='bar', ax=ax)
 ax.set_title("Use of Online Communities for Support by Gender")
 ax.set_xlabel("Agreement Level")
