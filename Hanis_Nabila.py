@@ -188,7 +188,7 @@ gender_table = pd.crosstab(
     df['Gender']
 )
 
-fig, ax = plt.subplots(figsize=(14, 10))
+fig, ax = plt.subplots(figsize=(8, 6))
 gender_table.plot(kind='bar', ax=ax)
 ax.set_title("Use of Online Communities for Support by Gender")
 ax.set_xlabel("Agreement Level")
@@ -279,7 +279,7 @@ heatmap_data = pd.crosstab(
 )
 
 # Create figure
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(8, 6))
 
 # Plot heatmap
 im = ax.imshow(heatmap_data.values)
