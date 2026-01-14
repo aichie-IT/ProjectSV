@@ -1556,7 +1556,9 @@ with tab3:
         names='Preference',
         values='Count',
         hole=0.45,
-        title="Overall Preference for Seeking Help Online"
+        title="Overall Preference for Seeking Help Online",
+        color='Preference',
+        color_discrete_sequence=['#0000FF', '#FF0000']
     )
 
     st.plotly_chart(fig, use_container_width=True)
@@ -1570,21 +1572,40 @@ with tab3:
     """)
 
 # =====================================================
-#    ONLINE COMMUNITIES BY GENDER
+# ONLINE COMMUNITIES BY GENDER
 # =====================================================
     st.subheader("Online Community Support by Gender")
 
+    # Create crosstab
     gender_table = pd.crosstab(
         df['Use_Online_Communities_for_Support'],
         df['Gender']
     )
 
-    fig, ax = plt.subplots(figsize=(10, 6))
-    gender_table.plot(kind='bar', ax=ax)
-    ax.set_title("Use of Online Communities for Support by Gender")
-    ax.set_xlabel("Agreement Level")
-    ax.set_ylabel("Number of Students")
-    st.pyplot(fig)
+    # Convert to long format for Plotly
+    gender_table_long = gender_table.reset_index().melt(
+        id_vars='Use_Online_Communities_for_Support',
+        var_name='Gender',
+        value_name='Number of Students'
+    )
+
+    # Plot
+    fig = px.bar(
+        gender_table_long,
+        x='Use_Online_Communities_for_Support',
+        y='Number of Students',
+        color='Gender',
+        barmode='group',
+        title='Use of Online Communities for Support by Gender'
+    )    
+
+    fig.update_layout(
+        xaxis_title='Agreement Level',
+        yaxis_title='Number of Students',
+        legend_title='Gender'
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
 
     st.success("""
     **Interpretation:**  
@@ -1663,46 +1684,33 @@ with tab3:
 # STRESS vs ONLINE COMMUNITIES
 # =====================================================
 
-    # Crosstab
+    st.subheader("Stress Level vs Use of Online Communities")
+    
+    # Interactive Heatmap (Stress Level vs Use of Online Communities)
     heatmap_data = pd.crosstab(
         df['Assignments_Stress'],
         df['Use_Online_Communities_for_Support']
     )
-
-    # Create figure
-    fig, ax = plt.subplots()
-
-    # Plot heatmap
-    im = ax.imshow(heatmap_data.values)
-
-    # Colorbar
-    plt.colorbar(im, ax=ax)
-
-    # Axis ticks and labels
-    ax.set_xticks(range(len(heatmap_data.columns)))
-    ax.set_xticklabels(heatmap_data.columns, rotation=45)
-
-    ax.set_yticks(range(len(heatmap_data.index)))
-    ax.set_yticklabels(heatmap_data.index)
-
-    # Add cell values
-    for i in range(len(heatmap_data.index)):
-        for j in range(len(heatmap_data.columns)):
-            ax.text(
-                j, i,
-                heatmap_data.iloc[i, j],
-                ha="center",
-                va="center"
-            )
-
-    # Labels and title
-    ax.set_xlabel("Use Online Communities for Support")
-    ax.set_ylabel("Stress Level")
-    ax.set_title("Stress Level vs Use of Online Communities for Support")
-
-    # Show in Streamlit
-    st.pyplot(fig)
-
+    
+    fig = go.Figure(data=go.Heatmap(
+        z=heatmap_data.values,
+        x=heatmap_data.columns,
+        y=heatmap_data.index,
+        colorscale='reds',  # You can choose other colorscales as well
+        colorbar=dict(title="Number of Students")
+    ))
+    
+    fig.update_layout(
+        title="Stress Level vs Use of Online Communities for Support",
+        xaxis_title="Use Online Communities for Support",
+        yaxis_title="Stress Level",
+        xaxis=dict(tickmode='array', tickvals=list(range(len(heatmap_data.columns))), ticktext=heatmap_data.columns),
+        yaxis=dict(tickmode='array', tickvals=list(range(len(heatmap_data.index))), ticktext=heatmap_data.index)
+    )
+    
+    st.plotly_chart(fig)
+    
+    
     st.success("""
     **Interpretation:**  
     The biggest group is 18 students who have a stress level of 3 and only "Sometimes" 
