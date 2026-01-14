@@ -184,17 +184,36 @@ people really find digital platforms to be their go-to for support.
 # =====================================================
 st.subheader("Online Community Support by Gender")
 
+# Create crosstab
 gender_table = pd.crosstab(
     df['Use_Online_Communities_for_Support'],
     df['Gender']
 )
 
-fig, ax = plt.subplots(figsize=(8, 6))
-gender_table.plot(kind='bar', ax=ax)
-ax.set_title("Use of Online Communities for Support by Gender")
-ax.set_xlabel("Agreement Level")
-ax.set_ylabel("Number of Students")
-st.pyplot(fig, use_container_width=True)
+# Convert to long format for Plotly
+gender_table_long = gender_table.reset_index().melt(
+    id_vars='Use_Online_Communities_for_Support',
+    var_name='Gender',
+    value_name='Number of Students'
+)
+
+# Plot
+fig = px.bar(
+    gender_table_long,
+    x='Use_Online_Communities_for_Support',
+    y='Number of Students',
+    color='Gender',
+    barmode='group',
+    title='Use of Online Communities for Support by Gender'
+)
+
+fig.update_layout(
+    xaxis_title='Agreement Level',
+    yaxis_title='Number of Students',
+    legend_title='Gender'
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
 st.success("""
 **Interpretation:**  
